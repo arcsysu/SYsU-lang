@@ -8,7 +8,7 @@
 
 llvm::json::Array stak;
 
-yytoken_kind_t yylex() {
+auto yylex() {
   std::string t;
   std::getline(std::cin, t);
   do {
