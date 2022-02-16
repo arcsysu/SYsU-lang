@@ -1,6 +1,5 @@
 %union {}
-%token <syntax_id> T_NUMERIC_CONSTANT T_IDENTIFIER
-%token T_INT T_RETURN T_SEMI T_L_PAREN T_R_PAREN T_L_BRACE T_R_BRACE
+%token T_NUMERIC_CONSTANT T_IDENTIFIER T_INT T_RETURN T_SEMI T_L_PAREN T_R_PAREN T_L_BRACE T_R_BRACE
 %{
 #include <iostream>
 #include <llvm/Support/JSON.h>
