@@ -1,0 +1,4 @@
+FIND_PACKAGE(FLEX REQUIRED)
+FLEX_TARGET(lexer lexer.l lexer.c)
+ADD_EXECUTABLE(sysu-lexer ${FLEX_lexer_OUTPUTS})
+INSTALL(TARGETS sysu-lexer)
