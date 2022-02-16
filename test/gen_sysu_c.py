@@ -11,6 +11,6 @@ if __name__ == "__main__":
             if src.find(pattern) != -1:
                 src = "#include <sylib.h>\n"+src
                 break
-        file = open(filename+".su.c", mode="w")
+        file = open(filename+"su.c", mode="w")
         file.write(src)
         file.close()

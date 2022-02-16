@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: apt
-      run: "apt update -y && apt upgrade -y && apt install -y make cmake zlib1g-dev flex bison clang libclang-dev llvm-dev python3 python3-tqdm"
+      run: "apt update -y && apt upgrade -y && apt install -y make cmake zlib1g-dev gzip flex bison clang libclang-dev llvm-dev python3 python3-tqdm"
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.

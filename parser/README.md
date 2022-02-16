@@ -7,7 +7,7 @@
 ```bash
 $ ( PATH=../sysu/bin:$PATH &&
   cat test/functional/000_main.sy.sysu.c |
-  clang -cc1 -E |
+  clang -cc1 -I../sysu/include -E |
   clang -cc1 -ast-dump=json)
 {
   "id": "0x1c9b558",
