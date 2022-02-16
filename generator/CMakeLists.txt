@@ -1,0 +1,5 @@
+FIND_PACKAGE(LLVM REQUIRED PATHS "/usr/lib/llvm-11/lib/cmake/llvm")
+ADD_EXECUTABLE(sysu-generator generator.cc)
+TARGET_INCLUDE_DIRECTORIES(sysu-generator PRIVATE ${LLVM_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(sysu-generator LLVMSupport LLVMIRReader)
+INSTALL(TARGETS sysu-generator)
