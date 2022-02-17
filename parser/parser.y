@@ -6,7 +6,7 @@
 #include <llvm/Support/raw_ostream.h>
 #include <string>
 
-llvm::json::Array stak;
+static llvm::json::Array stak;
 
 auto yylex() {
   std::string t;
@@ -62,48 +62,47 @@ int main() {
 %start CompUnit
 %%
 
-CompUnit : FuncDef {
-      auto inner = stak.back();
-      stak.pop_back();
-      stak.push_back(llvm::json::Object{{"kind", "TranslationUnitDecl"},
-                                        {"inner", llvm::json::Array{inner}}});
-    };
+CompUnit: FuncDef {
+  auto inner = stak.back();
+  stak.pop_back();
+  stak.push_back(llvm::json::Object{{"kind", "TranslationUnitDecl"},
+                                    {"inner", llvm::json::Array{inner}}});
+}
 
-FuncDef : FuncType Ident T_L_PAREN T_R_PAREN Block {
-      auto inner = stak.back();
-      stak.pop_back();
-      auto name = stak.back().getAsObject();
-      assert(name != nullptr);
-      assert(name->get("value") != nullptr);
-      stak.pop_back();
-      stak.push_back(llvm::json::Object{{"kind", "FunctionDecl"},
-                                        {"name", *(name->get("value"))},
-                                        {"inner", llvm::json::Array{inner}}});
-    };
+FuncDef: FuncType Ident T_L_PAREN T_R_PAREN Block {
+  auto inner = stak.back();
+  stak.pop_back();
+  auto name = stak.back().getAsObject();
+  assert(name != nullptr);
+  assert(name->get("value") != nullptr);
+  stak.pop_back();
+  stak.push_back(llvm::json::Object{{"kind", "FunctionDecl"},
+                                    {"name", *(name->get("value"))},
+                                    {"inner", llvm::json::Array{inner}}});
+}
 
-FuncType : T_INT {}
+FuncType: T_INT {}
 
-Ident : T_IDENTIFIER {};
+Ident: T_IDENTIFIER {}
 
 Block: T_L_BRACE T_R_BRACE {}
-    | T_L_BRACE BlockItem T_R_BRACE {}
-    ;
 
-BlockItem : Stmt {
-      auto inner = stak.back();
-      stak.pop_back();
-      stak.push_back(llvm::json::Object{{"kind", "CompoundStmt"},
-                                        {"inner", llvm::json::Array{inner}}});
-    };
+Block: T_L_BRACE BlockItem T_R_BRACE {}
 
-Stmt : T_RETURN Exp T_SEMI {
-      auto inner = stak.back();
-      stak.pop_back();
-      stak.push_back(llvm::json::Object{{"kind", "ReturnStmt"},
-                                        {"inner", llvm::json::Array{inner}}});
-    };
+BlockItem: Stmt {
+  auto inner = stak.back();
+  stak.pop_back();
+  stak.push_back(llvm::json::Object{{"kind", "CompoundStmt"},
+                                    {"inner", llvm::json::Array{inner}}});
+}
 
-Exp : T_NUMERIC_CONSTANT {}
-    ;
+Stmt: T_RETURN Exp T_SEMI {
+  auto inner = stak.back();
+  stak.pop_back();
+  stak.push_back(llvm::json::Object{{"kind", "ReturnStmt"},
+                                    {"inner", llvm::json::Array{inner}}});
+}
+
+Exp: T_NUMERIC_CONSTANT {}
 
 %%
