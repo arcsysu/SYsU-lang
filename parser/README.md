@@ -5,10 +5,9 @@
 本次语法分析实验中，你被希望完成一个语法分析器，产生与 `clang -cc1 -ast-dump=json` 相当的输出。注意，以下 log 省略了无关内容。
 
 ```bash
-$ ( PATH=../sysu/bin:$PATH &&
-  cat test/functional/000_main.sy.sysu.c |
+$ cat test/functional/000_main.sysu.c |
   clang -cc1 -I../sysu/include -E |
-  clang -cc1 -ast-dump=json)
+  clang -cc1 -ast-dump=json
 {
   "id": "0x1c9b558",
   "kind": "TranslationUnitDecl",
