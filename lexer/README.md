@@ -5,7 +5,9 @@
 本次词法分析实验中，你被希望完成一个词法分析器，输出与 `clang -cc1 -dump-tokens` 一致的内容。
 
 ```bash
-$ cat test/functional/000_main.sy.sysu.c | clang -cc1 -dump-tokens
+$ cat test/functional/000_main.sysu.c |
+  clang -cc1 -I../sysu/include -E |
+  clang -cc1 -dump-tokens
 int 'int'        [StartOfLine]  Loc=<<stdin>:1:1>
 identifier 'main'        [LeadingSpace] Loc=<<stdin>:1:5>
 l_paren '('             Loc=<<stdin>:1:9>

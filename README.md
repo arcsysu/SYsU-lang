@@ -42,8 +42,8 @@ cmake -B ../sysu/build \
   -DCMAKE_CXX_COMPILER=clang++
 make install -j -C ../sysu/build
 
-# 检查各实验的得分。
-CTEST_OUTPUT_ON_FAILURE=1 make test -j -C ../sysu/build
+# 检查各实验的得分
+make test -j -C ../sysu/build CTEST_OUTPUT_ON_FAILURE=1
 
 # 检查编译结果
 ( PATH=../sysu/bin:$PATH &&
@@ -79,6 +79,7 @@ eof ''          Loc=<<stdin>:4:1>
 
 ```bash
 $ cat test/functional/000_main.sysu.c |
+  clang -cc1 -I../sysu/include -E |
   clang -cc1 -dump-tokens
 int 'int'        [StartOfLine]  Loc=<<stdin>:1:1>
 identifier 'main'        [LeadingSpace] Loc=<<stdin>:1:5>
