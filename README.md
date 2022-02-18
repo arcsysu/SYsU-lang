@@ -95,7 +95,7 @@ eof ''          Loc=<<stdin>:3:2>
 
 ### `parser`
 
-SYsU 的语法分析器，类似于 `clang -cc1 -ast-dump=json`，输出一个 json 格式的语法分析树。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](parser/README.md)）。
+SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](parser/README.md)）。
 
 ```bash
 $ ( PATH=../sysu/bin:$PATH &&
@@ -173,10 +173,6 @@ entry:
 
 并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
 
-### `system-compiler`
-
-`sysu-system-compiler` 接受 `sysu-optimizer` 的输出，将结果编译成 RV32I 格式的汇编。
-
 ### `sylib`
 
 运行时库 `libsylib`。
@@ -189,9 +185,16 @@ entry:
 
 github action，保存 CI 自动化配置文件。
 
+## 实验反馈
+
+- 交流实验中遇到的困难：[![Discussions](https://img.shields.io/github/discussions/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/discussions)
+- 提出实验设计的问题：[![Issues](https://img.shields.io/github/issues/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/issues)
+- 改善这个实验：[![Issues-pr](https://img.shields.io/github/issues-pr/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/pulls)
+
 ## 你可能会感兴趣的
 
 - [2021 编译系统设计赛（华为毕昇杯）](https://compiler.educg.net/2021CSCC)
   - 可找到各参赛学校的开源代码
-- [Komorebi660/SysYF-Compiler](https://github.com/Komorebi660/SysYF-Compiler)
-  - 另一个基于 [SysY](<(https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf)>) 语法设计的编译器实验
+- 其它基于 [SysY](<(https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf)>) 语法设计的编译器实验
+  - [miniSysY 编译实验](https://buaa-se-compiling.github.io/miniSysY-tutorial/)
+  - [Komorebi660/SysYF-Compiler](https://github.com/Komorebi660/SysYF-Compiler)
