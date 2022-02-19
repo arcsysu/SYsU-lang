@@ -37,9 +37,9 @@ sudo apt install \
 # 编译，假设你已经在这个目录下
 rm -rf ../sysu
 cmake -G Ninja \
-  -DCMAKE_INSTALL_PREFIX=../sysu \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_INSTALL_PREFIX=../sysu \
   -B ../sysu/build
 cmake --build ../sysu/build
 cmake --install ../sysu/build
