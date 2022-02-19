@@ -70,14 +70,12 @@ return {
   return ~YYEOF;
 }
 
-[\f\n\r\t\v ] {
-  return ~YYEOF;
-}
-
 <<EOF>> {
   fprintf(stderr, "eof ''\t\tLoc=<<stdin>:%d:%d>\n", yylineno - 1, yycolno);
   return YYEOF;
 }
+
+[\f\n\r\t\v ] {}
 
 . {
   fprintf(stderr, "unknown '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yylineno, yycolno);
