@@ -18,9 +18,10 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 3. 元素类型增加 `char`。
 4. 常量类型增加字符串常量。注意，并不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
 5. 语句类型增加 `do` - `while` 循环。
-6. 运行时库提供的函数需要预先 `#include`。
-7. 源代码通过**预处理器**（如 `clang -cc1 -E`）处理后传给**编译器**。
-8. 待补充
+6. 源代码通过**预处理器**（如 `clang -cc1 -E`）处理后传给**编译器**。
+7. 预处理语句以 `#` 开头，并且总是占据一整行。
+8. 运行时库提供的函数需要预先 `#include`。
+9. 待补充
 
 ## 编译运行
 
@@ -75,7 +76,7 @@ return 'return'         Loc=<<stdin>:2:5>
 numeric_constant '3'            Loc=<<stdin>:2:12>
 semi ';'                Loc=<<stdin>:2:13>
 r_brace '}'             Loc=<<stdin>:3:1>
-eof ''          Loc=<<stdin>:4:1>
+eof ''          Loc=<<stdin>:3:2>
 ```
 
 可以对比一下 `clang -cc1 -dump-tokens` 的结果。
