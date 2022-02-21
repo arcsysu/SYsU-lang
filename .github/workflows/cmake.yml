@@ -36,4 +36,4 @@ jobs:
 
       - name: Test
         # Build your program with the given configuration
-        run: (cd ${{github.workspace}}/build && ctest --output-on-failure)
+        run: CTEST_OUTPUT_ON_FAILURE=1 cmake --build ${{github.workspace}}/build -t test

@@ -160,8 +160,10 @@ $ cat test/functional/000_main.sysu.c |
 5. 不借助 bison，并完全使用 SYsU 完成本实验，然后用它作为输入测试功能是否正确，以实现自举。
 6. 借助 libclang 实现相同的功能。
 7. 改进这个实验模板（欢迎 PR！）。
-8. 待补充
+8. Do what you want to do。
 
 ## 你可能会感兴趣的
 
-- [The Lex & Yacc Page](http://dinosaur.compilertools.net/)
+- [GNU Bison - The Yacc-compatible Parser Generator](https://www.gnu.org/software/bison/manual/)
+- [llvm::json](https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/llvm/include/llvm/Support/JSON.h)
+  - 该文件同样位于 debian:11 中 [llvm-dev](https://packages.debian.org/bullseye/amd64/llvm-dev) 包的 </usr/include/llvm/Support/JSON.h>。

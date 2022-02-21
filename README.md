@@ -22,7 +22,7 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 7. 源代码通过**预处理器**（如 `clang -cc1 -E`）处理后传给**编译器**。
 8. 预处理语句以 `#` 开头，并且总是占据一整行。
 9. 运行时库提供的函数需要预先 `#include`。
-10. 待补充
+10. Do what you want to do
 
 ## 编译运行
 
@@ -31,12 +31,15 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 ```bash
 # 安装依赖
 sudo apt install \
-    ninja-build cmake zlib1g-dev \
-    gzip flex bison \
-    clang libclang-dev llvm-dev \
-    python3 python3-tqdm
+  ninja-build cmake zlib1g-dev \
+  gzip flex bison \
+  clang libclang-dev llvm-dev \
+  python3 python3-tqdm
 
-# 编译，假设你已经在这个目录下
+git clone --depth=1 https://github.com/arcsysu/SYsU-lang
+cd SYsU-lang
+
+# 编译安装
 rm -rf ../sysu
 cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
@@ -44,11 +47,10 @@ cmake -G Ninja \
   -DCMAKE_INSTALL_PREFIX=../sysu \
   -B ../sysu/build
 cmake --build ../sysu/build
-cmake --install ../sysu/build
+cmake --build ../sysu/build -t install
 
 # 检查各实验的得分
-( cd ../sysu/build &&
-  ctest --output-on-failure )
+CTEST_OUTPUT_ON_FAILURE=1 cmake --build ../sysu/build -t test
 
 # 检查编译结果
 ( PATH=../sysu/bin:$PATH &&
@@ -167,6 +169,18 @@ entry:
 
 至此一个初级的 SYsU 编译器就完成了！你可以使用 `lli` JIT 地执行编译出来的代码。
 
+```bash
+$ ( PATH=../sysu/bin:$PATH &&
+  cat test/functional/000_main.sysu.c |
+  clang -cc1 -I../sysu/include -E |
+  sysu-lexer 2>&1 |
+  sysu-parser |
+  sysu-generator |
+  lli )
+$ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
+3
+```
+
 ### `optimizer`
 
 `sysu-optimizer` 接受 `sysu-generator` 的输出，完成一些优化 Pass：
@@ -174,7 +188,7 @@ entry:
 1. 常量折叠
 2. 常量传播
 3. 块间公共子表达式删除
-4. 待补充
+4. Do what you want to do
 
 并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
 
@@ -200,6 +214,6 @@ github action，保存 CI 自动化配置文件。
 
 - [2021 编译系统设计赛（华为毕昇杯）](https://compiler.educg.net/2021CSCC)
   - 可找到各参赛学校的开源代码
-- 其它基于 [SysY](<(https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf)>) 语法设计的编译器实验
+- 其它基于 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语法设计的编译器实验
   - [miniSysY 编译实验](https://buaa-se-compiling.github.io/miniSysY-tutorial/)
   - [Komorebi660/SysYF-Compiler](https://github.com/Komorebi660/SysYF-Compiler)
