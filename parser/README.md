@@ -138,10 +138,13 @@ $ cat test/functional/000_main.sysu.c |
 本节给出一些扩展方向供参考。
 
 1. 基于语法分析树实现一些语义分析，如
-   - 检查是否有悬垂 else
    - 检查是否有 `const int` 作为数组大小（符合 SysY 语法和 CPP 语法但不符合 C 语法！）
    - 检查是否有全局函数先使用后定义（符合 C 语法但不符合 CPP 语法！）
    - 检查其他 SysY 语言的语义约束
+   - 检查是否有悬垂 else（`-Wdangling-else`）
+   - 检查是否有未使用的值（`-Wunused-value`）
+   - 检查是否有空执行体（`-Wempty-body`）
+   - 检查是否有 self-comparison 等（`-Wtautological-compare`）
    - Do what you want to do
 2. 基于语法分析树实现一些优化，如
    - 常量折叠
