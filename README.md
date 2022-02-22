@@ -31,8 +31,8 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 ```bash
 # 安装依赖
 sudo apt install \
-  ninja-build cmake zlib1g-dev \
-  gzip flex bison \
+  ninja-build cmake tar gzip \
+  flex bison zlib1g-dev \
   clang libclang-dev llvm-dev \
   python3 python3-tqdm
 
@@ -45,12 +45,17 @@ cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_INSTALL_PREFIX=../sysu \
+  -DCPACK_SOURCE_IGNORE_FILES=".git/;test/performance*" \
   -B ../sysu/build
+
 cmake --build ../sysu/build
 cmake --build ../sysu/build -t install
 
 # 检查各实验的得分
 CTEST_OUTPUT_ON_FAILURE=1 cmake --build ../sysu/build -t test
+
+# 在../sysu/build 下生成打包的源代码
+cmake --build ../sysu/build -t package_source
 
 # 检查编译结果
 ( PATH=../sysu/bin:$PATH &&
