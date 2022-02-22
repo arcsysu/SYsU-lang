@@ -14,8 +14,8 @@ if __name__ == "__main__":
     preprocessor = sys.argv[2]
     clang = sys.argv[3]
     lexer = sys.argv[4]
-    filenames = [os.path.dirname(sys.argv[0])+"/functional/000_main.sysu.c"] if testcase in [
-        "lexer-0"] else glob.glob(os.path.dirname(sys.argv[0])+"/*/*.sysu.c")
+    filenames = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "functional", "000_main.sysu.c")] if testcase in [
+        "lexer-0"] else glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "**", "*.sysu.c"), recursive=True)
     filenames = tqdm.tqdm(filenames)
     for filename in filenames:
         filenames.set_description(filename)
