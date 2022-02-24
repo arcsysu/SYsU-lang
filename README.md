@@ -32,9 +32,9 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 # 安装依赖
 sudo apt install \
   ninja-build cmake tar gzip \
+  git python3 python3-tqdm \
   flex bison zlib1g-dev \
-  clang libclang-dev llvm-dev \
-  python3 python3-tqdm
+  clang libclang-dev llvm-dev
 
 git clone --depth=1 https://github.com/arcsysu/SYsU-lang
 cd SYsU-lang
@@ -65,6 +65,8 @@ cmake --build ../sysu/build -t package_source
 ```
 
 ## 代码结构
+
+本项目中 `${CMAKE_C_COMPILER}` 仅用于编译 `.sysu.c`，非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）。
 
 ### `lexer`
 

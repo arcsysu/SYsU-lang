@@ -1,7 +1,9 @@
+import sys
 import os
 import glob
 
-if __name__ == "__main__":
+
+def main(argv):
     for filename in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "**", "*.sy"), recursive=True):
         file = open(filename, mode="r")
         src = file.read()
@@ -13,3 +15,7 @@ if __name__ == "__main__":
         file = open(filename+"su.c", mode="w")
         file.write(src)
         file.close()
+
+
+if __name__ == "__main__":
+    main(sys.argv)

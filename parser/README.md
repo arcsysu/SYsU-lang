@@ -131,7 +131,7 @@ $ cat test/functional/000_main.sysu.c |
 
 ### 自动评测细则
 
-`make test` 包含了本次实验的评测项目 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../test/test_parser.py)以了解检查算法，但不得修改评测逻辑而投机取巧。
+本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../test/test_parser.py)以了解检查算法，但不得修改评测逻辑而投机取巧。
 
 ### 扩展方向
 
@@ -169,4 +169,4 @@ $ cat test/functional/000_main.sysu.c |
 
 - [GNU Bison - The Yacc-compatible Parser Generator](https://www.gnu.org/software/bison/manual/)
 - [llvm::json](https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/llvm/include/llvm/Support/JSON.h)
-  - 该文件同样位于 debian:11 中 [llvm-dev](https://packages.debian.org/bullseye/amd64/llvm-dev) 包的 </usr/include/llvm/Support/JSON.h>。
+  - 该文件同样位于 debian:11 中 [llvm-dev](https://packages.debian.org/bullseye/devel/llvm-dev) 包的 </usr/include/llvm/Support/JSON.h>。

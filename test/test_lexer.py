@@ -4,16 +4,17 @@ import glob
 import subprocess
 import tqdm
 
-if __name__ == "__main__":
-    if len(sys.argv) != 5:
+
+def main(argv):
+    if len(argv) != 5:
         print("fail: incorrect argv.")
         print(
             "usage: pathon3 test-lexer.py <lexer-[0-3]> `preprocessor` `which clang` `which sysu-lexer`")
         exit(0)
-    testcase = sys.argv[1]
-    preprocessor = sys.argv[2]
-    clang = sys.argv[3]
-    lexer = sys.argv[4]
+    testcase = argv[1]
+    preprocessor = argv[2]
+    clang = argv[3]
+    lexer = argv[4]
     filenames = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "functional", "000_main.sysu.c")] if testcase in [
         "lexer-0"] else glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "**", "*.sysu.c"), recursive=True)
     filenames = tqdm.tqdm(filenames)
@@ -87,3 +88,7 @@ if __name__ == "__main__":
                     print("---")
                     print("> " + str1)
                     wk_exit(0)
+
+
+if __name__ == "__main__":
+    main(sys.argv)
