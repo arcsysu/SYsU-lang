@@ -65,7 +65,7 @@ def main(argv):
     if len(argv) != 5:
         print("fail: incorrect argv.")
         print(
-            "usage: pathon3 test-parser.py <parser-[0-3]> `preprocessor` `which clang` `which sysu-parser`")
+            "usage: python3 test-parser.py <parser-[0-3]> `preprocessor` `which clang` `which sysu-parser`")
         exit(0)
     testcase = argv[1]
     preprocessor = argv[2]
