@@ -2,9 +2,9 @@ name: CMake
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -20,23 +20,20 @@ jobs:
       image: debian:11
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: apt
-      run: "apt update -y && apt upgrade -y && apt install -y make cmake zlib1g-dev gzip flex bison clang libclang-dev llvm-dev python3 python3-tqdm"
+      - name: apt
+        run: "apt update -y && apt upgrade -y && apt install -y ninja-build cmake tar gzip git python3 python3-tqdm flex bison zlib1g-dev clang libclang-dev llvm-dev
 
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -B ${{github.workspace}}/build
 
-    - name: Build
-      # Build your program with the given configuration
-      run: make -j -C ${{github.workspace}}/build
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/build
 
-    - name: Test
-      env:
-        CTEST_OUTPUT_ON_FAILURE: 1
-      # Build your program with the given configuration
-      run: make test -j -C ${{github.workspace}}/build
-      
+      - name: Test
+        # Build your program with the given configuration
+        run: CTEST_OUTPUT_ON_FAILURE=1 cmake --build ${{github.workspace}}/build -t test

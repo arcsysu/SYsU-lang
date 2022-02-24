@@ -131,17 +131,20 @@ $ cat test/functional/000_main.sysu.c |
 
 ### 自动评测细则
 
-`make test` 包含了本次实验的评测项目 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../test/test_parser.py)以了解检查算法，但不得修改评测逻辑而投机取巧。
+本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../test/test_parser.py)以了解检查算法，但不得修改评测逻辑而投机取巧。
 
 ### 扩展方向
 
 本节给出一些扩展方向供参考。
 
 1. 基于语法分析树实现一些语义分析，如
-   - 检查是否有悬垂 else
    - 检查是否有 `const int` 作为数组大小（符合 SysY 语法和 CPP 语法但不符合 C 语法！）
    - 检查是否有全局函数先使用后定义（符合 C 语法但不符合 CPP 语法！）
    - 检查其他 SysY 语言的语义约束
+   - 检查是否有悬垂 else（`-Wdangling-else`）
+   - 检查是否有未使用的值（`-Wunused-value`）
+   - 检查是否有空执行体（`-Wempty-body`）
+   - 检查是否有 self-comparison 等（`-Wtautological-compare`）
    - Do what you want to do
 2. 基于语法分析树实现一些优化，如
    - 常量折叠
@@ -160,8 +163,10 @@ $ cat test/functional/000_main.sysu.c |
 5. 不借助 bison，并完全使用 SYsU 完成本实验，然后用它作为输入测试功能是否正确，以实现自举。
 6. 借助 libclang 实现相同的功能。
 7. 改进这个实验模板（欢迎 PR！）。
-8. 待补充
+8. Do what you want to do。
 
 ## 你可能会感兴趣的
 
-- [The Lex & Yacc Page](http://dinosaur.compilertools.net/)
+- [GNU Bison - The Yacc-compatible Parser Generator](https://www.gnu.org/software/bison/manual/)
+- [llvm::json](https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/llvm/include/llvm/Support/JSON.h)
+  - 该文件同样位于 debian:11 中 [llvm-dev](https://packages.debian.org/bullseye/devel/llvm-dev) 包的 </usr/include/llvm/Support/JSON.h>。

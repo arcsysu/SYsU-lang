@@ -1,5 +1,5 @@
-FILE(GLOB_RECURSE mains *.sysu.c)
-FOREACH(mainfile IN LISTS mains)
+FILE(GLOB mains *.sysu.c)
+FOREACH(mainfile ${mains})
     # Get file name without directory
     GET_FILENAME_COMPONENT(mainname ${mainfile} NAME_WE)
     ADD_EXECUTABLE(function_test2020_${mainname} ${mainfile})

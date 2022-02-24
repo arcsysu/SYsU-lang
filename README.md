@@ -16,11 +16,13 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 1. 源代码后缀名由 `.sy` 调整为 `.sysu.c`。
 2. 运行时库由 `libsysy.so` 和 `libsysy.a` 调整为 `libsylib.so` 和 `libsylib_static.a`。
 3. 元素类型增加 `char`。
-4. 常量类型增加字符串常量。注意，并不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
-5. 语句类型增加 `do` - `while` 循环。
-6. 运行时库提供的函数需要预先 `#include`。
+4. 常量类型增加字符串常量。多行字符串只支持多个`""`的拼接，不支持斜杠 `\` 语法。
+5. 不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
+6. 语句类型增加 `do` - `while` 循环。
 7. 源代码通过**预处理器**（如 `clang -cc1 -E`）处理后传给**编译器**。
-8. 待补充
+8. 预处理语句以 `#` 开头，并且总是占据一整行。
+9. 运行时库提供的函数需要预先 `#include`。
+10. Do what you want to do
 
 ## 编译运行
 
@@ -29,21 +31,31 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 ```bash
 # 安装依赖
 sudo apt install \
-    make cmake zlib1g-dev \
-    gzip flex bison \
-    clang libclang-dev llvm-dev \
-    python3 python3-tqdm
+  ninja-build cmake tar gzip \
+  git python3 python3-tqdm \
+  flex bison zlib1g-dev \
+  clang libclang-dev llvm-dev
 
-# 编译，假设你已经在这个目录下
+git clone --depth=1 https://github.com/arcsysu/SYsU-lang
+cd SYsU-lang
+
+# 编译安装
 rm -rf ../sysu
-cmake -B ../sysu/build \
-  -DCMAKE_INSTALL_PREFIX=../sysu \
+cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
-  -DCMAKE_CXX_COMPILER=clang++
-make install -j -C ../sysu/build
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_INSTALL_PREFIX=../sysu \
+  -DCPACK_SOURCE_IGNORE_FILES=".git/;test/performance*" \
+  -B ../sysu/build
+
+cmake --build ../sysu/build
+cmake --build ../sysu/build -t install
 
 # 检查各实验的得分
-make test -j -C ../sysu/build CTEST_OUTPUT_ON_FAILURE=1
+CTEST_OUTPUT_ON_FAILURE=1 cmake --build ../sysu/build -t test
+
+# 在../sysu/build 下生成打包的源代码
+cmake --build ../sysu/build -t package_source
 
 # 检查编译结果
 ( PATH=../sysu/bin:$PATH &&
@@ -53,6 +65,8 @@ make test -j -C ../sysu/build CTEST_OUTPUT_ON_FAILURE=1
 ```
 
 ## 代码结构
+
+本项目中 `${CMAKE_C_COMPILER}` 仅用于编译 `.sysu.c`，非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）。
 
 ### `lexer`
 
@@ -72,7 +86,7 @@ return 'return'         Loc=<<stdin>:2:5>
 numeric_constant '3'            Loc=<<stdin>:2:12>
 semi ';'                Loc=<<stdin>:2:13>
 r_brace '}'             Loc=<<stdin>:3:1>
-eof ''          Loc=<<stdin>:4:1>
+eof ''          Loc=<<stdin>:3:2>
 ```
 
 可以对比一下 `clang -cc1 -dump-tokens` 的结果。
@@ -162,6 +176,18 @@ entry:
 
 至此一个初级的 SYsU 编译器就完成了！你可以使用 `lli` JIT 地执行编译出来的代码。
 
+```bash
+$ ( PATH=../sysu/bin:$PATH &&
+  cat test/functional/000_main.sysu.c |
+  clang -cc1 -I../sysu/include -E |
+  sysu-lexer 2>&1 |
+  sysu-parser |
+  sysu-generator |
+  lli )
+$ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
+3
+```
+
 ### `optimizer`
 
 `sysu-optimizer` 接受 `sysu-generator` 的输出，完成一些优化 Pass：
@@ -169,7 +195,7 @@ entry:
 1. 常量折叠
 2. 常量传播
 3. 块间公共子表达式删除
-4. 待补充
+4. Do what you want to do
 
 并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
 
@@ -195,6 +221,6 @@ github action，保存 CI 自动化配置文件。
 
 - [2021 编译系统设计赛（华为毕昇杯）](https://compiler.educg.net/2021CSCC)
   - 可找到各参赛学校的开源代码
-- 其它基于 [SysY](<(https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf)>) 语法设计的编译器实验
+- 其它基于 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语法设计的编译器实验
   - [miniSysY 编译实验](https://buaa-se-compiling.github.io/miniSysY-tutorial/)
   - [Komorebi660/SysYF-Compiler](https://github.com/Komorebi660/SysYF-Compiler)

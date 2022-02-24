@@ -1,10 +1,10 @@
-%union {}
-%token T_NUMERIC_CONSTANT T_IDENTIFIER T_INT T_RETURN T_SEMI T_L_PAREN T_R_PAREN T_L_BRACE T_R_BRACE
 %{
+#include "parser.hh"
 #include <iostream>
 #include <llvm/Support/JSON.h>
 #include <llvm/Support/raw_ostream.h>
 #include <string>
+#define yyerror std::printf
 
 static llvm::json::Array stak;
 
@@ -50,15 +50,20 @@ auto yylex() {
   return YYEOF;
 }
 
-int yyparse();
-
 int main() {
   yyparse();
   llvm::outs() << llvm::formatv("{0:2}", stak.back()) << "\n";
 }
-
-#define yyerror std::printf
 %}
+%token T_NUMERIC_CONSTANT
+%token T_IDENTIFIER
+%token T_INT
+%token T_RETURN
+%token T_SEMI
+%token T_L_PAREN
+%token T_R_PAREN
+%token T_L_BRACE
+%token T_R_BRACE
 %start CompUnit
 %%
 
