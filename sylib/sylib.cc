@@ -1,39 +1,58 @@
 #include "sylib.h"
-#include <stdarg.h>
-#include <stdio.h>
-#include <sys/time.h>
+#include <chrono>
+#include <cstdio>
+#include <tuple>
+#include <vector>
 
 /* Timing function implementation */
-static struct timeval _sysy_start, _sysy_end;
-static int _sysy_l1[_SYSY_N], _sysy_l2[_SYSY_N];
-static int _sysy_h[_SYSY_N], _sysy_m[_SYSY_N], _sysy_s[_SYSY_N],
-    _sysy_us[_SYSY_N];
-static int _sysy_idx = 1;
-
-static void __attribute__((constructor)) before_main() {
-  for (int i = 0; i < _SYSY_N; i++)
-    _sysy_h[i] = _sysy_m[i] = _sysy_s[i] = _sysy_us[i] = 0;
-  _sysy_idx = 1;
-}
-static void __attribute__((destructor)) after_main() {
-  for (int i = 1; i < _sysy_idx; i++) {
-    fprintf(stderr, "Timer@%04d-%04d: %dH-%dM-%dS-%dus\n", _sysy_l1[i],
-            _sysy_l2[i], _sysy_h[i], _sysy_m[i], _sysy_s[i], _sysy_us[i]);
-    _sysy_us[0] += _sysy_us[i];
-    _sysy_s[0] += _sysy_s[i];
-    _sysy_us[0] %= 1000000;
-    _sysy_m[0] += _sysy_m[i];
-    _sysy_s[0] %= 60;
-    _sysy_h[0] += _sysy_h[i];
-    _sysy_m[0] %= 60;
+static struct WuK_Timer {
+  using Clock = std::chrono::high_resolution_clock;
+  std::vector<std::tuple<int, Clock::time_point>> t1, t2;
+  ~WuK_Timer() {
+    long long sum_us = 0;
+    for (int i = 0; i < t2.size(); ++i) {
+      auto us = std::chrono::duration_cast<std::chrono::microseconds>(
+                    std::get<1>(t2[i]) - std::get<1>(t1[i]))
+                    .count();
+      sum_us += us;
+      auto s = us / 1000000;
+      us %= 1000000;
+      auto m = s / 60;
+      s %= 60;
+      auto h = m / 60;
+      m %= 60;
+      std::fprintf(stderr, "Timer@%04d-%04d: ", std::get<0>(t1[i]),
+                   std::get<0>(t2[i]));
+      std::fprintf(stderr, "%dH-%dM-%dS-%dus\n", (int)h, (int)m, (int)s,
+                   (int)us);
+    }
+    auto us = sum_us;
+    auto s = us / 1000000;
+    us %= 1000000;
+    auto m = s / 60;
+    s %= 60;
+    auto h = m / 60;
+    m %= 60;
+    std::fprintf(stderr, "TOTAL: ");
+    std::fprintf(stderr, "%dH-%dM-%dS-%dus\n", (int)h, (int)m, (int)s, (int)us);
   }
-  fprintf(stderr, "TOTAL: %dH-%dM-%dS-%dus\n", _sysy_h[0], _sysy_m[0],
-          _sysy_s[0], _sysy_us[0]);
-}
+  void start(int lineno) {
+    if (t1.size() == t1.capacity()) {
+      t1.reserve(t1.size() + (t1.size() >> 1 | 1));
+    }
+    if (t2.size() == t2.capacity()) {
+      t2.reserve(t2.size() + (t2.size() >> 1 | 1));
+    }
+    t1.emplace_back(lineno, Clock::now());
+  }
+  void stop(int lineno) { t2.emplace_back(lineno, Clock::now()); }
+} wuk_timer;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+void _sysy_starttime(int lineno) { wuk_timer.start(lineno); }
+void _sysy_stoptime(int lineno) { wuk_timer.stop(lineno); }
 
 /* Input & output functions */
 int getint() {
@@ -47,39 +66,22 @@ int getch() {
   return (int)c;
 }
 int getarray(int a[]) {
-  int n;
-  scanf("%d", &n);
-  for (int i = 0; i < n; i++)
-    scanf("%d", &a[i]);
+  int n = getint();
+  for (int i = 0; i < n; ++i)
+    a[i] = getint();
   return n;
 }
 void putint(int a) { printf("%d", a); }
 void putch(int a) { printf("%c", a); }
 void putarray(int n, int a[]) {
-  printf("%d:", n);
-  for (int i = 0; i < n; i++)
-    printf(" %d", a[i]);
-  printf("\n");
+  putint(n);
+  putch(':');
+  for (int i = 0; i < n; ++i) {
+    putch(' ');
+    putint(a[i]);
+  }
+  putch('\n');
 }
-
-void _sysy_starttime(int lineno) {
-  _sysy_l1[_sysy_idx] = lineno;
-  gettimeofday(&_sysy_start, NULL);
-}
-void _sysy_stoptime(int lineno) {
-  gettimeofday(&_sysy_end, NULL);
-  _sysy_l2[_sysy_idx] = lineno;
-  _sysy_us[_sysy_idx] += 1000000 * (_sysy_end.tv_sec - _sysy_start.tv_sec) +
-                         _sysy_end.tv_usec - _sysy_start.tv_usec;
-  _sysy_s[_sysy_idx] += _sysy_us[_sysy_idx] / 1000000;
-  _sysy_us[_sysy_idx] %= 1000000;
-  _sysy_m[_sysy_idx] += _sysy_s[_sysy_idx] / 60;
-  _sysy_s[_sysy_idx] %= 60;
-  _sysy_h[_sysy_idx] += _sysy_m[_sysy_idx] / 60;
-  _sysy_m[_sysy_idx] %= 60;
-  _sysy_idx++;
-}
-
 #ifdef __cplusplus
 }
 #endif
