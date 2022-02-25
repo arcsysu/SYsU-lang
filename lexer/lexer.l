@@ -1,5 +1,5 @@
 %{
-#include <stdio.h>
+#include <cstdio>
 #define YYEOF (0)
 int yylex();
 int main() {
@@ -17,62 +17,62 @@ int yyrow = 1, yycolumn = 1, yycolpre = 1;
 %%
 
 int {
-  fprintf(yyout, "int '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "int '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 
 return {
-  fprintf(yyout, "return '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "return '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 
 \( {
-  fprintf(yyout, "l_paren '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "l_paren '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 
 \) {
-  fprintf(yyout, "r_paren '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "r_paren '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 
 \{ {
-  fprintf(yyout, "l_brace '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "l_brace '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 
 \} {
-  fprintf(yyout, "r_brace '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "r_brace '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 
 ; {
-  fprintf(yyout, "semi '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "semi '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 
 [0-9]+ {
-  fprintf(yyout, "numeric_constant '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext,
-          yyrow, yycolumn - yyleng);
+  std::fprintf(yyout, "numeric_constant '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext,
+               yyrow, yycolumn - yyleng);
   return ~YYEOF;
 }
 
 [a-zA-Z_][a-zA-Z_0-9]* {
-  fprintf(yyout, "identifier '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "identifier '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 
 <<EOF>> {
-  fprintf(yyout, "eof ''\t\tLoc=<<stdin>:%d:%d>\n",
-          yyrow > 1 ? yyrow - 1 : yyrow, yycolpre - yyleng);
+  std::fprintf(yyout, "eof ''\t\tLoc=<<stdin>:%d:%d>\n",
+               yyrow > 1 ? yyrow - 1 : yyrow, yycolpre - yyleng);
   return YYEOF;
 }
 
@@ -89,8 +89,8 @@ return {
 [\f\r\t\v ] {}
 
 . {
-  fprintf(yyout, "unknown '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
-          yycolumn - yyleng);
+  std::fprintf(yyout, "unknown '%s'\t\tLoc=<<stdin>:%d:%d>\n", yytext, yyrow,
+               yycolumn - yyleng);
   return ~YYEOF;
 }
 

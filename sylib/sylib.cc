@@ -9,6 +9,7 @@ static struct WuK_Timer {
   using Clock = std::chrono::high_resolution_clock;
   std::vector<std::tuple<int, Clock::time_point>> t1, t2;
   ~WuK_Timer() {
+    std::fflush(stdout);
     long long sum_us = 0;
     for (int i = 0; i < t2.size(); ++i) {
       auto us = std::chrono::duration_cast<std::chrono::microseconds>(
