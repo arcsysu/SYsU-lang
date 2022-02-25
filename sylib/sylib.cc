@@ -55,32 +55,39 @@ void _sysy_starttime(int lineno) { wuk_timer.start(lineno); }
 void _sysy_stoptime(int lineno) { wuk_timer.stop(lineno); }
 
 /* Input & output functions */
-int getint() {
-  int t;
-  scanf("%d", &t);
-  return t;
-}
 int getch() {
   char c;
-  scanf("%c", &c);
+  std::scanf("%c", &c);
   return (int)c;
 }
+void putch(int a) { std::printf("%c", a); }
+
+int getint() {
+  int t;
+  std::scanf("%d", &t);
+  return t;
+}
+void putint(int a) { std::printf("%d", a); }
+
 int getarray(int a[]) {
   int n = getint();
-  for (int i = 0; i < n; ++i)
+  int i = 0;
+  while (i < n) {
     a[i] = getint();
+    i = i + 1;
+  }
   return n;
 }
-void putint(int a) { printf("%d", a); }
-void putch(int a) { printf("%c", a); }
 void putarray(int n, int a[]) {
   putint(n);
-  putch(':');
-  for (int i = 0; i < n; ++i) {
-    putch(' ');
+  putch(":"[0]);
+  int i = 0;
+  while (i < n) {
+    putch(" "[0]);
     putint(a[i]);
+    i = i + 1;
   }
-  putch('\n');
+  putch("\n"[0]);
 }
 #ifdef __cplusplus
 }

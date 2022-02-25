@@ -54,7 +54,7 @@ cmake --build ../sysu/build -t install
 # 检查各实验的得分
 CTEST_OUTPUT_ON_FAILURE=1 cmake --build ../sysu/build -t test
 
-# 生成打包（用于提交作业）的源代码
+# 打包源代码以提交作业
 cmake --build ../sysu/build -t package_source
 
 # 检查编译结果

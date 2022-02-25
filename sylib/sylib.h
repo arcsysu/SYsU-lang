@@ -11,10 +11,10 @@ int getint(), getch(), getarray(int a[]);
 void putint(int a), putch(int a), putarray(int n, int a[]);
 
 /* Timing function implementation */
-#define starttime() _sysy_starttime(__LINE__)
-#define stoptime() _sysy_stoptime(__LINE__)
 void _sysy_starttime(int lineno);
 void _sysy_stoptime(int lineno);
+#define starttime() _sysy_starttime(__LINE__)
+#define stoptime() _sysy_stoptime(__LINE__)
 
 #ifdef __cplusplus
 }
