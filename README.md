@@ -224,3 +224,4 @@ github action，保存 CI 自动化配置文件。
 - 其它基于 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语法设计的编译器实验
   - [miniSysY 编译实验](https://buaa-se-compiling.github.io/miniSysY-tutorial/)
   - [Komorebi660/SysYF-Compiler](https://github.com/Komorebi660/SysYF-Compiler)
+  - [北大编译实践在线文档](https://pku-minic.github.io/online-doc/#/)
