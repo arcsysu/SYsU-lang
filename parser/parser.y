@@ -12,9 +12,9 @@ auto yylex() {
   std::string t;
   std::getline(std::cin, t);
   do {
-    int b = t.find('\'') + 1, e = t.rfind('\'');
+    int b = t.find("'") + 1, e = t.rfind("'");
     std::string s = t.substr(b, e - b);
-    t.erase(t.find(' '));
+    t.erase(t.find(" "));
     if (t == "numeric_constant") {
       stak.push_back(
           llvm::json::Object{{"kind", "IntegerLiteral"}, {"value", s}});

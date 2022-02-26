@@ -24,6 +24,8 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 9. 运行时库提供的函数需要预先 `#include`。
 10. Do what you want to do
 
+本项目同样提供了一个 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 到 SYsU 的[转换脚本](test/gen_sysu_c.py)。
+
 ## 编译运行
 
 需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容本项目推荐使用 `clang` 编译，本地版本为 `clang-11`，操作系统为 `debian:11`（对于使用其他操作系统的同学，建议使用 [docker](https://hub.docker.com/_/debian)）。
