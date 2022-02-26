@@ -183,7 +183,7 @@ $ ( PATH=../sysu/bin:$PATH &&
   sysu-lexer 2>&1 |
   sysu-parser |
   sysu-generator |
-  lli )
+  lli --extra-archive=../sysu/lib/libsylib_static.a )
 $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
 3
 ```
