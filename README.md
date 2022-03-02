@@ -3,7 +3,7 @@
 SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U**niversity）[编译原理课程](https://xianweiz.github.io/teach/dcs290/s2022.html)的教学。本项目是该课程的实验模板，可以得到一个 SYsU language 的编译器组件。实验的设计目标是：
 
 1. 在兼容 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言的基础上，增加最少的语法支持，使其可以编译 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv)。
-2. 编译器设计借鉴 clang。换言之，在学习的前期，实验产物与 clang 类似甚至可以直接导入 LLVM 工具链；在实验的后期逐步去除外部依赖，使其可以自举。
+2. 编译器设计借鉴 clang。换言之，在学习的前期，实验产物与 clang 类似甚至可以直接导入 LLVM 工具链；在实验的扩展选项中增加去除外部依赖，完全使用 SYsU 文法，使其可以自举。
 3. 按照自顶向下的顺序进行实验，各个实验模块之间可通过管道进行通信（微 内 核）。
 4. 基于 Github Action 的自动化评测
 
@@ -22,7 +22,8 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 7. 源代码通过**预处理器**（如 `clang -cc1 -E`）处理后传给**编译器**。
 8. 预处理语句以 `#` 开头，并且总是占据一整行。
 9. 运行时库提供的函数需要预先 `#include`。
-10. Do what you want to do
+10. 不要求每个文件都包含 `main` 函数，可以分模块编译并链接。
+11. Do what you want to do
 
 本项目同样提供了一个 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 到 SYsU 的[转换脚本](test/gen_sysu_c.py)。
 
@@ -220,11 +221,38 @@ github action，保存 CI 自动化配置文件。
 - 提出实验设计的问题：[![Issues](https://img.shields.io/github/issues/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/issues)
 - 改善这个实验：[![Issues-pr](https://img.shields.io/github/issues-pr/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/pulls)
 
+### Q & A：为什么要基于 LLVM，而不是真正的从零开始实现一个框架？
+
+1. 即使我们重新实现一个实验框架，也并没有让学生“从零开始写编译器”，学生仍然要去熟悉助教提供的实验框架。
+2. LLVM 是久经考验的编译器框架，我们希望学生可以熟悉 LLVM，培养出业界真正需要的人才。
+3. 本项目中每个实验提供的模板都只有一百行左右，可以降低学生上手的门槛；当学生完成整个项目后，也会具备从零开始实现一个编译器的能力，从课堂教学的角度已经足够。
+
+### Q & A：为什么是编译到 LLVM-IR，而不是某种汇编，如 RV32I？
+
+1. 一个观点是，在编译原理课程上，不应该过多涉及硬件架构的细节。
+2. LLVM-IR 已经相对底层，非常好翻译成各种汇编，实际上也可以用与本项目相同的方式写一个编译器。
+
+### Q & A：为什么将词法分析器等模块实现为单独的可执行文件，可能导致运行低效率？
+
+1. 面向教学用的编译器，并不会用于生产环境，低效是可以接受的。实际上学生也可以调整代码，将各个模块链接成一个可执行文件。
+2. 自顶向下的开展实验，可以和老师的教学进度同步。各个模块可以直接由 `clang` 代替 ，避免学生一个实验不成功影响到后续实验的开展。
+3. 如果按照其他高校类似实验中的方案（不断在已有的实现上增加语法），虽然更符合现实中一门语言以及编译器的发展情况，但是学生在学习的开始并不具备对编译原理体系的理解，很难快速掌握自顶向下的完整技术栈。
+
+### Q & A：为什么要对 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语法进行调整？
+
+1. 不直接使用 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语法，避免学生直接抄袭比赛的实现。
+2. 后缀名变成 `.sysu.c`，指明了 SYsU 是 C 的严格子集，可以让 `clang` 直接编译代码，方便学生与正确实现对拍。
+3. 加入 `#include` 等预处理语句的支持，可以让学生更加熟悉预编译过程（即使不用实现一个预编译器），也为 SYsU 增加了实现库或调用外部库的可能（可用于实现 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv)）。
+4. 增加 `do` - `while` 循环，因为这是很好用的[语法糖](https://mp.weixin.qq.com/s/Wwu-prowKKNDsNlzC2k9Ow)。
+5. 增加字符型和字符串，同样便于实现 OS。
+6. 不支持字符常量，因为对其的支持和字符串常量是完全类似的，但在词法分析的时候可能会与词法分析器的输出格式产生微妙的冲突。
+
 ## 你可能会感兴趣的
 
 - [2021 编译系统设计赛（华为毕昇杯）](https://compiler.educg.net/2021CSCC)
   - 可找到各参赛学校的开源代码
 - 其它基于 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语法设计的编译器实验
-  - [miniSysY 编译实验](https://buaa-se-compiling.github.io/miniSysY-tutorial/)
+  - [buaa-se-compiling/miniSysY-tutorial](https://github.com/buaa-se-compiling/miniSysY-tutorial)
   - [Komorebi660/SysYF-Compiler](https://github.com/Komorebi660/SysYF-Compiler)
-  - [北大编译实践在线文档](https://pku-minic.github.io/online-doc/#/)
+  - [pku-minic/online-doc](https://github.com/pku-minic/online-doc)
+  - [ustb-owl/Lava](https://github.com/ustb-owl/Lava)
