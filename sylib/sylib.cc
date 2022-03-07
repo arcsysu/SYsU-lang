@@ -5,7 +5,8 @@
 #include <vector>
 
 /* Timing function implementation */
-static struct WuK_Timer {
+namespace {
+struct WuK_Timer {
   using Clock = std::chrono::high_resolution_clock;
   std::vector<std::tuple<int, Clock::time_point>> t1, t2;
   ~WuK_Timer() {
@@ -48,6 +49,7 @@ static struct WuK_Timer {
   }
   void stop(int lineno) { t2.emplace_back(lineno, Clock::now()); }
 } wuk_timer;
+} // namespace
 
 #ifdef __cplusplus
 extern "C" {

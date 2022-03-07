@@ -1,0 +1,6 @@
+FIND_PACKAGE(LLVM REQUIRED PATHS "/usr/lib/llvm-11/lib/cmake/llvm")
+ADD_LIBRARY(sysu-optimizer-lib SHARED optimizer.cc)
+TARGET_INCLUDE_DIRECTORIES(sysu-optimizer-lib PRIVATE ${LLVM_INCLUDE_DIRS})
+LLVM_MAP_COMPONENTS_TO_LIBNAMES(LLVM_LIBS core)
+TARGET_LINK_LIBRARIES(sysu-optimizer-lib ${LLVM_LIBS})
+INSTALL(TARGETS sysu-optimizer-lib)

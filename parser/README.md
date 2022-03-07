@@ -158,15 +158,18 @@ $ cat test/functional/000_main.sysu.c |
    - `sysu-refactor`：面向 SYsU 的代码重构工具
      - 将输入代码的 `while (Cond) Simt` 替换为 `if (Cond) do Simt while (Cond)`
      - 或者相反！
-   - Do what you want to do
 4. 扩展更多 C 语言的语法。
 5. 不借助 bison，并完全使用 SYsU 完成本实验，然后用它作为输入测试功能是否正确，以实现自举。
 6. 借助 libclang 实现相同的功能。
-7. 改进这个实验模板（欢迎 PR！）。
-8. Do what you want to do。
+7. 将 `sysu-lexer` 与 `sysu-parser` 链接到一起，作为 `sysu-lang` 完整编译器的一部分。
+   - 输入一个经过预处理的 SYsU 源程序，输出其语法分析树。
+   - 提示：`ADD_FLEX_BISON_DEPENDENCY`
+8. 改进这个实验模板（欢迎 PR！）。
+9. Do what you want to do。
 
 ## 你可能会感兴趣的
 
 - [GNU Bison - The Yacc-compatible Parser Generator](https://www.gnu.org/software/bison/manual/)
+- [FindBISON — CMake 3.18.6 Documentation](https://cmake.org/cmake/help/v3.18/module/FindBISON.html)
 - [llvm::json](https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/llvm/include/llvm/Support/JSON.h)
   - 该文件同样位于 debian:11 中 [llvm-dev](https://packages.debian.org/bullseye/devel/llvm-dev) 包的 </usr/include/llvm/Support/JSON.h>。
