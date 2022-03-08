@@ -1,55 +1,58 @@
 %{
 #include "parser.hh"
-#include <iostream>
 #include <llvm/Support/JSON.h>
+#include <llvm/Support/MemoryBuffer.h>
 #include <llvm/Support/raw_ostream.h>
-#include <string>
 #define yyerror(x)                                                             \
   do {                                                                         \
     llvm::errs() << (x);                                                       \
   } while (0)
 
-static llvm::json::Array stak;
+namespace {
+auto llvmin = llvm::MemoryBuffer::getFileOrSTDIN("-");
+auto input = llvmin.get() -> getBuffer();
+
+auto end = input.end(), it = input.begin();
+auto wk_getline(char endline = '\n') {
+  auto beg = it;
+  while (it != end && *it != endline)
+    ++it;
+  auto len = it - beg;
+  if (it != end && *it == endline)
+    ++it;
+  return llvm::StringRef(beg, len);
+}
+
+llvm::json::Array stak;
+} // namespace
 
 auto yylex() {
-  std::string t;
-  std::getline(std::cin, t);
-  do {
-    int b = t.find("'") + 1, e = t.rfind("'");
-    std::string s = t.substr(b, e - b);
-    t.erase(t.find(" "));
-    if (t == "numeric_constant") {
-      stak.push_back(
-          llvm::json::Object{{"kind", "IntegerLiteral"}, {"value", s}});
-      return T_NUMERIC_CONSTANT;
-    }
-    if (t == "identifier") {
-      stak.push_back(llvm::json::Object{{"value", s}});
-      return T_IDENTIFIER;
-    }
-  } while (0);
-
-  if (t == "int") {
+  auto tk = wk_getline();
+  auto b = tk.find("'") + 1, e = tk.rfind("'");
+  auto s = tk.substr(b, e - b), t = tk.substr(0, tk.find(" "));
+  if (t == "numeric_constant") {
+    stak.push_back(
+        llvm::json::Object{{"kind", "IntegerLiteral"}, {"value", s}});
+    return T_NUMERIC_CONSTANT;
+  }
+  if (t == "identifier") {
+    stak.push_back(llvm::json::Object{{"value", s}});
+    return T_IDENTIFIER;
+  }
+  if (t == "int")
     return T_INT;
-  }
-  if (t == "return") {
+  if (t == "return")
     return T_RETURN;
-  }
-  if (t == "semi") {
+  if (t == "semi")
     return T_SEMI;
-  }
-  if (t == "l_paren") {
+  if (t == "l_paren")
     return T_L_PAREN;
-  }
-  if (t == "r_paren") {
+  if (t == "r_paren")
     return T_R_PAREN;
-  }
-  if (t == "l_brace") {
+  if (t == "l_brace")
     return T_L_BRACE;
-  }
-  if (t == "r_brace") {
+  if (t == "r_brace")
     return T_R_BRACE;
-  }
   return YYEOF;
 }
 

@@ -1,25 +1,26 @@
-#include <iostream>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/Verifier.h>
 #include <llvm/Support/JSON.h>
+#include <llvm/Support/MemoryBuffer.h>
 #include <llvm/Support/raw_ostream.h>
 
-static llvm::LLVMContext TheContext;
-static llvm::IRBuilder<> Builder(TheContext);
-static auto TheModule = std::make_unique<llvm::Module>("-", TheContext);
+namespace {
+llvm::LLVMContext TheContext;
+llvm::IRBuilder<> Builder(TheContext);
+llvm::Module TheModule("-", TheContext);
 
-static llvm::Function *buildFunctionDecl(const llvm::json::Object *O) {
+llvm::Function *buildFunctionDecl(const llvm::json::Object *O) {
   // First, check for an existing function from a previous declaration.
   auto TheName = O->get("name")->getAsString();
-  llvm::Function *TheFunction = TheModule->getFunction(*TheName);
+  llvm::Function *TheFunction = TheModule.getFunction(*TheName);
 
   if (!TheFunction)
     TheFunction = llvm::Function::Create(
         llvm::FunctionType::get(llvm::Type::getInt32Ty(TheContext), {}, false),
-        llvm::Function::ExternalLinkage, *TheName, TheModule.get());
+        llvm::Function::ExternalLinkage, *TheName, &TheModule);
 
   if (!TheFunction)
     return nullptr;
@@ -44,7 +45,7 @@ static llvm::Function *buildFunctionDecl(const llvm::json::Object *O) {
   return nullptr;
 }
 
-static void buildTranslationUnitDecl(const llvm::json::Object *O) {
+void buildTranslationUnitDecl(const llvm::json::Object *O) {
   if (O == nullptr)
     return;
   if (auto kind = O->get("kind")->getAsString()) {
@@ -60,11 +61,11 @@ static void buildTranslationUnitDecl(const llvm::json::Object *O) {
             buildFunctionDecl(P);
         }
 }
+} // namespace
 
 int main() {
-  auto json =
-      llvm::json::parse(std::string(std::istreambuf_iterator<char>(std::cin),
-                                    std::istreambuf_iterator<char>()));
+  auto llvmin = llvm::MemoryBuffer::getFileOrSTDIN("-");
+  auto json = llvm::json::parse(llvmin.get()->getBuffer());
   buildTranslationUnitDecl(json->getAsObject());
-  TheModule->print(llvm::outs(), nullptr);
+  TheModule.print(llvm::outs(), nullptr);
 }

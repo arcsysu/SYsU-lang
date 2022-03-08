@@ -8,12 +8,13 @@
 namespace {
 llvm::cl::OptionCategory CallCounterCategory{"call counter options"};
 
-llvm::cl::opt<std::string> InputModule{llvm::cl::Positional,
-                                       llvm::cl::desc{"<Module to analyze>"},
-                                       llvm::cl::value_desc{"bitcode filename"},
-                                       llvm::cl::init(""),
-                                       llvm::cl::Required,
-                                       llvm::cl::cat{CallCounterCategory}};
+llvm::cl::opt<llvm::StringRef> InputModule{
+    llvm::cl::Positional,
+    llvm::cl::desc{"<Module to analyze>"},
+    llvm::cl::value_desc{"bitcode filename"},
+    llvm::cl::init(""),
+    llvm::cl::Required,
+    llvm::cl::cat{CallCounterCategory}};
 } // namespace
 
 int main(int argc, char **argv) {
@@ -31,8 +32,7 @@ int main(int argc, char **argv) {
   // Parse the IR file passed on the command line.
   llvm::SMDiagnostic Err;
   llvm::LLVMContext Ctx;
-  std::unique_ptr<llvm::Module> M =
-      parseIRFile(InputModule.getValue(), Err, Ctx);
+  auto M = llvm::parseIRFile(InputModule.getValue(), Err, Ctx);
 
   if (!M) {
     llvm::errs() << "Error reading bitcode file: " << InputModule << "\n";

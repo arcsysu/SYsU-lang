@@ -49,7 +49,7 @@ sysu::StaticCallCounter::run(llvm::Module &M, llvm::ModuleAnalysisManager &) {
         // being called.
         auto CallCount = Res.find(DirectInvoc);
         if (Res.end() == CallCount) {
-          CallCount = Res.insert(std::make_pair(DirectInvoc, 0)).first;
+          CallCount = Res.insert({DirectInvoc, 0}).first;
         }
         ++CallCount->second;
       }
