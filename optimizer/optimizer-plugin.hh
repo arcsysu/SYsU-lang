@@ -1,15 +1,3 @@
-//========================================================================
-// FILE:
-//    StaticCallCounter.h
-//
-// DESCRIPTION:
-//    Declares the StaticCallCounter Passes
-//      * new pass manager interface
-//      * legacy pass manager interface
-//      * printer pass for the new pass manager
-//
-// License: MIT
-//========================================================================
 #pragma once
 #ifndef __OPTIMIZER_PLUGIN_HH_
 #define __OPTIMIZER_PLUGIN_HH_
@@ -24,13 +12,10 @@
 
 namespace sysu {
 
-struct StaticCallCounter : public llvm::AnalysisInfoMixin<StaticCallCounter> {
+class StaticCallCounter : public llvm::AnalysisInfoMixin<StaticCallCounter> {
+public:
   using Result = llvm::MapVector<const llvm::Function *, unsigned>;
   Result run(llvm::Module &M, llvm::ModuleAnalysisManager &);
-  Result runOnModule(llvm::Module &M);
-  // Part of the official API:
-  //  https://llvm.org/docs/WritingAnLLVMNewPMPass.html#required-passes
-  static bool isRequired() { return true; }
 
 private:
   // A special type used by analysis passes to provide an address that
@@ -45,9 +30,6 @@ public:
   explicit StaticCallCounterPrinter(llvm::raw_ostream &OutS) : OS(OutS) {}
   llvm::PreservedAnalyses run(llvm::Module &M,
                               llvm::ModuleAnalysisManager &MAM);
-  // Part of the official API:
-  //  https://llvm.org/docs/WritingAnLLVMNewPMPass.html#required-passes
-  static bool isRequired() { return true; }
 
 private:
   llvm::raw_ostream &OS;

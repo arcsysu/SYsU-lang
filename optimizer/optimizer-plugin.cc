@@ -1,18 +1,31 @@
 #include "optimizer-plugin.hh"
 
 #include <llvm/Passes/PassBuilder.h>
-#include <llvm/Passes/PassPlugin.h>
 
-// Pretty-prints the result of this analysis
-static void
-printStaticCCResult(llvm::raw_ostream &OutS,
-                    const sysu::StaticCallCounter::Result &DirectCalls);
+llvm::PreservedAnalyses
+sysu::StaticCallCounterPrinter::run(llvm::Module &M,
+                                    llvm::ModuleAnalysisManager &MAM) {
 
-//------------------------------------------------------------------------------
-// sysu::StaticCallCounter Implementation
-//------------------------------------------------------------------------------
+  auto DirectCalls = MAM.getResult<sysu::StaticCallCounter>(M);
+
+  OS << "=================================================\n";
+  OS << "sysu-optimizer: static analysis results\n";
+  OS << "=================================================\n";
+  OS << llvm::format("%-20s %-10s\n", "NAME", "#N DIRECT CALLS");
+  OS << "-------------------------------------------------\n";
+
+  for (auto &CallCount : DirectCalls) {
+    OS << llvm::format("%-20s %-10lu\n",
+                       CallCount.first->getName().str().c_str(),
+                       CallCount.second);
+  }
+
+  OS << "-------------------------------------------------\n\n";
+  return llvm::PreservedAnalyses::all();
+}
+
 sysu::StaticCallCounter::Result
-sysu::StaticCallCounter::runOnModule(llvm::Module &M) {
+sysu::StaticCallCounter::run(llvm::Module &M, llvm::ModuleAnalysisManager &) {
   llvm::MapVector<const llvm::Function *, unsigned> Res;
 
   for (auto &Func : M) {
@@ -20,7 +33,7 @@ sysu::StaticCallCounter::runOnModule(llvm::Module &M) {
       for (auto &Ins : BB) {
 
         // If this is a call instruction then CB will be not null.
-        auto *CB = dyn_cast<llvm::CallBase>(&Ins);
+        auto *CB = llvm::dyn_cast<llvm::CallBase>(&Ins);
         if (nullptr == CB) {
           continue;
         }
@@ -45,27 +58,10 @@ sysu::StaticCallCounter::runOnModule(llvm::Module &M) {
   return Res;
 }
 
-llvm::PreservedAnalyses
-sysu::StaticCallCounterPrinter::run(llvm::Module &M,
-                                    llvm::ModuleAnalysisManager &MAM) {
-
-  auto DirectCalls = MAM.getResult<sysu::StaticCallCounter>(M);
-
-  printStaticCCResult(OS, DirectCalls);
-  return llvm::PreservedAnalyses::all();
-}
-
-sysu::StaticCallCounter::Result
-sysu::StaticCallCounter::run(llvm::Module &M, llvm::ModuleAnalysisManager &) {
-  return runOnModule(M);
-}
-
-//------------------------------------------------------------------------------
-// New PM Registration
-//------------------------------------------------------------------------------
 llvm::AnalysisKey sysu::StaticCallCounter::Key;
 
-llvm::PassPluginLibraryInfo getStaticCallCounterPluginInfo() {
+extern "C" {
+llvm::PassPluginLibraryInfo LLVM_ATTRIBUTE_WEAK llvmGetPassPluginInfo() {
   return {LLVM_PLUGIN_API_VERSION, "static-cc", LLVM_VERSION_STRING,
           [](llvm::PassBuilder &PB) {
             // #1 REGISTRATION FOR "opt -passes=print<static-cc>"
@@ -85,35 +81,5 @@ llvm::PassPluginLibraryInfo getStaticCallCounterPluginInfo() {
                   MAM.registerPass([&] { return sysu::StaticCallCounter(); });
                 });
           }};
-};
-
-extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
-llvmGetPassPluginInfo() {
-  return getStaticCallCounterPluginInfo();
 }
-
-//------------------------------------------------------------------------------
-// Helper functions
-//------------------------------------------------------------------------------
-static void
-printStaticCCResult(llvm::raw_ostream &OutS,
-                    const sysu::StaticCallCounter::Result &DirectCalls) {
-  OutS << "================================================="
-       << "\n";
-  OutS << "sysu-optimizer: static analysis results\n";
-  OutS << "=================================================\n";
-  const char *str1 = "NAME";
-  const char *str2 = "#N DIRECT CALLS";
-  OutS << llvm::format("%-20s %-10s\n", str1, str2);
-  OutS << "-------------------------------------------------"
-       << "\n";
-
-  for (auto &CallCount : DirectCalls) {
-    OutS << llvm::format("%-20s %-10lu\n",
-                         CallCount.first->getName().str().c_str(),
-                         CallCount.second);
-  }
-
-  OutS << "-------------------------------------------------"
-       << "\n\n";
 }
