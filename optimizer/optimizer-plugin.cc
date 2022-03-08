@@ -11,7 +11,8 @@ sysu::StaticCallCounterPrinter::run(llvm::Module &M,
   OS << "=================================================\n";
   OS << "sysu-optimizer: static analysis results\n";
   OS << "=================================================\n";
-  OS << llvm::format("%-20s %-10s\n", "NAME", "#N DIRECT CALLS");
+  const char *str1 = "NAME", *str2 = "#N DIRECT CALLS";
+  OS << llvm::format("%-20s %-10s\n", str1, str2);
   OS << "-------------------------------------------------\n";
 
   for (auto &CallCount : DirectCalls) {
