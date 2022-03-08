@@ -4,7 +4,10 @@
 #include <llvm/Support/JSON.h>
 #include <llvm/Support/raw_ostream.h>
 #include <string>
-#define yyerror std::printf
+#define yyerror(x)                                                             \
+  do {                                                                         \
+    llvm::errs() << (x);                                                       \
+  } while (0)
 
 static llvm::json::Array stak;
 
