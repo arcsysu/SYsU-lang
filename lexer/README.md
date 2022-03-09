@@ -5,19 +5,19 @@
 本次词法分析实验中，你被希望完成一个词法分析器，输出与 `clang -cc1 -dump-tokens` 一致的内容。
 
 ```bash
-$ cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
-  clang -cc1 -dump-tokens
-int 'int'        [StartOfLine]  Loc=<<stdin>:1:1>
-identifier 'main'        [LeadingSpace] Loc=<<stdin>:1:5>
-l_paren '('             Loc=<<stdin>:1:9>
-r_paren ')'             Loc=<<stdin>:1:10>
-l_brace '{'             Loc=<<stdin>:1:11>
-return 'return'  [StartOfLine] [LeadingSpace]   Loc=<<stdin>:2:5>
-numeric_constant '3'     [LeadingSpace] Loc=<<stdin>:2:12>
-semi ';'                Loc=<<stdin>:2:13>
-r_brace '}'      [StartOfLine]  Loc=<<stdin>:3:1>
-eof ''          Loc=<<stdin>:3:2>
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  clang -cc1 -E test/functional/000_main.sysu.c |
+  clang -cc1 -dump-tokens )
+int 'int'        [StartOfLine]  Loc=<test/functional/000_main.sysu.c:1:1>
+identifier 'main'        [LeadingSpace] Loc=<test/functional/000_main.sysu.c:1:5>
+l_paren '('             Loc=<test/functional/000_main.sysu.c:1:9>
+r_paren ')'             Loc=<test/functional/000_main.sysu.c:1:10>
+l_brace '{'             Loc=<test/functional/000_main.sysu.c:1:11>
+return 'return'  [StartOfLine] [LeadingSpace]   Loc=<test/functional/000_main.sysu.c:2:5>
+numeric_constant '3'     [LeadingSpace] Loc=<test/functional/000_main.sysu.c:2:12>
+semi ';'                Loc=<test/functional/000_main.sysu.c:2:13>
+r_brace '}'      [StartOfLine]  Loc=<test/functional/000_main.sysu.c:3:1>
+eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 ```
 
 可以发现，`clang -cc1 -dump-tokens` 输出的每一行包含：
@@ -27,7 +27,7 @@ eof ''          Loc=<<stdin>:3:2>
 3. （若干）识别上一个有效 token 到这个有效 token 间遇到的无效 token。
 4. （一个）有效 token 的位置。
 
-本目录下提供了一个基于 flex 实现的模板，你可以基于此继续实现完整的逻辑，也可以使用其他的工具实现，如 `antlr4`，但不得使用其提供的 C 语言模板；也不得使用任何封装好的库直接获得 token，如 `libclang`。
+本目录下提供了一个基于 flex 实现的模板，你可以基于此继续实现完整的逻辑，也可以使用其他的工具实现，如 `antlr4`，但不得使用其提供的 [C 语言模板](https://github.com/antlr/grammars-v4/blob/master/c/C.g4)；也不得使用任何封装好的库直接获得 token，如 `libclang`。
 
 ## 评分规则
 
@@ -46,7 +46,7 @@ eof ''          Loc=<<stdin>:3:2>
 2. `sysu-lexer` 是否提取出正确的 token location（30 分）。
 3. `sysu-lexer` 是否识别其他无关字符（10 分）。
 
-评测脚本忽略空白符，可以查看[评测脚本](../test/test_lexer.py)以了解检查算法，但不得修改评测逻辑而投机取巧。
+评测脚本忽略空白符，可以查看[评测脚本](../driver/sysu-driver)以了解检查算法，但不得修改评测逻辑而投机取巧。
 
 ### 扩展方向
 

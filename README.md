@@ -43,71 +43,90 @@ git clone --depth=1 https://github.com/arcsysu/SYsU-lang
 cd SYsU-lang
 
 # 编译安装
-rm -rf ../sysu
+rm -rf ~/sysu
 cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
-  -DCMAKE_INSTALL_PREFIX=../sysu \
+  -DCMAKE_INSTALL_PREFIX=~/sysu \
   -DCPACK_SOURCE_IGNORE_FILES=".git/;test/performance*" \
-  -B ../sysu/build
+  -B ~/sysu/build
 
-cmake --build ../sysu/build
-cmake --build ../sysu/build -t install
+cmake --build ~/sysu/build
+cmake --build ~/sysu/build -t install
 
 # 检查各实验的得分
-CTEST_OUTPUT_ON_FAILURE=1 cmake --build ../sysu/build -t test
+CTEST_OUTPUT_ON_FAILURE=1 cmake --build ~/sysu/build -t test
 
 # 打包源代码以提交作业
-cmake --build ../sysu/build -t package_source
+cmake --build ~/sysu/build -t package_source
 
 # 检查编译结果
-( PATH=../sysu/bin:$PATH &&
-  cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
-  sysu-lexer )
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-lexer 2>&1 |
+  sysu-parser |
+  sysu-generator )
 ```
 
 ## 代码结构
 
 本项目中 `${CMAKE_C_COMPILER}` 仅用于编译 `.sysu.c`，非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）。
 
+### `preprocessor`
+
+SYsU 的预处理器，通过调用 `cpp` 实现（偷懒）。
+
+```bash
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c )
+# 1 "test/functional/000_main.sysu.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 31 "<command-line>"
+# 1 "/usr/include/stdc-predef.h" 1 3 4
+# 32 "<command-line>" 2
+# 1 "test/functional/000_main.sysu.c"
+int main(){
+    return 3;
+}
+```
+
 ### `lexer`
 
 SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens` 的输出。作为词法分析实验模块，本仓库中的 `sysu-lexer` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](lexer/README.md)）。
 
 ```bash
-$ ( PATH=../sysu/bin:$PATH &&
-  cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c |
   sysu-lexer )
-int 'int'               Loc=<<stdin>:1:1>
-identifier 'main'               Loc=<<stdin>:1:5>
-l_paren '('             Loc=<<stdin>:1:9>
-r_paren ')'             Loc=<<stdin>:1:10>
-l_brace '{'             Loc=<<stdin>:1:11>
-return 'return'         Loc=<<stdin>:2:5>
-numeric_constant '3'            Loc=<<stdin>:2:12>
-semi ';'                Loc=<<stdin>:2:13>
-r_brace '}'             Loc=<<stdin>:3:1>
-eof ''          Loc=<<stdin>:3:2>
+int 'int'               Loc=<test/functional/000_main.sysu.c:1:1>
+identifier 'main'               Loc=<test/functional/000_main.sysu.c:1:5>
+l_paren '('             Loc=<test/functional/000_main.sysu.c:1:9>
+r_paren ')'             Loc=<test/functional/000_main.sysu.c:1:10>
+l_brace '{'             Loc=<test/functional/000_main.sysu.c:1:11>
+return 'return'         Loc=<test/functional/000_main.sysu.c:2:5>
+numeric_constant '3'            Loc=<test/functional/000_main.sysu.c:2:12>
+semi ';'                Loc=<test/functional/000_main.sysu.c:2:13>
+r_brace '}'             Loc=<test/functional/000_main.sysu.c:3:1>
+eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 ```
 
 可以对比一下 `clang -cc1 -dump-tokens` 的结果。
 
 ```bash
-$ cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
-  clang -cc1 -dump-tokens
-int 'int'        [StartOfLine]  Loc=<<stdin>:1:1>
-identifier 'main'        [LeadingSpace] Loc=<<stdin>:1:5>
-l_paren '('             Loc=<<stdin>:1:9>
-r_paren ')'             Loc=<<stdin>:1:10>
-l_brace '{'             Loc=<<stdin>:1:11>
-return 'return'  [StartOfLine] [LeadingSpace]   Loc=<<stdin>:2:5>
-numeric_constant '3'     [LeadingSpace] Loc=<<stdin>:2:12>
-semi ';'                Loc=<<stdin>:2:13>
-r_brace '}'      [StartOfLine]  Loc=<<stdin>:3:1>
-eof ''          Loc=<<stdin>:3:2>
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c |
+  clang -cc1 -dump-tokens )
+int 'int'        [StartOfLine]  Loc=<test/functional/000_main.sysu.c:1:1>
+identifier 'main'        [LeadingSpace] Loc=<test/functional/000_main.sysu.c:1:5>
+l_paren '('             Loc=<test/functional/000_main.sysu.c:1:9>
+r_paren ')'             Loc=<test/functional/000_main.sysu.c:1:10>
+l_brace '{'             Loc=<test/functional/000_main.sysu.c:1:11>
+return 'return'  [StartOfLine] [LeadingSpace]   Loc=<test/functional/000_main.sysu.c:2:5>
+numeric_constant '3'     [LeadingSpace] Loc=<test/functional/000_main.sysu.c:2:12>
+semi ';'                Loc=<test/functional/000_main.sysu.c:2:13>
+r_brace '}'      [StartOfLine]  Loc=<test/functional/000_main.sysu.c:3:1>
+eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 ```
 
 ### `parser`
@@ -115,9 +134,8 @@ eof ''          Loc=<<stdin>:3:2>
 SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
 
 ```bash
-$ ( PATH=../sysu/bin:$PATH &&
-  cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c |
   sysu-lexer 2>&1 |
   sysu-parser )
 {
@@ -150,9 +168,8 @@ $ ( PATH=../sysu/bin:$PATH &&
 当然，也可以直接从 `clang -cc1 -dump-tokens` 获得输入。
 
 ```bash
-( PATH=../sysu/bin:$PATH &&
-  cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 |
   sysu-parser )
 ```
@@ -162,9 +179,8 @@ $ ( PATH=../sysu/bin:$PATH &&
 `sysu-generator` 将 `sysu-parser` 得到的语法分析树转换为 LLVM IR。作为代码生成实验模块，本仓库中的 `sysu-generator` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](generator/README.md)）。
 
 ```bash
-$ ( PATH=../sysu/bin:$PATH &&
-  cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c |
   sysu-lexer 2>&1 |
   sysu-parser |
   sysu-generator )
@@ -180,13 +196,12 @@ entry:
 至此一个初级的 SYsU 编译器就完成了！你可以使用 `lli` JIT 地执行编译出来的代码。
 
 ```bash
-$ ( PATH=../sysu/bin:$PATH &&
-  cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c |
   sysu-lexer 2>&1 |
   sysu-parser |
   sysu-generator |
-  lli --load=../sysu/lib/libsylib.so ) # 该输出来自运行时库的计时统计
+  lli --load=$HOME/sysu/lib/libsylib.so ) # 该输出来自运行时库的计时统计
 TOTAL: 0H-0M-0S-0us
 $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
 3
@@ -202,6 +217,12 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 4. Do what you want to do
 
 并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
+
+### `driver`
+
+SYsU 编译器的上层驱动，类似于 `clang`。
+
+开发 ing，当前仅用于支持单元测试。
 
 ### `sylib`
 

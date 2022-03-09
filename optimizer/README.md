@@ -1,19 +1,17 @@
 # sysu-optimizer
 
 ```bash
-( PATH=../sysu/bin:$PATH &&
-  cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/functional/000_main.sysu.c |
   sysu-lexer 2>&1 |
   sysu-parser |
   sysu-generator |
-  LD_LIBRARY_PATH+=../sysu/lib sysu-optimizer --help) # 暂时不work，待fix
+  LD_LIBRARY_PATH+=$HOME/sysu/lib sysu-optimizer --help) # 暂时不work，待fix
 # or
-( PATH=../sysu/bin:$PATH &&
-  cat test/mizuno_ai/mizuno_ai.sysu.c |
-  clang -cc1 -I../sysu/include -E |
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-preprocessor test/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
-  opt --enable-new-pm -load-pass-plugin=../sysu/lib/libsysu-optimizer-plugin.so -passes="print<static-cc>" -disable-output)
+  opt --enable-new-pm -load-pass-plugin=$HOME/sysu/lib/libsysu-optimizer-plugin.so -passes="print<static-cc>" -disable-output)
 ```
 
 ## 你可能会感兴趣的

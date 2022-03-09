@@ -6,7 +6,7 @@
 
 ```bash
 $ cat test/functional/000_main.sysu.c |
-  clang -cc1 -I../sysu/include -E |
+  clang -cc1 -I~/sysu/include -E |
   clang -cc1 -ast-dump=json
 {
   "id": "0x1c9b558",
@@ -137,7 +137,7 @@ $ cat test/functional/000_main.sysu.c |
 
 ### 自动评测细则
 
-本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../test/test_parser.py)以了解检查算法，但不得修改评测逻辑而投机取巧。
+本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../driver/sysu-driver)以了解检查算法，但不得修改评测逻辑而投机取巧。
 
 ### 扩展方向
 

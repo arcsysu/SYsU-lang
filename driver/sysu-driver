@@ -1,0 +1,204 @@
+#!/bin/sh
+# -*- python -*-
+# This file is bilingual. The following shell code finds our preferred python.
+# Following line is a shell no-op, and starts a multi-line Python comment.
+# See https://stackoverflow.com/a/47886254
+""":"
+# prefer SYSU_PYTHON environment variable, python3, python
+SYSU_PREFERRED_PYTHONS="python3 python"
+for cmd in "${SYSU_PYTHON:-}" ${SYSU_PREFERRED_PYTHONS}; do
+    if command -v "$cmd" >/dev/null; then
+        export SYSU_PYTHON="$(command -v "$cmd")"
+        exec "${SYSU_PYTHON}" "$0" "$@"
+    fi
+done
+echo "==> Error: $0 could not find a python interpreter!" >&2
+exit 1
+":"""
+
+import os
+import sys
+import argparse
+import glob
+import subprocess
+import json
+import tqdm
+
+
+def check_ast(ast0, ast1, testcase, command0, command1):
+    def wk_exit(n):
+        print("---")
+        ast0.pop("inner")
+        print("current node: ")
+        print(ast0)
+        print("---")
+        print(command0)
+        print(command1)
+        return n
+
+    if type(ast0) != type(ast1):
+        print("fail: type err.")
+        return wk_exit(-1)
+
+    key_inner = ["inner"]
+
+    if testcase in ["parser-0"]:
+        key_kind = ["kind", "name", "value"]
+    elif testcase in ["parser-1"]:
+        key_kind = ["kind", "name", "value", "type"]
+    elif testcase in ["parser-2"]:
+        key_kind = ["kind", "name", "value", "type", "range"]
+    else:
+        key_kind = []
+    key_ignore = ["id"]
+    for key, value0 in ast0.items():
+        if key in key_ignore:
+            continue
+
+        def get_value1():
+            if key not in ast1:
+                print("fail: key '"+key+"' not find")
+                return wk_exit(-1)
+            return ast1.get(key)
+
+        if key in key_inner:
+            if ast0.get("kind") == "TranslationUnitDecl":
+                while len(value0[0].get("loc")) == 0:
+                    value0.pop(0)
+            value1 = get_value1()
+            if len(value0) != len(value1):
+                print("fail: inner not match")
+                return wk_exit(-1)
+            for i in range(len(value0)):
+                check_ast(value0[i], value1[i],
+                          testcase, command0, command1)
+        elif len(key_kind) == 0 or key in key_kind:
+            value1 = get_value1()
+            if value0 != value1:
+                print("fail: key not match")
+                print(key)
+                return wk_exit(-1)
+
+
+def unittest_parser(testcase, clang, preprocessor, lexer, parser, filenames):
+    filenames = tqdm.tqdm(filenames)
+    for filename in filenames:
+        filenames.set_description(filename)
+        if os.path.getsize(filename) >= 32768:
+            # 慎重测试！
+            continue
+        command = preprocessor + " " + filename
+        src = subprocess.run(
+            command, stdout=subprocess.PIPE, shell=True).stdout
+        command0 = command+" | "+clang + " -cc1 -ast-dump=json"
+        command1 = command+" | "+clang + " -cc1 -dump-tokens 2>&1 | "+parser
+        ast0 = json.loads(subprocess.run(
+            clang + " -cc1 -ast-dump=json",
+            input=src, stdout=subprocess.PIPE, shell=True).stdout)
+        ast1 = json.loads(subprocess.run(
+            clang + " -cc1 -dump-tokens 2>&1 |"+parser,
+            input=src, stdout=subprocess.PIPE, shell=True).stdout)
+
+        return check_ast(ast0, ast1, testcase, command0, command1)
+
+
+def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
+    filenames = tqdm.tqdm(filenames)
+    for filename in filenames:
+        filenames.set_description(filename)
+        if os.path.getsize(filename) >= 32768:
+            # 慎重测试！
+            continue
+        command = preprocessor + " " + filename
+        src = subprocess.run(
+            command, stdout=subprocess.PIPE, shell=True).stdout
+        command0 = command+" | "+clang + " -cc1 -dump-tokens 2>&1 "
+        command1 = command+" | "+lexer + " 2>&1 "
+        tokens0 = subprocess.run(
+            clang + " -cc1 -dump-tokens 2>&1 ",
+            input=src, stdout=subprocess.PIPE, shell=True).stdout.splitlines()
+        tokens1 = subprocess.run(
+            lexer + " 2>&1 ",
+            input=src, stdout=subprocess.PIPE, shell=True).stdout.splitlines()
+
+        def wk_exit(n):
+            print("---")
+            print(command0)
+            print(command1)
+            return n
+
+        if len(tokens0) != len(tokens1):
+            print("fail: counts of tokens are different")
+            return wk_exit(-1)
+        for i in range(len(tokens0)):
+            def split_tokens(t):
+                tmp = str(t, encoding="utf8")
+                k1 = tmp.find("'")
+                k2 = tmp.rfind("'")
+                k3 = tmp.rfind("Loc=<")
+                if k1 == -1 or k2 == -1 or k3 == -1:
+                    print("fail: format error")
+                    print("---")
+                    print(t)
+                    return wk_exit(-1)
+                tok0 = tmp.split()[0].strip()
+                str0 = tmp[k1+1:k2].strip()
+                mid0 = str(tmp[k2+1:k3].strip().split())
+                loc0 = tmp[k3:].strip()
+                return [tok0, str0, mid0, loc0]
+            tok0, str0, mid0, loc0 = split_tokens(tokens0[i])
+            tok1, str1, mid1, loc1 = split_tokens(tokens1[i])
+
+            if testcase in ["lexer-3"]:
+                if mid0 != mid1:
+                    print("fail: mid " + str(i+1) + "c" + str(i+1))
+                    print("< " + mid0)
+                    print("---")
+                    print("> " + mid1)
+                    return wk_exit(-1)
+            if testcase in ["lexer-2", "lexer-3"]:
+                if loc0 != loc1:
+                    print("fail: loc " + str(i+1) + "c" + str(i+1))
+                    print("< " + loc0)
+                    print("---")
+                    print("> " + loc1)
+                    return wk_exit(-1)
+            if testcase in ["lexer-0", "lexer-1", "lexer-2", "lexer-3"]:
+                if tok0 != tok1:
+                    print("fail: tok " + str(i+1) + "c" + str(i+1))
+                    print("< " + tok0)
+                    print("---")
+                    print("> " + tok1)
+                    return wk_exit(-1)
+                if str0 != str1:
+                    print("fail: str " + str(i+1) + "c" + str(i+1))
+                    print("< " + str0)
+                    print("---")
+                    print("> " + str1)
+                    return wk_exit(-1)
+
+
+def main(*argv):
+    parser = argparse.ArgumentParser(prog=os.path.basename(argv[0]))
+    specs = ["clang", "sysu-preprocessor", "sysu-lexer",
+             "sysu-parser", "sysu-generator", "sysu-optimizer"]
+    for spec in specs:
+        parser.add_argument("--"+spec, help="Specify "+spec, default=spec)
+    parser.add_argument("--sysu-unittest")
+    parser.add_argument("file", default=["-"], nargs="*")
+    args = parser.parse_args(argv[1:])
+    filenames = []
+    for f in args.file:
+        filenames += glob.glob(f, recursive=True)
+    filenames = list(set(filenames))
+    if "lexer" in args.sysu_unittest:
+        return unittest_lexer(args.sysu_unittest, args.clang,
+                              args.sysu_preprocessor, args.sysu_lexer, filenames)
+    if "parser" in args.sysu_unittest:
+        return unittest_parser(args.sysu_unittest, args.clang, args.sysu_preprocessor,
+                               args.sysu_lexer, args.sysu_parser, filenames)
+    return 0
+
+
+if __name__ == '__main__':
+    exit(main(*sys.argv))
