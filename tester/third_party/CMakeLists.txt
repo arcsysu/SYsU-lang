@@ -1,0 +1,6 @@
+FILE(GLOB _subs *)
+FOREACH(_sub ${_subs})
+    IF(IS_DIRECTORY ${_sub})
+        ADD_SUBDIRECTORY(${_sub})
+    ENDIF()
+ENDFOREACH()
