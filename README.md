@@ -232,9 +232,15 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 运行时库 `libsysy`。
 
-### `test`
+### `tester`
 
 目录下提供了一系列 SYsU 格式的测试代码以及对应程序的输入输出，修改自 [nscscc/compiler2021](https://gitlab.eduxiji.net/nscscc/compiler2021/) 中提供的算例。
+
+大算例以 `git submodule` 的形式存放在 `tester/third_party`。加载方式：
+
+```bash
+git submodule update --init
+```
 
 ### `.github`
 
