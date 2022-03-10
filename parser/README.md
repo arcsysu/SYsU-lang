@@ -139,11 +139,11 @@ $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
 
 ### 自动评测细则
 
-本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../driver/sysu-driver)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
+本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-driver --unittest=parser-1 "**/*.sysu.c" )
+  sysu-compiler --unittest=parser-1 "**/*.sysu.c" )
 ```
 
 ### 扩展方向

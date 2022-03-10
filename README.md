@@ -71,6 +71,15 @@ cmake --build ~/sysu/build -t package_source
 
 本项目中 `${CMAKE_C_COMPILER}` 仅用于编译 `.sysu.c`，非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）。
 
+### `compiler`
+
+SYsU 编译器的上层驱动，类似于 `clang`。当前仅用于支持单元测试，后续功能开发中。
+
+```bash
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-compiler --help )
+```
+
 ### `preprocessor`
 
 SYsU 的预处理器，通过调用 `cpp` 实现（偷懒）。
@@ -216,15 +225,6 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 4. Do what you want to do
 
 并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
-
-### `driver`
-
-SYsU 编译器的上层驱动，类似于 `clang`。当前仅用于支持单元测试，后续功能开发中。
-
-```bash
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-driver --help )
-```
 
 ### `sylib`
 

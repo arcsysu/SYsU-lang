@@ -46,11 +46,11 @@ eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 2. `sysu-lexer` 是否提取出正确的 token location（30 分）。
 3. `sysu-lexer` 是否识别其他无关字符（10 分）。
 
-评测脚本忽略空白符，可以查看[评测脚本](../driver/sysu-driver)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
+评测脚本忽略空白符，可以查看[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-driver --unittest=lexer-1 "**/*.sysu.c" )
+  sysu-compiler --unittest=lexer-1 "**/*.sysu.c" )
 ```
 
 ### 扩展方向
