@@ -26,7 +26,7 @@ import json
 
 def check_ast(ast0, ast1, testcase, command0, command1):
     def wk_exit(n):
-        print("\n---")
+        print("---")
         ast0.pop("inner")
         print("current node: ")
         print(ast0)
@@ -36,7 +36,7 @@ def check_ast(ast0, ast1, testcase, command0, command1):
         return n
 
     if type(ast0) != type(ast1):
-        print("fail: type err.")
+        print("\nfail: type err.")
         return wk_exit(-1)
 
     key_inner = ["inner"]
@@ -56,7 +56,7 @@ def check_ast(ast0, ast1, testcase, command0, command1):
 
         def get_value1():
             if key not in ast1:
-                print("fail: key '"+key+"' not find")
+                print("\nfail: key '"+key+"' not find")
                 return wk_exit(-1)
             return ast1.get(key)
 
@@ -66,7 +66,7 @@ def check_ast(ast0, ast1, testcase, command0, command1):
                     value0.pop(0)
             value1 = get_value1()
             if len(value0) != len(value1):
-                print("fail: inner not match")
+                print("\nfail: inner not match")
                 return wk_exit(-1)
             for i in range(len(value0)):
                 check_ast(value0[i], value1[i],
@@ -74,7 +74,7 @@ def check_ast(ast0, ast1, testcase, command0, command1):
         elif len(key_kind) == 0 or key in key_kind:
             value1 = get_value1()
             if value0 != value1:
-                print("fail: key not match")
+                print("\nfail: key not match")
                 print(key)
                 return wk_exit(-1)
 
@@ -121,13 +121,13 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
             input=src, stdout=subprocess.PIPE, shell=True).stdout.splitlines()
 
         def wk_exit(n):
-            print("\n---")
+            print("---")
             print(command0)
             print(command1)
             return n
 
         if len(tokens0) != len(tokens1):
-            print("fail: counts of tokens are different")
+            print("\nfail: counts of tokens are different")
             return wk_exit(-1)
         for i in range(len(tokens0)):
             def split_tokens(t):
@@ -136,7 +136,7 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
                 k2 = tmp.rfind("'")
                 k3 = tmp.rfind("Loc=<")
                 if k1 == -1 or k2 == -1 or k3 == -1:
-                    print("fail: format error")
+                    print("\nfail: format error")
                     print("---")
                     print(t)
                     return wk_exit(-1)
@@ -150,27 +150,27 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
 
             if testcase in ["lexer-3"]:
                 if mid0 != mid1:
-                    print("fail: mid " + str(i+1) + "c" + str(i+1))
+                    print("\nfail: mid " + str(i+1) + "c" + str(i+1))
                     print("< " + mid0)
                     print("---")
                     print("> " + mid1)
                     return wk_exit(-1)
             if testcase in ["lexer-2", "lexer-3"]:
                 if loc0 != loc1:
-                    print("fail: loc " + str(i+1) + "c" + str(i+1))
+                    print("\nfail: loc " + str(i+1) + "c" + str(i+1))
                     print("< " + loc0)
                     print("---")
                     print("> " + loc1)
                     return wk_exit(-1)
             if testcase in ["lexer-0", "lexer-1", "lexer-2", "lexer-3"]:
                 if tok0 != tok1:
-                    print("fail: tok " + str(i+1) + "c" + str(i+1))
+                    print("\nfail: tok " + str(i+1) + "c" + str(i+1))
                     print("< " + tok0)
                     print("---")
                     print("> " + tok1)
                     return wk_exit(-1)
                 if str0 != str1:
-                    print("fail: str " + str(i+1) + "c" + str(i+1))
+                    print("\nfail: str " + str(i+1) + "c" + str(i+1))
                     print("< " + str0)
                     print("---")
                     print("> " + str1)
