@@ -22,12 +22,11 @@ import argparse
 import glob
 import subprocess
 import json
-import tqdm
 
 
 def check_ast(ast0, ast1, testcase, command0, command1):
     def wk_exit(n):
-        print("---")
+        print("\n---")
         ast0.pop("inner")
         print("current node: ")
         print(ast0)
@@ -81,9 +80,9 @@ def check_ast(ast0, ast1, testcase, command0, command1):
 
 
 def unittest_parser(testcase, clang, preprocessor, lexer, parser, filenames):
-    filenames = tqdm.tqdm(filenames)
-    for filename in filenames:
-        filenames.set_description(filename)
+    for ff in range(len(filenames)):
+        filename = filenames[ff]
+        print("[{}/{}] {}".format(ff,len(filenames),filename),flush=True,end="\r")
         if os.path.getsize(filename) >= 32768:
             # 慎重测试！
             continue
@@ -103,9 +102,9 @@ def unittest_parser(testcase, clang, preprocessor, lexer, parser, filenames):
 
 
 def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
-    filenames = tqdm.tqdm(filenames)
-    for filename in filenames:
-        filenames.set_description(filename)
+    for ff in range(len(filenames)):
+        filename = filenames[ff]
+        print("[{}/{}] {}".format(ff,len(filenames),filename),flush=True,end="\r")
         if os.path.getsize(filename) >= 32768:
             # 慎重测试！
             continue
@@ -122,7 +121,7 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
             input=src, stdout=subprocess.PIPE, shell=True).stdout.splitlines()
 
         def wk_exit(n):
-            print("---")
+            print("\n---")
             print(command0)
             print(command1)
             return n
