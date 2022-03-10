@@ -143,10 +143,7 @@ $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-driver \
-    --unittest=parser-1 \
-    --sysu-preprocessor="clang -cc1 -Isylib -E" \
-    "**/*.sysu.c" )
+  sysu-driver --unittest=parser-1 "**/*.sysu.c" )
 ```
 
 ### 扩展方向

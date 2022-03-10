@@ -50,10 +50,7 @@ eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-driver \
-    --unittest=lexer-1 \
-    --sysu-preprocessor="clang -cc1 -Isylib -E" \
-    "**/*.sysu.c" )
+  sysu-driver --unittest=lexer-1 "**/*.sysu.c" )
 ```
 
 ### 扩展方向

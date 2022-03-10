@@ -219,9 +219,12 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 ### `driver`
 
-SYsU 编译器的上层驱动，类似于 `clang`。
+SYsU 编译器的上层驱动，类似于 `clang`。当前仅用于支持单元测试，后续功能开发中。
 
-开发 ing，当前仅用于支持单元测试。
+```bash
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-driver --help )
+```
 
 ### `sylib`
 
