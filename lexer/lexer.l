@@ -5,7 +5,7 @@
 #define YYEOF (0)
 int yylex();
 int main() {
-  yyout = stderr;
+  // yyout = stderr; // to be same with clang -cc1 -dump-tokens
   do {
   } while (yylex() != YYEOF);
 }

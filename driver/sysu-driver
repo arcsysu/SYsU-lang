@@ -79,10 +79,11 @@ def check_ast(ast0, ast1, testcase, command0, command1):
                 return wk_exit(-1)
 
 
-def unittest_parser(testcase, clang, preprocessor, lexer, parser, filenames):
+def unittest_parser(testcase, clang, preprocessor, parser, filenames):
     for ff in range(len(filenames)):
         filename = filenames[ff]
-        print("[{}/{}] {}".format(ff,len(filenames),filename),flush=True,end="\r")
+        print("[{}/{}] {}".format(ff, len(filenames),
+                                  filename), flush=True, end="\r")
         if os.path.getsize(filename) >= 32768:
             # 慎重测试！
             continue
@@ -104,7 +105,8 @@ def unittest_parser(testcase, clang, preprocessor, lexer, parser, filenames):
 def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
     for ff in range(len(filenames)):
         filename = filenames[ff]
-        print("[{}/{}] {}".format(ff,len(filenames),filename),flush=True,end="\r")
+        print("[{}/{}] {}".format(ff, len(filenames),
+                                  filename), flush=True, end="\r")
         if os.path.getsize(filename) >= 32768:
             # 慎重测试！
             continue
@@ -183,19 +185,25 @@ def main(*argv):
              "sysu-parser", "sysu-generator", "sysu-optimizer"]
     for spec in specs:
         parser.add_argument("--"+spec, help="Specify "+spec, default=spec)
-    parser.add_argument("--sysu-unittest")
+    parser.add_argument("--unittest")
     parser.add_argument("file", default=["-"], nargs="*")
     args = parser.parse_args(argv[1:])
     filenames = []
     for f in args.file:
-        filenames += glob.glob(f, recursive=True)
-    filenames = list(set(filenames))
-    if "lexer" in args.sysu_unittest:
-        return unittest_lexer(args.sysu_unittest, args.clang,
-                              args.sysu_preprocessor, args.sysu_lexer, filenames)
-    if "parser" in args.sysu_unittest:
-        return unittest_parser(args.sysu_unittest, args.clang, args.sysu_preprocessor,
-                               args.sysu_lexer, args.sysu_parser, filenames)
+        tmp = glob.glob(f, recursive=True)
+        for t in tmp:
+            if t not in filenames:
+                filenames.append(t)
+    if args.unittest:
+        filenames.sort()
+        if "lexer" in args.unittest:
+            return unittest_lexer(args.unittest, args.clang,
+                                  args.sysu_preprocessor, args.sysu_lexer,
+                                  filenames)
+        if "parser" in args.unittest:
+            return unittest_parser(args.unittest, args.clang,
+                                   args.sysu_preprocessor, args.sysu_parser,
+                                   filenames)
     return 0
 
 

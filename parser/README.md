@@ -2,12 +2,12 @@
 
 ## 实验描述
 
-本次语法分析实验中，你被希望完成一个语法分析器，产生与 `clang -cc1 -ast-dump=json` 相当的输出。注意，以下 log 省略了无关内容。
+本次语法分析实验中，你被希望完成一个语法分析器，接受来自 `sysu-lexer` 的输入，产生与 `clang -cc1 -ast-dump=json` 相当的输出。注意，以下 log 省略了无关内容。
 
 ```bash
-$ cat test/functional/000_main.sysu.c |
-  clang -cc1 -I~/sysu/include -E |
-  clang -cc1 -ast-dump=json
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  clang -cc1 -E test/functional/000_main.sysu.c |
+  clang -cc1 -ast-dump=json )
 {
   "id": "0x1c9b558",
   "kind": "TranslationUnitDecl",
@@ -118,7 +118,9 @@ $ cat test/functional/000_main.sysu.c |
 }
 ```
 
-可以发现，`clang -cc1 -ast-dump=json` 输出一个 json 格式的语法分析树。本目录下提供了一个基于 bison + `llvm::json` 实现的模板，接受词法分析器的输出，你可以基于此继续实现完整的逻辑，也可以使用其他的工具实现，如 `antlr4`，但不得使用其提供的 [C 语言模板](https://github.com/antlr/grammars-v4/blob/master/c/C.g4)；也不得使用任何封装好的库直接获得 ast，如 `libclang`。
+可以发现，`clang -cc1 -ast-dump=json` 输出一个 json 格式的语法分析树。我们要求你的输出不包含图上忽略的内置类型，也不需要为每个节点生成单独的 `id`。
+
+本目录下提供了一个基于 bison + `llvm::json` 实现的模板，接受词法分析器的输出，你可以基于此继续实现完整的逻辑，也可以使用其他的工具实现，如 `antlr4`，但不得使用其提供的 [C 语言模板](https://github.com/antlr/grammars-v4/blob/master/c/C.g4)；也不得使用任何封装好的库直接获得 ast，如 `libclang`。
 
 ### Q & A：为什么要输出到 `llvm::json`？
 
@@ -137,7 +139,15 @@ $ cat test/functional/000_main.sysu.c |
 
 ### 自动评测细则
 
-本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../driver/sysu-driver)以了解检查算法，但不得修改评测逻辑而投机取巧。
+本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查详见[评测脚本](../driver/sysu-driver)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
+
+```bash
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-driver \
+    --unittest=parser-1 \
+    --sysu-preprocessor="clang -cc1 -Isylib -E" \
+    "**/*.sysu.c" )
+```
 
 ### 扩展方向
 

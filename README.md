@@ -62,7 +62,7 @@ cmake --build ~/sysu/build -t package_source
 # 检查编译结果
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
   sysu-preprocessor test/functional/000_main.sysu.c |
-  sysu-lexer 2>&1 |
+  sysu-lexer |
   sysu-parser |
   sysu-generator )
 ```
@@ -92,7 +92,7 @@ int main(){
 
 ### `lexer`
 
-SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens` 的输出。作为词法分析实验模块，本仓库中的 `sysu-lexer` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](lexer/README.md)）。
+SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输出。作为词法分析实验模块，本仓库中的 `sysu-lexer` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](lexer/README.md)）。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
@@ -110,12 +110,12 @@ r_brace '}'             Loc=<test/functional/000_main.sysu.c:3:1>
 eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 ```
 
-可以对比一下 `clang -cc1 -dump-tokens` 的结果。
+可以对比一下 `clang -cc1 -dump-tokens 2>&1` 的结果。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
   sysu-preprocessor test/functional/000_main.sysu.c |
-  clang -cc1 -dump-tokens )
+  clang -cc1 -dump-tokens 2>&1)
 int 'int'        [StartOfLine]  Loc=<test/functional/000_main.sysu.c:1:1>
 identifier 'main'        [LeadingSpace] Loc=<test/functional/000_main.sysu.c:1:5>
 l_paren '('             Loc=<test/functional/000_main.sysu.c:1:9>
@@ -135,7 +135,7 @@ SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 jso
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
   sysu-preprocessor test/functional/000_main.sysu.c |
-  sysu-lexer 2>&1 |
+  sysu-lexer |
   sysu-parser )
 {
   "inner": [
@@ -164,7 +164,7 @@ $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
 }
 ```
 
-当然，也可以直接从 `clang -cc1 -dump-tokens` 获得输入。
+当然，也可以直接从 `clang -cc1 -dump-tokens 2>&1` 获得输入。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
@@ -180,7 +180,7 @@ $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
   sysu-preprocessor test/functional/000_main.sysu.c |
-  sysu-lexer 2>&1 |
+  sysu-lexer |
   sysu-parser |
   sysu-generator )
 ; ModuleID = '-'
@@ -197,7 +197,7 @@ entry:
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
   sysu-preprocessor test/functional/000_main.sysu.c |
-  sysu-lexer 2>&1 |
+  sysu-lexer |
   sysu-parser |
   sysu-generator |
   lli --load=$HOME/sysu/lib/libsylib.so ) # 该输出来自运行时库的计时统计

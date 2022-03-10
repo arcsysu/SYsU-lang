@@ -2,12 +2,12 @@
 
 ## 实验描述
 
-本次词法分析实验中，你被希望完成一个词法分析器，输出与 `clang -cc1 -dump-tokens` 一致的内容。
+本次词法分析实验中，你被希望完成一个词法分析器，输出与 `clang -cc1 -dump-tokens 2>&1` 一致的内容。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
   clang -cc1 -E test/functional/000_main.sysu.c |
-  clang -cc1 -dump-tokens )
+  clang -cc1 -dump-tokens 2>&1 )
 int 'int'        [StartOfLine]  Loc=<test/functional/000_main.sysu.c:1:1>
 identifier 'main'        [LeadingSpace] Loc=<test/functional/000_main.sysu.c:1:5>
 l_paren '('             Loc=<test/functional/000_main.sysu.c:1:9>
@@ -20,7 +20,7 @@ r_brace '}'      [StartOfLine]  Loc=<test/functional/000_main.sysu.c:3:1>
 eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 ```
 
-可以发现，`clang -cc1 -dump-tokens` 输出的每一行包含：
+可以发现，`clang -cc1 -dump-tokens 2>&1` 输出的每一行包含：
 
 1. （一个）有效 token。
 2. （一个）由单引号包裹的匹配串。
@@ -36,7 +36,7 @@ eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 - 对于基础部分的实验，由低到高分别给出三档实验要求，并要求通过对应的自动评测。详见自动评测细则一节。
 - 对于扩展部分的实验，你可以完成扩展方向一节的要求，也可以自行探索；如果可能，请同时编写对应的自动评测脚本。助教将按照你实现的难度给出评分。
 
-如有疑问，参照 `clang -cc1 -dump-tokens`。你需要提交一份实验报告，简要记录你的实验过程、遇到的难点以及解决的方法，并在报告中附上自动评测的结果。
+如有疑问，参照 `clang -cc1 -dump-tokens 2>&1`。你需要提交一份实验报告，简要记录你的实验过程、遇到的难点以及解决的方法，并在报告中附上自动评测的结果。
 
 ### 自动评测细则
 
@@ -46,7 +46,15 @@ eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
 2. `sysu-lexer` 是否提取出正确的 token location（30 分）。
 3. `sysu-lexer` 是否识别其他无关字符（10 分）。
 
-评测脚本忽略空白符，可以查看[评测脚本](../driver/sysu-driver)以了解检查算法，但不得修改评测逻辑而投机取巧。
+评测脚本忽略空白符，可以查看[评测脚本](../driver/sysu-driver)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
+
+```bash
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+  sysu-driver \
+    --unittest=lexer-1 \
+    --sysu-preprocessor="clang -cc1 -Isylib -E" \
+    "**/*.sysu.c" )
+```
 
 ### 扩展方向
 
