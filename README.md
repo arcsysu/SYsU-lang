@@ -35,7 +35,7 @@ sudo apt install \
   cpp flex bison zlib1g-dev \
   clang libclang-dev llvm-dev
 
-git clone --depth=1 https://github.com/arcsysu/SYsU-lang
+git clone https://github.com/arcsysu/SYsU-lang
 cd SYsU-lang
 
 # 编译安装
@@ -44,7 +44,7 @@ cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_INSTALL_PREFIX=~/sysu \
-  -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/performance*" \
+  -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
   -B ~/sysu/build
 
 cmake --build ~/sysu/build
@@ -70,12 +70,17 @@ cmake --build ~/sysu/build -t package_source
 
 ### `compiler`
 
-SYsU 编译器的上层驱动，类似于 `clang`。当前仅用于支持单元测试，后续功能开发中。
+SYsU 编译器的上层驱动，类似于 `clang`。当前当前支持的功能有：
+
+- `--unittest`：单元测试
+- `--convert-sysy`：转换 SysY 到 SYsU
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
   sysu-compiler --help )
 ```
+
+后续功能开发中。
 
 ### `preprocessor`
 

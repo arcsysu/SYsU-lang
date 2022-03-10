@@ -179,6 +179,27 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
                     return wk_exit(-1)
 
 
+def convert_sysy(filenames):
+    for ff in range(len(filenames)):
+        filename = filenames[ff]
+        print("[{}/{}] {}".format(ff, len(filenames),
+                                  filename), flush=True, end="\r")
+        if filename.endswith(".sy"):
+            file = open(filename, mode="r")
+            src = file.read()
+            file.close()
+            patterns = ["getint", "getch", "getarray", "putint",
+                        "putch", "putarray", "starttime", "stoptime"]
+            for pattern in patterns:
+                if src.find(pattern) != -1:
+                    src = "#include <sylib.h>\n"+src
+                    break
+            file = open(filename+"su.c", mode="w")
+            file.write(src)
+            file.close()
+    return 0
+
+
 def main(*argv):
     parser = argparse.ArgumentParser(prog=os.path.basename(argv[0]))
     specs = ["clang", "sysu-preprocessor", "sysu-lexer",
@@ -186,6 +207,10 @@ def main(*argv):
     for spec in specs:
         parser.add_argument("--"+spec, help="Specify "+spec, default=spec)
     parser.add_argument("--unittest")
+    parser.add_argument(
+        "--convert-sysy",
+        help="Convert *.sy in [file ...]",
+        action="store_true")
     parser.add_argument("file", default=["-"], nargs="*")
     args = parser.parse_args(argv[1:])
     filenames = []
@@ -194,6 +219,8 @@ def main(*argv):
         for t in tmp:
             if t not in filenames:
                 filenames.append(t)
+    if args.convert_sysy:
+        return convert_sysy(filenames)
     if args.unittest:
         filenames.sort()
         if "lexer" in args.unittest:
