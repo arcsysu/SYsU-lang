@@ -2,14 +2,14 @@
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer 2>&1 |
   sysu-parser |
   sysu-generator |
   LD_LIBRARY_PATH+=$HOME/sysu/lib sysu-optimizer --help) # 暂时不work，待fix
 # or
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/mizuno_ai/mizuno_ai.sysu.c |
+  sysu-preprocessor tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
   opt --enable-new-pm -load-pass-plugin=$HOME/sysu/lib/libsysu-optimizer-plugin.so -passes="print<static-cc>" -disable-output)
 ```

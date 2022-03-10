@@ -6,18 +6,18 @@
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  clang -cc1 -E test/functional/000_main.sysu.c |
+  clang -cc1 -E tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 )
-int 'int'        [StartOfLine]  Loc=<test/functional/000_main.sysu.c:1:1>
-identifier 'main'        [LeadingSpace] Loc=<test/functional/000_main.sysu.c:1:5>
-l_paren '('             Loc=<test/functional/000_main.sysu.c:1:9>
-r_paren ')'             Loc=<test/functional/000_main.sysu.c:1:10>
-l_brace '{'             Loc=<test/functional/000_main.sysu.c:1:11>
-return 'return'  [StartOfLine] [LeadingSpace]   Loc=<test/functional/000_main.sysu.c:2:5>
-numeric_constant '3'     [LeadingSpace] Loc=<test/functional/000_main.sysu.c:2:12>
-semi ';'                Loc=<test/functional/000_main.sysu.c:2:13>
-r_brace '}'      [StartOfLine]  Loc=<test/functional/000_main.sysu.c:3:1>
-eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
+int 'int'        [StartOfLine]  Loc=<tester/functional/000_main.sysu.c:1:1>
+identifier 'main'        [LeadingSpace] Loc=<tester/functional/000_main.sysu.c:1:5>
+l_paren '('             Loc=<tester/functional/000_main.sysu.c:1:9>
+r_paren ')'             Loc=<tester/functional/000_main.sysu.c:1:10>
+l_brace '{'             Loc=<tester/functional/000_main.sysu.c:1:11>
+return 'return'  [StartOfLine] [LeadingSpace]   Loc=<tester/functional/000_main.sysu.c:2:5>
+numeric_constant '3'     [LeadingSpace] Loc=<tester/functional/000_main.sysu.c:2:12>
+semi ';'                Loc=<tester/functional/000_main.sysu.c:2:13>
+r_brace '}'      [StartOfLine]  Loc=<tester/functional/000_main.sysu.c:3:1>
+eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 ```
 
 可以发现，`clang -cc1 -dump-tokens 2>&1` 输出的每一行包含：

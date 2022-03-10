@@ -6,7 +6,7 @@
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  clang -cc1 -E test/functional/000_main.sysu.c |
+  clang -cc1 -E tester/functional/000_main.sysu.c |
   clang -cc1 -ast-dump=json )
 {
   "id": "0x1c9b558",

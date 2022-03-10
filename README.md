@@ -14,18 +14,15 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言的超集，在后者的基础上进行了一些调整，以适应课程需要：
 
 1. 源代码后缀名由 `.sy` 调整为 `.sysu.c`。
-2. 运行时库由 `libsysy.so` 和 `libsysy.a` 调整为 `libsylib.so` 和 `libsylib_static.a`。
-3. 元素类型增加 `char`。
-4. 常量类型增加字符串常量。多行字符串只支持多个`""`的拼接，不支持斜杠 `\` 语法。
-5. 不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
-6. 语句类型增加 `do` - `while` 循环。
-7. 源代码通过**预处理器**（如 `clang -cc1 -E`）处理后传给**编译器**。
-8. 预处理语句以 `#` 开头，并且总是占据一整行。
-9. 运行时库提供的函数需要预先 `#include`。
-10. 不要求每个文件都包含 `main` 函数，可以分模块编译并链接。
-11. Do what you want to do
-
-本项目同样提供了一个 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 到 SYsU 的[转换脚本](test/gen_sysu_c.py)。
+2. 元素类型增加 `char`。
+3. 常量类型增加字符串常量。多行字符串只支持多个`""`的拼接，不支持斜杠 `\` 语法。
+4. 不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
+5. 语句类型增加 `do` - `while` 循环。
+6. 源代码通过**预处理器**（如 `clang -cc1 -E`）处理后传给**编译器**。
+7. 预处理语句以 `#` 开头，并且总是占据一整行。
+8. 运行时库提供的函数需要预先 `#include`。
+9. 不要求每个文件都包含 `main` 函数，可以分模块编译并链接。
+10. Do what you want to do
 
 ## 编译运行
 
@@ -47,7 +44,7 @@ cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_INSTALL_PREFIX=~/sysu \
-  -DCPACK_SOURCE_IGNORE_FILES=".git/;test/performance*" \
+  -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/performance*" \
   -B ~/sysu/build
 
 cmake --build ~/sysu/build
@@ -61,7 +58,7 @@ cmake --build ~/sysu/build -t package_source
 
 # 检查编译结果
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
   sysu-generator )
@@ -86,14 +83,14 @@ SYsU 的预处理器，通过调用 `cpp` 实现（偷懒）。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c )
-# 1 "test/functional/000_main.sysu.c"
+  sysu-preprocessor tester/functional/000_main.sysu.c )
+# 1 "tester/functional/000_main.sysu.c"
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 31 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
 # 32 "<command-line>" 2
-# 1 "test/functional/000_main.sysu.c"
+# 1 "tester/functional/000_main.sysu.c"
 int main(){
     return 3;
 }
@@ -105,36 +102,36 @@ SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输�
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer )
-int 'int'               Loc=<test/functional/000_main.sysu.c:1:1>
-identifier 'main'               Loc=<test/functional/000_main.sysu.c:1:5>
-l_paren '('             Loc=<test/functional/000_main.sysu.c:1:9>
-r_paren ')'             Loc=<test/functional/000_main.sysu.c:1:10>
-l_brace '{'             Loc=<test/functional/000_main.sysu.c:1:11>
-return 'return'         Loc=<test/functional/000_main.sysu.c:2:5>
-numeric_constant '3'            Loc=<test/functional/000_main.sysu.c:2:12>
-semi ';'                Loc=<test/functional/000_main.sysu.c:2:13>
-r_brace '}'             Loc=<test/functional/000_main.sysu.c:3:1>
-eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
+int 'int'               Loc=<tester/functional/000_main.sysu.c:1:1>
+identifier 'main'               Loc=<tester/functional/000_main.sysu.c:1:5>
+l_paren '('             Loc=<tester/functional/000_main.sysu.c:1:9>
+r_paren ')'             Loc=<tester/functional/000_main.sysu.c:1:10>
+l_brace '{'             Loc=<tester/functional/000_main.sysu.c:1:11>
+return 'return'         Loc=<tester/functional/000_main.sysu.c:2:5>
+numeric_constant '3'            Loc=<tester/functional/000_main.sysu.c:2:12>
+semi ';'                Loc=<tester/functional/000_main.sysu.c:2:13>
+r_brace '}'             Loc=<tester/functional/000_main.sysu.c:3:1>
+eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 ```
 
 可以对比一下 `clang -cc1 -dump-tokens 2>&1` 的结果。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-preprocessor tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1)
-int 'int'        [StartOfLine]  Loc=<test/functional/000_main.sysu.c:1:1>
-identifier 'main'        [LeadingSpace] Loc=<test/functional/000_main.sysu.c:1:5>
-l_paren '('             Loc=<test/functional/000_main.sysu.c:1:9>
-r_paren ')'             Loc=<test/functional/000_main.sysu.c:1:10>
-l_brace '{'             Loc=<test/functional/000_main.sysu.c:1:11>
-return 'return'  [StartOfLine] [LeadingSpace]   Loc=<test/functional/000_main.sysu.c:2:5>
-numeric_constant '3'     [LeadingSpace] Loc=<test/functional/000_main.sysu.c:2:12>
-semi ';'                Loc=<test/functional/000_main.sysu.c:2:13>
-r_brace '}'      [StartOfLine]  Loc=<test/functional/000_main.sysu.c:3:1>
-eof ''          Loc=<test/functional/000_main.sysu.c:3:2>
+int 'int'        [StartOfLine]  Loc=<tester/functional/000_main.sysu.c:1:1>
+identifier 'main'        [LeadingSpace] Loc=<tester/functional/000_main.sysu.c:1:5>
+l_paren '('             Loc=<tester/functional/000_main.sysu.c:1:9>
+r_paren ')'             Loc=<tester/functional/000_main.sysu.c:1:10>
+l_brace '{'             Loc=<tester/functional/000_main.sysu.c:1:11>
+return 'return'  [StartOfLine] [LeadingSpace]   Loc=<tester/functional/000_main.sysu.c:2:5>
+numeric_constant '3'     [LeadingSpace] Loc=<tester/functional/000_main.sysu.c:2:12>
+semi ';'                Loc=<tester/functional/000_main.sysu.c:2:13>
+r_brace '}'      [StartOfLine]  Loc=<tester/functional/000_main.sysu.c:3:1>
+eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 ```
 
 ### `parser`
@@ -143,7 +140,7 @@ SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 jso
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser )
 {
@@ -177,7 +174,7 @@ $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-preprocessor tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 |
   sysu-parser )
 ```
@@ -188,7 +185,7 @@ $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
   sysu-generator )
@@ -205,11 +202,11 @@ entry:
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-preprocessor test/functional/000_main.sysu.c |
+  sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
   sysu-generator |
-  lli --load=$HOME/sysu/lib/libsylib.so ) # 该输出来自运行时库的计时统计
+  lli --load=$HOME/sysu/lib/libsysy.so ) # 该输出来自运行时库的计时统计
 TOTAL: 0H-0M-0S-0us
 $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
 3
@@ -226,9 +223,9 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
 
-### `sylib`
+### `librarian`
 
-运行时库 `libsylib`。
+运行时库 `libsysy`。
 
 ### `test`
 

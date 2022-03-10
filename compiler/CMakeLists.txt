@@ -8,9 +8,9 @@ FOREACH(_test lexer-0)
         ${CMAKE_CURRENT_SOURCE_DIR}/sysu-compiler
         --unittest ${_test}
         --clang $<TARGET_FILE:clang>
-        --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_CURRENT_SOURCE_DIR}/../sylib -E"
+        --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_CURRENT_SOURCE_DIR}/../librarian -E"
         --sysu-lexer $<TARGET_FILE:sysu-lexer>
-        "${CMAKE_SOURCE_DIR}/test/functional/000_main.sysu.c")
+        "${CMAKE_SOURCE_DIR}/tester/functional/000_main.sysu.c")
 ENDFOREACH()
 
 FOREACH(_test lexer-1 lexer-2 lexer-3)
@@ -19,7 +19,7 @@ FOREACH(_test lexer-1 lexer-2 lexer-3)
         ${CMAKE_CURRENT_SOURCE_DIR}/sysu-compiler
         --unittest ${_test}
         --clang $<TARGET_FILE:clang>
-        --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_CURRENT_SOURCE_DIR}/../sylib -E"
+        --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_CURRENT_SOURCE_DIR}/../librarian -E"
         --sysu-lexer $<TARGET_FILE:sysu-lexer>
         "${CMAKE_SOURCE_DIR}/**/*.sysu.c")
 ENDFOREACH()
@@ -30,9 +30,9 @@ FOREACH(_test parser-0)
         ${CMAKE_CURRENT_SOURCE_DIR}/sysu-compiler
         --unittest ${_test}
         --clang $<TARGET_FILE:clang>
-        --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_CURRENT_SOURCE_DIR}/../sylib -E"
+        --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_CURRENT_SOURCE_DIR}/../librarian -E"
         --sysu-parser $<TARGET_FILE:sysu-parser>
-        "${CMAKE_SOURCE_DIR}/test/functional/000_main.sysu.c")
+        "${CMAKE_SOURCE_DIR}/tester/functional/000_main.sysu.c")
 ENDFOREACH()
 
 FOREACH(_test parser-1 parser-2 parser-3)
@@ -41,7 +41,7 @@ FOREACH(_test parser-1 parser-2 parser-3)
         ${CMAKE_CURRENT_SOURCE_DIR}/sysu-compiler
         --unittest ${_test}
         --clang $<TARGET_FILE:clang>
-        --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_CURRENT_SOURCE_DIR}/../sylib -E"
+        --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_CURRENT_SOURCE_DIR}/../librarian -E"
         --sysu-parser $<TARGET_FILE:sysu-parser>
         "${CMAKE_SOURCE_DIR}/**/*.sysu.c")
 ENDFOREACH()
