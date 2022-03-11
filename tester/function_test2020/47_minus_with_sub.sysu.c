@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Use minus with sub in one expr
 int main () {
     int a;

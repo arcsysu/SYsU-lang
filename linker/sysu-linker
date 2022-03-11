@@ -1,0 +1,28 @@
+#!/bin/sh
+# -*- python -*-
+# This file is bilingual. The following shell code finds our preferred python.
+# Following line is a shell no-op, and starts a multi-line Python comment.
+# See https://stackoverflow.com/a/47886254
+""":"
+# prefer SYSU_PYTHON environment variable, python3, python
+SYSU_PREFERRED_PYTHONS="python3 python"
+for cmd in "${SYSU_PYTHON:-}" ${SYSU_PREFERRED_PYTHONS}; do
+    if command -v "$cmd" >/dev/null; then
+        export SYSU_PYTHON="$(command -v "$cmd")"
+        exec "${SYSU_PYTHON}" "$0" "$@"
+    fi
+done
+echo "==> Error: $0 could not find a python interpreter!" >&2
+exit 1
+":"""
+
+import sys
+import subprocess
+
+
+def main(*argv):
+    return subprocess.run(("ld.lld",)+argv[1:]).returncode
+
+
+if __name__ == '__main__':
+    exit(main(*sys.argv))

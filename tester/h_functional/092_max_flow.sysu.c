@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 /*
  * Max flow EK with DFS.
  */

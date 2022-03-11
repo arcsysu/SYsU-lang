@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // And is prior to or
 int main () {
     int a;

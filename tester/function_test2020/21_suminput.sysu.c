@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 //sample:input n numbers,then print the sum of them;
 int n;
 int a[10];

@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int a, b, d;
 
 int set_a(int val) { a = val; return a; }

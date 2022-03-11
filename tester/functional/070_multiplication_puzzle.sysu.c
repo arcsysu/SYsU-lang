@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int a[6]={10,1,50,50,20,5};
 int dp[10][10];
 int main()

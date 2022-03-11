@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int n;
 int swap (int array[], int i, int j){
     int temp;

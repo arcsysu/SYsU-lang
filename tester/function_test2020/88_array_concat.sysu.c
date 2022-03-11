@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 
 int concat(int a0[],int b0[],int c0[])
 {

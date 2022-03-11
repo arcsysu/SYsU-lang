@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int f(int a, int b) {
 	return a * b;
 }

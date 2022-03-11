@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Use arithmetic expression as array's index
 int main() {
     int a;

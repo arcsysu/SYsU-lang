@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 const int N = 10000;
 
 int long_array(int k) {

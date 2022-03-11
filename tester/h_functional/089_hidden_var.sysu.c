@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 
 int b = 5;
 int c[4] = {6, 7, 8, 9};

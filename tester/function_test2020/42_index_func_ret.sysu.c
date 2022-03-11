@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Use return value of a function as array's index
 int _getMaxOfAll(int result[], int size) {
     int maxNum;

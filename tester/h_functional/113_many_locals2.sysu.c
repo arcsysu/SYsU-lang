@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 //sample:input n number, sort them and print them;
    int n;
    int main()

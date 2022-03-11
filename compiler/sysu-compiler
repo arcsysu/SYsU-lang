@@ -192,7 +192,7 @@ def convert_sysy(filenames):
                         "putch", "putarray", "starttime", "stoptime"]
             for pattern in patterns:
                 if src.find(pattern) != -1:
-                    src = "#include <sylib.h>\n"+src
+                    src = "#include <sysy/sylib.h>\n"+src
                     break
             file = open(filename+"su.c", mode="w")
             file.write(src)

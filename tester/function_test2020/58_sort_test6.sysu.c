@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int n;
 
 int counting_sort(int ini_arr[], int sorted_arr[], int n) {

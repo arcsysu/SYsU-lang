@@ -1,0 +1,1 @@
+INSTALL(PROGRAMS sysu-translator TYPE BIN)

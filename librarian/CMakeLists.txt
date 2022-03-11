@@ -1,3 +1,3 @@
 ADD_LIBRARY(sysy SHARED sylib.cc)
 INSTALL(TARGETS sysy)
-INSTALL(FILES sylib.h TYPE INCLUDE)
+INSTALL(FILES sylib.h DESTINATION include/sysy)

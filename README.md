@@ -32,7 +32,7 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 # 安装依赖
 sudo apt install \
   ninja-build cmake git python3 \
-  cpp flex bison zlib1g-dev \
+  cpp lld flex bison zlib1g-dev \
   clang libclang-dev llvm-dev
 
 git clone https://github.com/arcsysu/SYsU-lang
@@ -279,9 +279,17 @@ entry:
   opt --enable-new-pm -S -load-pass-plugin=libsysu-optimizer-plugin.so -passes="sysu-optimizer-pass" )
 ```
 
+### `translator`
+
+将 LLVM-IR 翻译成汇编或二进制文件。当前 `sysu-translator` 通过直接调用 `llc` 实现。
+
+### `linker`
+
+链接器。当前 `sysu-linker` 通过直接调用 `ld.lld` 实现。
+
 ### `librarian`
 
-包含运行时库 `libsysy`。
+包含运行时库 `libsysy.so`。
 
 ### `tester`
 

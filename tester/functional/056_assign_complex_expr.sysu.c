@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Use complex expression in assign structure
 int main () {
     int a;

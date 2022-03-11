@@ -12,7 +12,7 @@ The raw image can be found from <https://www.pixiv.net/artworks/72126656>.
 - <https://ursinus-cs173-s2020.github.io/CoursePage/Assignments/HW7_ASCIIArt/>
 
 */
-#include <sylib.h>
+#include <sysy/sylib.h>
 void wk_puts(char s[]) {
   int i = -1;
   if (s[i = i + 1])

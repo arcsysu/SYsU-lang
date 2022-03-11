@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // test if-else-if
 int ifElseIf() {
   int a;

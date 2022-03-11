@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 
 int func(int a, int b[][59], int c, int d[], int e, int f, int g[], int h, int i)
 {

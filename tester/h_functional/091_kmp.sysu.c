@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 
 void get_next(int str[], int next[])
 {

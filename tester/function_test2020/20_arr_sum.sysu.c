@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int a[5];
 int main(){
 	a[0] = getint();

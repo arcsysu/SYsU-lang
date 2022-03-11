@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int func(int n) {
   if (n <= 50) {
     putint(n);

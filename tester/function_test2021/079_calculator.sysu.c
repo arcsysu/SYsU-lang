@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int ints[10000];
 int intt;
 int chas[10000];

@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 const int ascii_0 = 48;
 
 int my_getint()

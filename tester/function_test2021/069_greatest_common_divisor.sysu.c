@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int fun(int m,int n){
 	int rem;			
 	while(n > 0){

@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 void sort(int arr[], int len) {
   int i = 0;
   while (i < len - 1) {

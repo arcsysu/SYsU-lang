@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int func1(int x, int y, int z) {
   if (z == 0) {
     return x * y;

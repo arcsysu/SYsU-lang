@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Add is prior than equal and not equal
 int main () {
     int a;

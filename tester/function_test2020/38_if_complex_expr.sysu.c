@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Use complex expression in if structure
 int main () {
     int a;

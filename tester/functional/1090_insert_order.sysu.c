@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 //int n;
 int N;
 int insert(int a[],int x)

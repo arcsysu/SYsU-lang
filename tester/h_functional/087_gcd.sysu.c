@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 
 int gcd(int m, int n)
 {

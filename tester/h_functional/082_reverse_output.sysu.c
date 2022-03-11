@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 void reverse(int n) {
 	int next;
 	if (n <= 1) {

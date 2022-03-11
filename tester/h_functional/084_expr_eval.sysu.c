@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 const int TOKEN_NUM = 0, TOKEN_OTHER = 1;
 int last_char = 32, num, other;
 int cur_token;

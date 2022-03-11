@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int exgcd(int a,int b,int x[],int y[]) {
 	if(b == 0) {
 		x[0] = 1;

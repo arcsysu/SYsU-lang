@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int ans[50], sum = 0, n;
 
 int row[50], line1[50], line2[100];

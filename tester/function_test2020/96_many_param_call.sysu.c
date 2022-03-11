@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Call a func with many params.
 
 int testParam8(int a0, int a1, int a2, int a3,

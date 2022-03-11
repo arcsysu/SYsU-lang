@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Count how many alpha in a string
 int main() {
     int string[500];

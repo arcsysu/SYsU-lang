@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Count all the word in the string
 
 int wc(int string[], int n) {

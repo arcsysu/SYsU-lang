@@ -1,0 +1,1 @@
+INSTALL(PROGRAMS sysu-linker TYPE BIN)

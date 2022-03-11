@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 // Simple atoi program
 int atoi_(int src[]) {
     int s;

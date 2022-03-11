@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int buf[2][100];
 
 // sort [l, r)

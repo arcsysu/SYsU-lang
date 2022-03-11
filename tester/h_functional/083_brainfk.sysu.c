@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 /*
 a brainfuck interpreter
 reference: https://gist.github.com/maxcountryman/1699708

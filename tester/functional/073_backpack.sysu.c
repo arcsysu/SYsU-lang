@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int V[200][200]={};
 int KnapSack(int n, int w[], int v[], int x[], int C)
 {

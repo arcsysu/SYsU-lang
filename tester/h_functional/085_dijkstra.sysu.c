@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 const int INF = 65535;
 int e[16][16];
 int book[16];

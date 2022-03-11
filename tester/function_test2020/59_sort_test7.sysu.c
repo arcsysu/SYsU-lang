@@ -1,4 +1,4 @@
-#include <sylib.h>
+#include <sysy/sylib.h>
 int n;
 int Merge(int array[], int low, int middle, int high)
 {
