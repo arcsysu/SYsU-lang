@@ -1,4 +1,4 @@
-#include "optimizer-plugin.hh"
+#include "plugin.hh"
 
 #include <llvm/Passes/PassBuilder.h>
 

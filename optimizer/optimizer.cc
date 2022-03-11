@@ -1,4 +1,4 @@
-#include "optimizer-plugin.hh"
+#include "plugin.hh"
 #include <llvm/IRReader/IRReader.h>
 #include <llvm/Passes/PassBuilder.h>
 #include <llvm/Support/CommandLine.h>
