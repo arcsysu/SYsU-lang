@@ -57,11 +57,12 @@ CTEST_OUTPUT_ON_FAILURE=1 cmake --build ~/sysu/build -t test
 cmake --build ~/sysu/build -t package_source
 
 # 检查编译结果
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
-  sysu-generator )
+  sysu-generator |
+  sysu-optimizer )
 ```
 
 ## 代码结构
@@ -70,14 +71,15 @@ cmake --build ~/sysu/build -t package_source
 
 ### `compiler`
 
-SYsU 编译器的上层驱动，类似于 `clang`。当前当前支持的功能有：
+SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能有：
 
+- `--help`：查看完整命令行选项
 - `--unittest`：单元测试
 - `--convert-sysy`：转换 SysY 到 SYsU
 
 ```bash
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
-  sysu-compiler --help )
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-compiler tester/functional/000_main.sysu.c )
 ```
 
 后续功能开发中。
@@ -206,12 +208,12 @@ entry:
 至此一个初级的 SYsU 编译器就完成了！你可以使用 `lli` JIT 地执行编译出来的代码。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
   sysu-generator |
-  lli --load=$HOME/sysu/lib/libsysy.so ) # 该输出来自运行时库的计时统计
+  lli --load=libsysy.so ) # 该输出来自运行时库的计时统计
 TOTAL: 0H-0M-0S-0us
 $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
 3
@@ -219,18 +221,45 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 ### `optimizer`
 
-`sysu-optimizer` 接受 `sysu-generator` 的输出，完成一些优化 Pass：
+`sysu-optimizer` 是 SYsU 的优化器，从 `sysu-generator` 获得输入，输出优化后的 LLVM-IR。作为代码优化实验模块，本仓库中的 `sysu-optimizer` 并没有实现优化 IR 的功能，需要学生将其补充完整（[详细实验要求](optimizer/README.md)）。
 
-1. 常量折叠
-2. 常量传播
-3. 块间公共子表达式删除
-4. Do what you want to do
+注意在以下的输出中，`; ModuleID = '<stdin>'` 前的输出来自 `stderr`，包含了一个[banach-space/llvm-tutor](https://github.com/banach-space/llvm-tutor/blob/main/lib/StaticCallCounter.cpp) 中包含的 `StaticCallCounter` Pass，可以统计生成代码中包含哪些 `call` 调用。
 
-并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
+```bash
+$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH
+  sysu-preprocessor tester/functional/000_main.sysu.c |
+  sysu-lexer |
+  sysu-parser |
+  sysu-generator |
+  sysu-optimizer )
+=================================================
+sysu-optimizer: static analysis results
+=================================================
+NAME                 #N DIRECT CALLS
+-------------------------------------------------
+-------------------------------------------------
+
+; ModuleID = '<stdin>'
+source_filename = "-"
+
+define i32 @main() {
+entry:
+  ret i32 3
+}
+```
+
+该目录下同时包括了一个 LLVM 插件 `libsysu-optimizer-plugin.so`，可以使用 `opt` 直接加载。这意味着 `sysu-optimizer` 中的 pass 也可直接用于 LLVM 生态。
+
+```bash
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+  clang -cc1 -E tester/mizuno_ai/mizuno_ai.sysu.c |
+  clang -cc1 -S -emit-llvm |
+  opt --enable-new-pm -S -load-pass-plugin=libsysu-optimizer-plugin.so -passes="sysu-optimizer-pass" )
+```
 
 ### `librarian`
 
-运行时库 `libsysy`。
+包含运行时库 `libsysy`。
 
 ### `tester`
 

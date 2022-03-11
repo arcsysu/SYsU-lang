@@ -63,13 +63,13 @@ llvm::AnalysisKey sysu::StaticCallCounter::Key;
 
 extern "C" {
 llvm::PassPluginLibraryInfo LLVM_ATTRIBUTE_WEAK llvmGetPassPluginInfo() {
-  return {LLVM_PLUGIN_API_VERSION, "static-cc", LLVM_VERSION_STRING,
+  return {LLVM_PLUGIN_API_VERSION, "sysu-optimizer-pass", LLVM_VERSION_STRING,
           [](llvm::PassBuilder &PB) {
-            // #1 REGISTRATION FOR "opt -passes=print<static-cc>"
+            // #1 REGISTRATION FOR "opt -passes=sysu-optimizer-pass"
             PB.registerPipelineParsingCallback(
                 [&](llvm::StringRef Name, llvm::ModulePassManager &MPM,
                     llvm::ArrayRef<llvm::PassBuilder::PipelineElement>) {
-                  if (Name == "print<static-cc>") {
+                  if (Name == "sysu-optimizer-pass") {
                     MPM.addPass(sysu::StaticCallCounterPrinter(llvm::errs()));
                     return true;
                   }

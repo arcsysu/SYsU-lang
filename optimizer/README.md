@@ -1,17 +1,26 @@
 # sysu-optimizer
 
+`sysu-optimizer` 接受 `sysu-generator` 的输出，完成一些优化 Pass：
+
+1. 常量折叠
+2. 常量传播
+3. 块间公共子表达式删除
+4. Do what you want to do
+
+并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
+
 ```bash
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer 2>&1 |
+  sysu-lexer |
   sysu-parser |
   sysu-generator |
-  LD_LIBRARY_PATH+=$HOME/sysu/lib sysu-optimizer --help) # 暂时不work，待fix
+  sysu-optimizer )
 # or
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
-  opt --enable-new-pm -load-pass-plugin=$HOME/sysu/lib/libsysu-optimizer-plugin.so -passes="print<static-cc>" -disable-output)
+  opt -S --enable-new-pm -load-pass-plugin=libsysu-optimizer-plugin.so -passes="sysu-optimizer-pass" )
 ```
 
 ## 你可能会感兴趣的

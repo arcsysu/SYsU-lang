@@ -8,13 +8,10 @@
 namespace {
 llvm::cl::OptionCategory CallCounterCategory{"call counter options"};
 
-llvm::cl::opt<llvm::StringRef> InputModule{
-    llvm::cl::Positional,
-    llvm::cl::desc{"<Module to analyze>"},
-    llvm::cl::value_desc{"bitcode filename"},
-    llvm::cl::init(""),
-    llvm::cl::Required,
-    llvm::cl::cat{CallCounterCategory}};
+llvm::cl::opt<std::string> InputModule{
+    llvm::cl::Positional, llvm::cl::desc{"<Module to analyze>"},
+    llvm::cl::value_desc{"filename, *.bc or *.ll or - (use stdin, default)"},
+    llvm::cl::init("-"), llvm::cl::cat{CallCounterCategory}};
 } // namespace
 
 int main(int argc, char **argv) {
@@ -58,5 +55,6 @@ int main(int argc, char **argv) {
   // Finally, run the passes registered with MPM
   MPM.run(*M, MAM);
 
+  M->print(llvm::outs(), nullptr);
   return 0;
 }

@@ -200,6 +200,21 @@ def convert_sysy(filenames):
     return 0
 
 
+def compile(filenames, preprocessor, lexer, parser, generator, optimizer):
+    for filename in filenames:
+        sysu = subprocess.run([preprocessor, filename], stdout=subprocess.PIPE)
+        for it in [lexer, parser, generator, optimizer]:
+            if sysu.returncode:
+                return sysu.returncode
+            sysu = subprocess.run(
+                [it], stdout=subprocess.PIPE, input=sysu.stdout)
+        if sysu.returncode:
+            return sysu.returncode
+        print(str(sysu.stdout, encoding="utf8"))
+
+    return 0
+
+
 def main(*argv):
     parser = argparse.ArgumentParser(prog=os.path.basename(argv[0]))
     specs = ["clang", "sysu-preprocessor", "sysu-lexer",
@@ -231,7 +246,7 @@ def main(*argv):
             return unittest_parser(args.unittest, args.clang,
                                    args.sysu_preprocessor, args.sysu_parser,
                                    filenames)
-    return 0
+    return compile(filenames, args.sysu_preprocessor, args.sysu_lexer, args.sysu_parser, args.sysu_generator, args.sysu_optimizer)
 
 
 if __name__ == '__main__':
