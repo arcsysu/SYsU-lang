@@ -203,13 +203,13 @@ def convert_sysy(filenames):
 def compile(filenames, preprocessor, lexer, parser, generator, optimizer):
     for filename in filenames:
         sysu = subprocess.run([preprocessor, filename], stdout=subprocess.PIPE)
-        for it in [lexer, parser, generator, optimizer]:
-            if sysu.returncode:
-                return sysu.returncode
-            sysu = subprocess.run(
-                [it], stdout=subprocess.PIPE, input=sysu.stdout)
         if sysu.returncode:
             return sysu.returncode
+        for it in [lexer, parser, generator, optimizer]:
+            sysu = subprocess.run(
+                [it], stdout=subprocess.PIPE, input=sysu.stdout)
+            if sysu.returncode:
+                return sysu.returncode
         print(str(sysu.stdout, encoding="utf8"))
 
     return 0
