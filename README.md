@@ -57,7 +57,9 @@ CTEST_OUTPUT_ON_FAILURE=1 cmake --build ~/sysu/build -t test
 cmake --build ~/sysu/build -t package_source
 
 # 检查编译结果
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
@@ -71,14 +73,16 @@ cmake --build ~/sysu/build -t package_source
 
 ### `compiler`
 
-SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能有：
+SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能包括：
 
-- `--help`：查看完整命令行选项
+- `--help`：查看完整使用帮助
 - `--unittest`：单元测试
 - `--convert-sysy`：转换 SysY 到 SYsU
 
 ```bash
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler tester/functional/000_main.sysu.c )
 ```
 
@@ -89,7 +93,9 @@ SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能�
 SYsU 的预处理器，通过调用 `cpp` 实现（偷懒）。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c )
 # 1 "tester/functional/000_main.sysu.c"
 # 1 "<built-in>"
@@ -108,7 +114,9 @@ int main(){
 SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输出。作为词法分析实验模块，本仓库中的 `sysu-lexer` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](lexer/README.md)）。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer )
 int 'int'               Loc=<tester/functional/000_main.sysu.c:1:1>
@@ -126,7 +134,9 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 可以对比一下 `clang -cc1 -dump-tokens 2>&1` 的结果。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1)
 int 'int'        [StartOfLine]  Loc=<tester/functional/000_main.sysu.c:1:1>
@@ -146,7 +156,9 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser )
@@ -180,7 +192,9 @@ $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
 当然，也可以直接从 `clang -cc1 -dump-tokens 2>&1` 获得输入。
 
 ```bash
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 |
   sysu-parser )
@@ -191,7 +205,9 @@ $ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
 `sysu-generator` 将 `sysu-parser` 得到的语法分析树转换为 LLVM IR。作为代码生成实验模块，本仓库中的 `sysu-generator` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](generator/README.md)）。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
@@ -208,7 +224,9 @@ entry:
 至此一个初级的 SYsU 编译器就完成了！你可以使用 `lli` JIT 地执行编译出来的代码。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
@@ -226,7 +244,9 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 注意在以下的输出中，`; ModuleID = '<stdin>'` 前的输出来自 `stderr`，包含了一个[banach-space/llvm-tutor](https://github.com/banach-space/llvm-tutor/blob/main/lib/StaticCallCounter.cpp) 中包含的 `StaticCallCounter` Pass，可以统计生成代码中包含哪些 `call` 调用。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
@@ -251,7 +271,9 @@ entry:
 该目录下同时包括了一个 LLVM 插件 `libsysu-optimizer-plugin.so`，可以使用 `opt` 直接加载。这意味着 `sysu-optimizer` 中的 pass 也可直接用于 LLVM 生态。
 
 ```bash
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -cc1 -E tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
   opt --enable-new-pm -S -load-pass-plugin=libsysu-optimizer-plugin.so -passes="sysu-optimizer-pass" )

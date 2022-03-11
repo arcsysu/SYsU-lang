@@ -5,7 +5,9 @@
 本次词法分析实验中，你被希望完成一个词法分析器，输出与 `clang -cc1 -dump-tokens 2>&1` 一致的内容。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -cc1 -E tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 )
 int 'int'        [StartOfLine]  Loc=<tester/functional/000_main.sysu.c:1:1>

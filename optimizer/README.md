@@ -10,14 +10,18 @@
 并思考，是否可以在语义分析时完成？在这两个阶段各自的优点与缺点是什么？
 
 ```bash
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
   sysu-generator |
   sysu-optimizer )
 # or
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
   opt -S --enable-new-pm -load-pass-plugin=libsysu-optimizer-plugin.so -passes="sysu-optimizer-pass" )
