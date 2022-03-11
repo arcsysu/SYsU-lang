@@ -59,12 +59,17 @@ cmake --build ~/sysu/build -t package_source
 # 检查编译结果
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
   sysu-generator |
-  sysu-optimizer )
+  sysu-optimizer |
+  sysu-translator > a.S &&
+  clang -lsysy -o a.out a.S &&
+  ./a.out &&
+  rm -f a.S a.out )
 ```
 
 ## 代码结构
