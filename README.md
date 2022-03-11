@@ -66,9 +66,10 @@ cmake --build ~/sysu/build -t package_source
   sysu-parser |
   sysu-generator |
   sysu-optimizer |
-  sysu-translator > a.S &&
+  sysu-translator -o a.S &&
   clang -lsysy -o a.out a.S &&
-  ./a.out &&
+  ./a.out ;
+  echo $? &&
   rm -f a.S a.out )
 ```
 
