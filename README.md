@@ -274,7 +274,7 @@ entry:
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  clang -cc1 -E tester/mizuno_ai/mizuno_ai.sysu.c |
+  clang -E tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
   opt --enable-new-pm -S -load-pass-plugin=libsysu-optimizer-plugin.so -passes="sysu-optimizer-pass" )
 ```
