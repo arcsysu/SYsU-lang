@@ -150,7 +150,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
   sysu-compiler --unittest=parser-1 "**/*.sysu.c" )
 ```
 
-### 扩展方向
+## 扩展方向
 
 本节给出一些扩展方向供参考。
 
@@ -166,26 +166,19 @@ $ ( export PATH=~/sysu/bin:$PATH \
    - 检查是否有空执行体（`-Wempty-body`）
    - 检查是否有 self-comparison 等（`-Wtautological-compare`）
    - Do what you want to do
-5. 基于语法分析树实现一些优化，如
-   - 常量折叠
-   - 常量传播
-   - 块间公共子表达式删除
-   - 死代码删除
-   - 提取循环无关语句到循环外
-   - Do what you want to do
-6. 基于语法分析树实现一些小工具，如
+5. 基于语法分析树实现一些小工具，如
    - `sysu-format`：面向 SYsU 的代码格式化工具
    - `sysu-refactor`：面向 SYsU 的代码重构工具
      - 将输入代码的 `while (Cond) Simt` 替换为 `if (Cond) do Simt while (Cond)`
      - 或者相反！
-7. 将 `sysu-lexer` 与 `sysu-parser` 的核心代码链接到一起，作为 `sysu-lang` 完整编译器的一部分。
+6. 将 `sysu-lexer` 与 `sysu-parser` 的核心代码链接到一起，作为 `sysu-lang` 完整编译器的一部分。
    - 输入一个经过预处理的 SYsU 源程序，输出其语法分析树。
    - 提示：`ADD_FLEX_BISON_DEPENDENCY`
-8. 鉴于本次实验已经开始进入 LLVM 开发范畴，建议遵守 [LLVM Coding Standards](https://releases.llvm.org/11.0.1/docs/CodingStandards.html)
+7. 鉴于本次实验已经开始进入 LLVM 开发范畴，建议遵守 [LLVM Coding Standards](https://releases.llvm.org/11.0.1/docs/CodingStandards.html)
    - 可以使用 `clang-tidy` 与 `clang-format` 工具检查你的代码是否规范，如 `cmake -DCMAKE_CXX_CLANG_TIDY=clang-tidy #...`
    - 将 [LLVM Coding Standards](https://releases.llvm.org/11.0.1/docs/CodingStandards.html) 与 [GNU](https://www.gnu.org/prep/standards/standards.html)、[Google](https://google.github.io/styleguide/)、[Chromium](https://chromium.googlesource.com/chromium/src/+/HEAD/styleguide/c++/c++-dos-and-donts.md)、[Microsoft](https://docs.microsoft.com/zh-cn/dotnet/csharp/fundamentals/coding-style/coding-conventions)、[Mozilla](https://firefox-source-docs.mozilla.org/code-quality/coding-style/coding_style_cpp.html)、[WebKit](https://webkit.org/code-style-guidelines/) 等其他知名编程规范进行比较，选出一种或是基于他们归纳出一个你认为最合理的编程规范，编写对应的 `.clang-format` 与 `.clang-tidy` 文件，并在以后坚持使用下去！~~（就我自己来说更加偏好 LLVM，毕竟没有人会比编译器更懂语言）~~
-9. 改进这个实验模板（欢迎 PR！）。
-10. Do what you want to do。
+8. 改进这个实验模板（欢迎 PR！）。
+9. Do what you want to do。
 
 ## 你可能会感兴趣的
 

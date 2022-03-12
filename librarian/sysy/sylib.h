@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __SYLIB_H_
-#define __SYLIB_H_
+#ifndef __SYSY_SYLIB_H_
+#define __SYSU_SYLIB_H_
 
 #ifdef __cplusplus
 extern "C" {

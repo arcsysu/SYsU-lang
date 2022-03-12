@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __OPTIMIZER_PLUGIN_HH_
-#define __OPTIMIZER_PLUGIN_HH_
+#ifndef __SYSU_OPTIMIZER_PLUGIN_HH_
+#define __SYSU_OPTIMIZER_PLUGIN_HH_
 
 #include <llvm/ADT/MapVector.h>
 #include <llvm/IR/AbstractCallSite.h>

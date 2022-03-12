@@ -61,13 +61,8 @@ cmake --build ~/sysu/build -t package_source
   CPATH=~/sysu/include:$CPATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
-  sysu-generator |
-  sysu-optimizer |
-  sysu-translator -o a.S &&
-  clang -lsysy -o a.out a.S &&
+  sysu-compiler tester/functional/000_main.sysu.c > a.S &&
+  clang -O0 -lsysy -o a.out a.S &&
   ./a.out ;
   echo $? &&
   rm -f a.S a.out )
@@ -327,6 +322,7 @@ github action，保存 CI 自动化配置文件。
 
 1. 一个观点是，在编译原理课程上，不应该过多涉及硬件架构的细节。
 2. LLVM-IR 已经相对底层，非常好翻译成各种汇编，实际上也可以用与本项目相同的方式写一个编译器。
+3. 我们也预留了 LLVM-IR 到汇编的接口 `sysu-translator` 以及链接器的接口 `sysu-linker`，学有余力的同学可以自行实现。
 
 ### Q & A：为什么将词法分析器等模块实现为单独的可执行文件，可能导致运行低效率？
 
@@ -352,3 +348,4 @@ github action，保存 CI 自动化配置文件。
   - [Komorebi660/SysYF-Compiler](https://github.com/Komorebi660/SysYF-Compiler)
   - [pku-minic/online-doc](https://github.com/pku-minic/online-doc)
   - [ustb-owl/Lava](https://github.com/ustb-owl/Lava)
+  - [tinsir888/Compiler-SysY](https://github.com/tinsir888/Compiler-SysY)

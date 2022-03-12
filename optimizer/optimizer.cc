@@ -8,7 +8,7 @@
 namespace {
 llvm::cl::OptionCategory CallCounterCategory{"call counter options"};
 
-llvm::cl::opt<std::string> InputModule{
+llvm::cl::opt<decltype(llvm::StringRef("").str())> InputModule{
     llvm::cl::Positional, llvm::cl::desc{"<Module to analyze>"},
     llvm::cl::value_desc{"filename, *.bc or *.ll or - (use stdin, default)"},
     llvm::cl::init("-"), llvm::cl::cat{CallCounterCategory}};

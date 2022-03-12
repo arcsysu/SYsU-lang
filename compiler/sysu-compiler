@@ -200,13 +200,21 @@ def convert_sysy(filenames):
     return 0
 
 
-def compile(filenames, preprocessor, lexer, parser, generator, optimizer):
+def compile(
+        filenames,
+        preprocessor,
+        lexer,
+        parser,
+        generator,
+        optimizer,
+        translator,
+        linker):
     for filename in filenames:
         sysu = subprocess.run(preprocessor + " " + filename,
                               shell=True, stdout=subprocess.PIPE)
         if sysu.returncode:
             return sysu.returncode
-        for it in [lexer, parser, generator, optimizer]:
+        for it in [lexer, parser, generator, optimizer, translator]:
             sysu = subprocess.run(
                 [it], shell=True, stdout=subprocess.PIPE, input=sysu.stdout)
             if sysu.returncode:
@@ -218,8 +226,8 @@ def compile(filenames, preprocessor, lexer, parser, generator, optimizer):
 
 def main(*argv):
     parser = argparse.ArgumentParser(prog=os.path.basename(argv[0]))
-    specs = ["clang", "sysu-preprocessor", "sysu-lexer",
-             "sysu-parser", "sysu-generator", "sysu-optimizer"]
+    specs = ["clang", "sysu-preprocessor", "sysu-lexer", "sysu-parser",
+             "sysu-generator", "sysu-optimizer", "sysu-translator", "sysu-linker"]
     for spec in specs:
         parser.add_argument("--"+spec, help="Specify "+spec, default=spec)
     parser.add_argument("--unittest")
@@ -247,7 +255,11 @@ def main(*argv):
             return unittest_parser(args.unittest, args.clang,
                                    args.sysu_preprocessor, args.sysu_parser,
                                    filenames)
-    return compile(filenames, args.sysu_preprocessor, args.sysu_lexer, args.sysu_parser, args.sysu_generator, args.sysu_optimizer)
+    returncode = compile(filenames, args.sysu_preprocessor, args.sysu_lexer,
+                         args.sysu_parser, args.sysu_generator,
+                         args.sysu_optimizer, args.sysu_translator,
+                         args.sysu_linker)
+    return returncode
 
 
 if __name__ == '__main__':

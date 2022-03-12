@@ -13,7 +13,7 @@ The raw image can be found from <https://www.pixiv.net/artworks/72126656>.
 
 */
 #include <sysy/sylib.h>
-void wk_puts(char s[]) {
+int wk_puts(char s[]) {
   int i = -1;
   if (s[i = i + 1])
     do {
@@ -21,6 +21,7 @@ void wk_puts(char s[]) {
     } while (s[i = i + 1]);
   const char r[9] = "\\\\\\\"", t[9] = "\n\\\"\\n\\\\\\";
   putch(t[0]);
+  return i;
 }
 int main() {
   wk_puts(
