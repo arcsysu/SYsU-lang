@@ -270,7 +270,7 @@ entry:
 
 ### `librarian`
 
-包含运行时库 `libsysy.so`。
+包含运行时库 `libsysy.so`。注意，此处为自行实现的 `libsysy` ，与原 `libsysy` 代码预期效果一致，但具有更强的可移植性以及与 stdio 的兼容性。
 
 ### `tester`
 

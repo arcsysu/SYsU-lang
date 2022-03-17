@@ -19,7 +19,7 @@ FOREACH(_test lexer-0)
         --clang $<TARGET_FILE:clang>
         --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_SOURCE_DIR}/librarian -E"
         --sysu-lexer $<TARGET_FILE:sysu-lexer>
-        "${CMAKE_SOURCE_DIR}/tester/functional/000_main.sysu.c")
+        "${CMAKE_CURRENT_SOURCE_DIR}/functional/000_main.sysu.c")
 ENDFOREACH()
 
 FOREACH(_test lexer-1 lexer-2 lexer-3)
@@ -30,7 +30,7 @@ FOREACH(_test lexer-1 lexer-2 lexer-3)
         --clang $<TARGET_FILE:clang>
         --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_SOURCE_DIR}/librarian -E"
         --sysu-lexer $<TARGET_FILE:sysu-lexer>
-        "${CMAKE_SOURCE_DIR}/**/*.sysu.c")
+        "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
 ENDFOREACH()
 
 FOREACH(_test parser-0)
@@ -41,7 +41,7 @@ FOREACH(_test parser-0)
         --clang $<TARGET_FILE:clang>
         --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_SOURCE_DIR}/librarian -E"
         --sysu-parser $<TARGET_FILE:sysu-parser>
-        "${CMAKE_SOURCE_DIR}/tester/functional/000_main.sysu.c")
+        "${CMAKE_CURRENT_SOURCE_DIR}/functional/000_main.sysu.c")
 ENDFOREACH()
 
 FOREACH(_test parser-1 parser-2 parser-3)
@@ -52,7 +52,7 @@ FOREACH(_test parser-1 parser-2 parser-3)
         --clang $<TARGET_FILE:clang>
         --sysu-preprocessor "$<TARGET_FILE:clang> -cc1 -I${CMAKE_SOURCE_DIR}/librarian -E"
         --sysu-parser $<TARGET_FILE:sysu-parser>
-        "${CMAKE_SOURCE_DIR}/**/*.sysu.c")
+        "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
 ENDFOREACH()
 
 FOREACH(_test benchmark_generator_and_optimizer_0)
@@ -63,7 +63,7 @@ FOREACH(_test benchmark_generator_and_optimizer_0)
         --clang $<TARGET_FILE:clang>
         --sysu-generator $<TARGET_FILE:sysu-generator>
         --sysu-optimizer $<TARGET_FILE:sysu-optimizer>
-        "${CMAKE_SOURCE_DIR}/tester/functional/000_main.sysu.c")
+        "${CMAKE_CURRENT_SOURCE_DIR}/functional/000_main.sysu.c")
     SET_TESTS_PROPERTIES(
         ${_test}
         PROPERTIES
@@ -79,7 +79,7 @@ FOREACH(_test benchmark_generator_and_optimizer_1)
         --clang $<TARGET_FILE:clang>
         --sysu-generator $<TARGET_FILE:sysu-generator>
         --sysu-optimizer $<TARGET_FILE:sysu-optimizer>
-        "${CMAKE_SOURCE_DIR}/**/*.sysu.c")
+        "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
     SET_TESTS_PROPERTIES(
         ${_test}
         PROPERTIES

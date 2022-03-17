@@ -31,7 +31,7 @@ void _sysy_putarray(int n, int a[]);
 #define getint() _sysy_getint()
 #define putint(a) _sysy_putint(a)
 
-#define getarray(a) _sysy_getarray(n, a)
+#define getarray(a) _sysy_getarray(a)
 #define putarray(n, a) _sysy_putarray(n, a)
 
 #endif
