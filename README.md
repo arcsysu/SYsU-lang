@@ -5,9 +5,9 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 1. 在兼容 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言的基础上，增加最少的语法支持，使其可以编译 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv)。
 2. 编译器设计借鉴 clang。换言之，在学习的前期，实验产物与 clang 类似甚至可以直接导入 LLVM 工具链；在实验的扩展选项中增加去除外部依赖，完全使用 SYsU 文法，使其可以自举。
 3. 按照自顶向下的顺序进行实验，各个实验模块之间可通过管道进行通信（微 内 核）。
-4. 基于 Github Action 的自动化评测
+4. 支持在线/本地/Github Action 自动批改。
 
-同样欢迎其他高校相关课程使用！
+同样欢迎其他高校相关课程使用！我们同样开源了基于 docker 的[在线评测框架](https://autograder-docs.howardlau.me/)。
 
 ## 语法特征
 
@@ -132,26 +132,6 @@ r_brace '}'             Loc=<tester/functional/000_main.sysu.c:3:1>
 eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 ```
 
-可以对比一下 `clang -cc1 -dump-tokens 2>&1` 的结果。
-
-```bash
-$ ( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  sysu-preprocessor tester/functional/000_main.sysu.c |
-  clang -cc1 -dump-tokens 2>&1)
-int 'int'        [StartOfLine]  Loc=<tester/functional/000_main.sysu.c:1:1>
-identifier 'main'        [LeadingSpace] Loc=<tester/functional/000_main.sysu.c:1:5>
-l_paren '('             Loc=<tester/functional/000_main.sysu.c:1:9>
-r_paren ')'             Loc=<tester/functional/000_main.sysu.c:1:10>
-l_brace '{'             Loc=<tester/functional/000_main.sysu.c:1:11>
-return 'return'  [StartOfLine] [LeadingSpace]   Loc=<tester/functional/000_main.sysu.c:2:5>
-numeric_constant '3'     [LeadingSpace] Loc=<tester/functional/000_main.sysu.c:2:12>
-semi ';'                Loc=<tester/functional/000_main.sysu.c:2:13>
-r_brace '}'      [StartOfLine]  Loc=<tester/functional/000_main.sysu.c:3:1>
-eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
-```
-
 ### `parser`
 
 SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
@@ -203,7 +183,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
 
 ### `generator`
 
-`sysu-generator` 将 `sysu-parser` 得到的语法分析树转换为 LLVM IR。作为代码生成实验模块，本仓库中的 `sysu-generator` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](generator/README.md)）。
+`sysu-generator` 将 `sysu-parser` 得到的语法分析树转换为 LLVM IR。作为代码生成实验模块，本仓库中的 `sysu-generator` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其补充完整（[详细实验要求](generator/README.md)）。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -242,7 +222,7 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 `sysu-optimizer` 是 SYsU 的优化器，从 `sysu-generator` 获得输入，输出优化后的 LLVM-IR。作为代码优化实验模块，本仓库中的 `sysu-optimizer` 并没有实现优化 IR 的功能，需要学生将其补充完整（[详细实验要求](optimizer/README.md)）。
 
-注意在以下的输出中，`; ModuleID = '<stdin>'` 前的输出来自 `stderr`，包含了一个[banach-space/llvm-tutor](https://github.com/banach-space/llvm-tutor/blob/main/lib/StaticCallCounter.cpp) 中包含的 `StaticCallCounter` Pass，可以统计生成代码中包含哪些 `call` 调用。
+注意在以下的输出中，`; ModuleID = '<stdin>'` 前的输出来自 `stderr`，包含了一个来自 [banach-space/llvm-tutor](https://github.com/banach-space/llvm-tutor/blob/main/lib/StaticCallCounter.cpp) 的 `StaticCallCounter` Pass，可以统计生成代码中包含哪些 `call` 调用。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -269,7 +249,7 @@ entry:
 }
 ```
 
-该目录下同时包括了一个 LLVM 插件 `libsysu-optimizer-plugin.so`，可以使用 `opt` 直接加载。这意味着 `sysu-optimizer` 中的 pass 也可直接用于 LLVM 生态。
+同时提供了一个 LLVM 插件 `libsysu-optimizer-plugin.so`，可以使用 `opt` 直接加载。这意味着 `sysu-optimizer` 中的 pass 也可直接用于 LLVM 生态。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH \

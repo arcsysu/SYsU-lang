@@ -1,3 +1,4 @@
+#define SYSY_NO_DEFINE
 #include "sysy/sylib.h"
 #include <chrono>
 #include <cstdio>
@@ -58,39 +59,39 @@ void _sysy_starttime(int lineno) { wuk_timer.start(lineno); }
 void _sysy_stoptime(int lineno) { wuk_timer.stop(lineno); }
 
 /* Input & output functions */
-int getch() {
+int _sysy_getch() {
   char c;
   std::scanf("%c", &c);
   return (int)c;
 }
-void putch(int a) { std::printf("%c", a); }
+void _sysy_putch(int a) { std::printf("%c", a); }
 
-int getint() {
+int _sysy_getint() {
   int t;
   std::scanf("%d", &t);
   return t;
 }
-void putint(int a) { std::printf("%d", a); }
+void _sysy_putint(int a) { std::printf("%d", a); }
 
-int getarray(int a[]) {
-  int n = getint();
+int _sysy_getarray(int a[]) {
+  int n = _sysy_getint();
   int i = 0;
   while (i < n) {
-    a[i] = getint();
+    a[i] = _sysy_getint();
     i = i + 1;
   }
   return n;
 }
-void putarray(int n, int a[]) {
-  putint(n);
-  putch(":"[0]);
+void _sysy_putarray(int n, int a[]) {
+  _sysy_putint(n);
+  _sysy_putch(":"[0]);
   int i = 0;
   while (i < n) {
-    putch(" "[0]);
-    putint(a[i]);
+    _sysy_putch(" "[0]);
+    _sysy_putint(a[i]);
     i = i + 1;
   }
-  putch("\n"[0]);
+  _sysy_putch("\n"[0]);
 }
 #ifdef __cplusplus
 }
