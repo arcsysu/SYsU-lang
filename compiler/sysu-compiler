@@ -86,6 +86,7 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames):
                     logger.error("\nfail: key not match")
                     logger.error(key)
                     return wk_exit(-1)
+        return 0
     for ff in range(len(filenames)):
         filename = filenames[ff]
         logger.info("[{}/{}] {}".format(ff, len(filenames), filename))
@@ -104,7 +105,9 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames):
             clang + " -cc1 -dump-tokens 2>&1 |"+parser,
             input=src, stdout=subprocess.PIPE, shell=True).stdout)
 
-        check_ast(ast0, ast1, testcase, command0, command1)
+        r = check_ast(ast0, ast1, testcase, command0, command1)
+        if r:
+            return r
 
 
 def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
