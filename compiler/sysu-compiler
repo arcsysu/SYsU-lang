@@ -104,7 +104,7 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames):
             clang + " -cc1 -dump-tokens 2>&1 |"+parser,
             input=src, stdout=subprocess.PIPE, shell=True).stdout)
 
-        return check_ast(ast0, ast1, testcase, command0, command1)
+        check_ast(ast0, ast1, testcase, command0, command1)
 
 
 def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
