@@ -1,11 +1,98 @@
 # sysu-generator
 
+## 实验描述
+
+本次中间代码（IR）生成实验中，你被希望完成一个代码生成器，接受来自 `sysu-parser` 或 `clang -cc1 -ast-dump=json` 的语法树输入，生成 LLVM-IR。
+
+```bash
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-preprocessor tester/functional/000_main.sysu.c |
+  clang -cc1 -S -emit-llvm )
+; ModuleID = '-'
+source_filename = "-"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-pc-linux-gnu"
+
+; Function Attrs: noinline nounwind optnone
+define i32 @main() #0 {
+entry:
+  %retval = alloca i32, align 4
+  store i32 0, i32* %retval, align 4
+  ret i32 3
+}
+
+attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="none" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-features"="+cx8,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+
+!llvm.module.flags = !{!0}
+!llvm.ident = !{!1}
+
+!0 = !{i32 1, !"wchar_size", i32 4}
+!1 = !{!"Debian clang version 11.0.1-2"}
+```
+
+注意，你的输出不必与 `clang -cc1 -S -emit-llvm` 完全相同，只要你的 LLVM-IR 在经过编译后与其有相同的输出与返回值。
+
+```bash
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-preprocessor tester/functional/000_main.sysu.c |
+  clang -cc1 -ast-dump=json |
+  sysu-generator )
+; ModuleID = '-'
+source_filename = "-"
+
+define i32 @main() {
+entry:
+  ret i32 3
+}
+```
+
+本目录下提供了一个模板，你可以基于此继续完成整个实验。如果你使用了来自 LLVM 的组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `LLVM_MAP_COMPONENTS_TO_LIBNAMES`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。
+
+然而，不得使用任何封装好的库从源码直接获得 LLVM-IR，如 `libclang`。
+
+## 评分规则
+
+本实验的评分分为两部分：基础部分和扩展部分。
+
+- 对于基础部分的实验，要求通过对应的自动评测，并**提交到[在线评测](https://arcsysu.github.io/SYsU-lang-archive-2022/)，在排行榜上有成绩**。详见自动评测细则一节。
+- 对于扩展部分的实验，你可以完成扩展方向一节的要求，也可以自行探索；如果可能，请同时编写对应的自动评测脚本。助教将按照你实现的难度给出评分。
+
+你需要提交一份实验报告，简要记录你的实验过程、遇到的难点以及解决的方法，并在报告中附上排行榜的上榜截图；助教会定期检查排行榜上的代码。本次实验仅要求功能完全正确，因此只要成功进入排行榜，本次实验即视为通过，排行榜上的成绩与性能对本次实验没有影响。
+
+注意：评测机的系统为 `debian:11`，对应软件依赖的版本为：
+
+- clang@11.0.1
+- llvm@11.0.1
+- flex@2.6.4
+- bison@3.7.5
+
+你需要保证你的代码可以在上述环境中正确工作。
+
+### 自动评测细则
+
+本次实验的评测项目为 `benchmark_generator_and_optimizer_[0-1]`。`benchmark_generator_and_optimizer_0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他评测项详见[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中的一个评测项。
+
+```bash
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
+```
+
+由于部分大算例导出的 `json` 格式的语法生成树大小高达 8GB，评测时会跳过所有大于 32KB 的输入，因此评测成绩不为满分是正常情况。
+
+在线评测时，评测机会将 `compilier`、`librarian` 与 `tester` 目录下的内容替换成本仓库中的内容。不要投机取巧，即使（可能）没有人在看着你。
+
 ## 扩展方向
 
 本节给出一些扩展方向供参考。
 
 1. 扩展更多 C 语言的语法。
-2. 不借助 bison，并完全使用 SYsU 完成本实验，然后用它作为输入测试功能是否正确，以实现自举。
+2. 完全使用 SYsU 完成本实验，然后用它作为输入测试功能是否正确，以实现自举。
 3. 借助 libclang 实现相同的功能。
 4. 基于语法分析树实现一些优化，如
    - 常量折叠
@@ -14,6 +101,7 @@
    - 死代码删除
    - 提取循环无关语句到循环外
    - Do what you want to do
+5. Do what you want to do
 
 ## 你可能会感兴趣的
 
