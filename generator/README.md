@@ -83,9 +83,7 @@ entry:
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 
-由于部分大算例导出的 `json` 格式的语法生成树大小高达 8GB，评测时会跳过所有大于 32KB 的输入，因此评测成绩不为满分是正常情况。
-
-在线评测时，评测机会将 `compilier`、`librarian` 与 `tester` 目录下的内容替换成本仓库中的内容。不要投机取巧，即使（可能）没有人在看着你。
+由于评测机的内存足够大，评测时会设置 `--skip-filesize -1`。在线评测时，评测机会将 `compilier`、`librarian` 与 `tester` 目录下的内容替换成本仓库中的内容。不要投机取巧，即使（可能）没有人在看着你。
 
 ## 扩展方向
 

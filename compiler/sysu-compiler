@@ -90,9 +90,6 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames):
     for ff in range(len(filenames)):
         filename = filenames[ff]
         logger.info("[{}/{}] {}".format(ff, len(filenames), filename))
-        if os.path.getsize(filename) >= 32768:
-            # 慎重测试！
-            continue
         command = preprocessor + " " + filename
         src = subprocess.run(
             command, stdout=subprocess.PIPE, shell=True).stdout
@@ -115,9 +112,6 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
         filename = filenames[ff]
         logger.info("[{}/{}] {}".format(ff, len(filenames),
                                         filename))
-        if os.path.getsize(filename) >= 32768:
-            # 慎重测试！
-            continue
         command = preprocessor + " " + filename
         src = subprocess.run(
             command, stdout=subprocess.PIPE, shell=True).stdout
@@ -230,9 +224,6 @@ def benchmark_generator_and_optimizer(
             filename = filenames[ff]
             logger.info("[{}/{}] {}".format(ff, len(filenames),
                                             filename))
-            if os.path.getsize(filename) >= 32768:
-                # 慎重测试！
-                continue
             sysu = subprocess.run(
                 clang+" -E -O0 "+filename,
                 shell=True,
@@ -339,12 +330,20 @@ def main(*argv):
         "--convert-sysy",
         help="Convert *.sy in [file ...]",
         action="store_true")
+    parser.add_argument(
+        "--skip-filesize",
+        help="'-1' for no skip (default 32768)",
+        type=int,  # 慎重测试！
+        default=32768)
     parser.add_argument("file", default=["-"], nargs="*")
     args = parser.parse_args(argv[1:])
     filenames = []
     for f in args.file:
         tmp = glob.glob(f, recursive=True)
         for t in tmp:
+            if args.skip_filesize >= 0:
+                if os.path.getsize(t) >= args.skip_filesize:
+                    continue
             if t not in filenames:
                 filenames.append(t)
     if args.convert_sysy:

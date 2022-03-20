@@ -79,6 +79,7 @@ SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能�
 - `--help`：查看完整使用帮助
 - `--unittest`：单元测试
 - `--convert-sysy`：转换 SysY 到 SYsU
+- `--skip-filesize`：跳过过大的输入文件（可能会生成高达 8GB 的 json 语法树）
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
