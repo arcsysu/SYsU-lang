@@ -50,9 +50,19 @@ entry:
 }
 ```
 
-本目录下提供了一个模板，你可以基于此继续完成整个实验。如果你使用了来自 LLVM 的组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `LLVM_MAP_COMPONENTS_TO_LIBNAMES`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。
+本目录下提供了一个模板，你可以基于此继续完成整个实验。如果你使用了来自 LLVM 的组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `LLVM_MAP_COMPONENTS_TO_LIBNAMES`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，不得使用任何封装好的库从源码直接获得 LLVM-IR，如 `libclang`。
 
-然而，不得使用任何封装好的库从源码直接获得 LLVM-IR，如 `libclang`。
+### 一些可能有用的小技巧：LLVM-IR 可视化
+
+你可以像这样，借助 `opt -dot-cfg` 选项，生成一个输入的 CFG 可视化。终端执行下述指令，将在目录下生成 `.main.dot` 文件，对应源代码中 `main` 函数的 CFG 图。
+
+```bash
+( clang -E tester/functional/026_if.sysu.c |
+  clang -cc1 -O0 -S -emit-llvm |
+  opt -dot-cfg )
+```
+
+你可以将 `.main.dot` 中的内容复制到[这里](http://viz-js.com/)，在浏览器中查看其可视化。
 
 ## 评分规则
 
@@ -104,3 +114,5 @@ entry:
 ## 你可能会感兴趣的
 
 - [Kaleidoscope: Code generation to LLVM IR](https://releases.llvm.org/11.0.1/docs/tutorial/MyFirstLanguageFrontend/LangImpl03.html)
+- [LLVM 与 LLVM IR](https://buaa-se-compiling.github.io/miniSysY-tutorial/pre/llvm.html)
+- [Viz.js — Graphviz in your browser.](http://viz-js.com/)

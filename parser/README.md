@@ -176,7 +176,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
    - 提示：`ADD_FLEX_BISON_DEPENDENCY`
 7. 鉴于本次实验已经开始进入 LLVM 开发范畴，建议遵守 [LLVM Coding Standards](https://releases.llvm.org/11.0.1/docs/CodingStandards.html)
    - 可以使用 `clang-tidy` 与 `clang-format` 工具检查你的代码是否规范，如 `cmake -DCMAKE_CXX_CLANG_TIDY=clang-tidy #...`
-   - 将 [LLVM Coding Standards](https://releases.llvm.org/11.0.1/docs/CodingStandards.html) 与 [GNU](https://www.gnu.org/prep/standards/standards.html)、[Google](https://google.github.io/styleguide/)、[Chromium](https://chromium.googlesource.com/chromium/src/+/HEAD/styleguide/c++/c++-dos-and-donts.md)、[Microsoft](https://docs.microsoft.com/zh-cn/dotnet/csharp/fundamentals/coding-style/coding-conventions)、[Mozilla](https://firefox-source-docs.mozilla.org/code-quality/coding-style/coding_style_cpp.html)、[WebKit](https://webkit.org/code-style-guidelines/) 等其他知名编程规范进行比较，选出一种或是基于他们归纳出一个你认为最合理的编程规范，编写对应的 `.clang-format` 与 `.clang-tidy` 文件，并在以后坚持使用下去！~~（就我自己来说更加偏好 LLVM，毕竟没有人会比编译器更懂语言）~~
+   - 将 [LLVM Coding Standards](https://releases.llvm.org/11.0.1/docs/CodingStandards.html) 与 [GNU](https://www.gnu.org/prep/standards/standards.html)、[Google](https://google.github.io/styleguide/)、[Chromium](https://chromium.googlesource.com/chromium/src/+/HEAD/styleguide/c++/c++-dos-and-donts.md)、[Microsoft](https://docs.microsoft.com/zh-cn/dotnet/csharp/fundamentals/coding-style/coding-conventions)、[Mozilla](https://firefox-source-docs.mozilla.org/code-quality/coding-style/coding_style_cpp.html)、[WebKit](https://webkit.org/code-style-guidelines/) 等其他知名编程规范进行比较，选出一种或是基于他们归纳出一个你认为最合理的编程规范，编写对应的 `.clang-format` 与 `.clang-tidy` 文件，并在以后坚持使用下去！~~（就助教来说更加偏好 LLVM，毕竟没有人会比编译器更懂语言）~~
 8. 改进这个实验模板（欢迎 PR！）。
 9. Do what you want to do。
 
