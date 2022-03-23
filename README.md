@@ -26,7 +26,7 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 
 ## 编译运行
 
-需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容本项目推荐使用 `clang` 编译，本地版本为 `clang-11`，操作系统为 `debian:11`（对于使用其他操作系统的同学，建议使用 [docker](https://hub.docker.com/_/debian)）。
+需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容本项目推荐使用 `clang` 编译，本地版本为 `clang-11`，操作系统为 `debian:11`（对于使用其他操作系统的同学，我们准备了一份 [docker 开发环境](https://hub.docker.com/repository/docker/wukan0621/sysu-lang)）。
 
 ```bash
 # 安装依赖
