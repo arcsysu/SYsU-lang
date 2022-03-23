@@ -1,0 +1,29 @@
+#!/bin/sh
+tar -C /autograder -zxvf /autograder/submission/*.tar.gz
+
+cd /autograder/SYsU-lang
+rm -rf generator
+cp -r /autograder/SYsU-lang-*-Source/generator .
+
+rm -rf optimizer
+cp -r /autograder/SYsU-lang-*-Source/optimizer .
+
+rm -rf compiler
+cp -r /autograder/SYsU-lang-*-Source/compiler .
+
+cmake -G Ninja \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_INSTALL_PREFIX=/autograder/sysu \
+    -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
+    -B /autograder/sysu/build
+
+cmake --build /autograder/sysu/build -t install
+
+export PATH=/autograder/sysu/bin:$PATH \
+    CPATH=/autograder/sysu/include:$CPATH \
+    LIBRARY_PATH=/autograder/sysu/lib:$LIBRARY_PATH \
+    LD_LIBRARY_PATH=/autograder/sysu/lib:$LD_LIBRARY_PATH
+
+mkdir -p /autograder/results
+sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" >/autograder/results/results.json
