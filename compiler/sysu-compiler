@@ -224,22 +224,29 @@ def benchmark_generator_and_optimizer(
             filename = filenames[ff]
             logger.info("[{}/{}] {}".format(ff, len(filenames),
                                             filename))
-            sysu = subprocess.run(
-                clang+" -E -O0 "+filename,
-                shell=True,
-                stdout=subprocess.PIPE)
-            sysu = subprocess.run(
-                clang+" -cc1 -O0 -ast-dump=json",
-                shell=True,
-                input=sysu.stdout,
-                stdout=subprocess.PIPE)
-            if sysu.returncode:
-                return wk_exit(sysu.returncode)
-            for it in [generator, optimizer]:
+            test_clang = 0
+            if test_clang:
                 sysu = subprocess.run(
-                    [it], shell=True, input=sysu.stdout, stdout=subprocess.PIPE)
+                    clang + " -O3 -S -emit-llvm -o- "+filename,
+                    shell=True,
+                    stdout=subprocess.PIPE)
+            else:
+                sysu = subprocess.run(
+                    clang+" -E -O0 "+filename,
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                sysu = subprocess.run(
+                    clang+" -cc1 -O0 -ast-dump=json",
+                    shell=True,
+                    input=sysu.stdout,
+                    stdout=subprocess.PIPE)
                 if sysu.returncode:
                     return wk_exit(sysu.returncode)
+                for it in [generator, optimizer]:
+                    sysu = subprocess.run(
+                        [it], shell=True, input=sysu.stdout, stdout=subprocess.PIPE)
+                    if sysu.returncode:
+                        return wk_exit(sysu.returncode)
             sysu = [sysu, subprocess.run(
                 clang + " -O3 -S -emit-llvm -o- "+filename,
                 shell=True,
