@@ -13,12 +13,12 @@ EOF
 WORKDIR /autograder
 COPY <<build_install <<run . /autograder/SYsU-lang/
 #!/bin/sh
-cmake -G Ninja \
-    -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_INSTALL_PREFIX=/autograder/sysu \
-    -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
-    -S /autograder/SYsU-lang \
+cmake -G Ninja \\
+    -DCMAKE_C_COMPILER=clang \\
+    -DCMAKE_CXX_COMPILER=clang++ \\
+    -DCMAKE_INSTALL_PREFIX=/autograder/sysu \\
+    -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \\
+    -S /autograder/SYsU-lang \\
     -B /autograder/sysu/build
 cmake --build /autograder/sysu/build -t install
 build_install
