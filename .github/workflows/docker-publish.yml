@@ -90,8 +90,7 @@ jobs:
       - name: Run Tests
         uses: addnab/docker-run-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          image: ${{ env.IMAGE_NAME }}@${{ steps.build-and-push.outputs.digest }}
+          image: ${{ steps.meta.outputs.tags }}
           run: |
             export CTEST_OUTPUT_ON_FAILURE=1
             cmake --build /autograder/sysu/build -t test
