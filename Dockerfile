@@ -43,7 +43,6 @@ chmod +x /autograder/run
 mv /autograder/SYsU-lang/build_install /autograder/build_install
 chmod +x /autograder/build_install
 /autograder/build_install
-rm -rf /autograder/sysu/build
 EOF
 ENV PATH=/autograder/sysu/bin:$PATH \
     CPATH=/autograder/sysu/include:$CPATH \
