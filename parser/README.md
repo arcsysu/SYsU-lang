@@ -124,6 +124,128 @@ $ ( export PATH=~/sysu/bin:$PATH \
 
 本目录下提供了一个基于 bison + `llvm::json` 实现的模板，接受词法分析器的输出，你可以基于此继续实现完整的逻辑，也可以使用其他的工具实现，如 `antlr4`，但不得使用其提供的 [C 语言模板](https://github.com/antlr/grammars-v4/blob/master/c/C.g4)；也不得使用任何封装好的库直接获得 ast，如 `libclang`。
 
+### Q & A：实验要求太抽象了，需要一个更直观的例子！
+
+考虑到 json 格式不方便肉眼调试，你可以像这样，输出更加符合人眼阅读方式的语法树，辅助调试。
+
+```bash
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+  clang -cc1 -E tester/functional/027_if2.sysu.c |
+  clang -cc1 -ast-dump )
+TranslationUnitDecl 0x23d4568 <<invalid sloc>> <invalid sloc>
+|-TypedefDecl # 原先第二行到第十五行为内置类型，此处省略
+|-VarDecl 0x2413d00 <tester/functional/027_if2.sysu.c:1:1, col:5> col:5 used a 'int'
+`-FunctionDecl 0x2413e08 <line:2:1, line:10:1> line:2:5 main 'int ()'
+  `-CompoundStmt 0x2414038 <col:11, line:10:1>
+    |-BinaryOperator 0x2413ee8 <line:3:2, col:6> 'int' '='
+    | |-DeclRefExpr 0x2413ea8 <col:2> 'int' lvalue Var 0x2413d00 'a' 'int'
+    | `-IntegerLiteral 0x2413ec8 <col:6> 'int' 10
+    `-IfStmt 0x2414010 <line:4:2, line:9:2> has_else
+      |-BinaryOperator 0x2413f60 <line:4:6, col:8> 'int' '>'
+      | |-ImplicitCastExpr 0x2413f48 <col:6> 'int' <LValueToRValue>
+      | | `-DeclRefExpr 0x2413f08 <col:6> 'int' lvalue Var 0x2413d00 'a' 'int'
+      | `-IntegerLiteral 0x2413f28 <col:8> 'int' 0
+      |-CompoundStmt 0x2413fb0 <col:11, line:6:2>
+      | `-ReturnStmt 0x2413fa0 <line:5:3, col:10>
+      |   `-IntegerLiteral 0x2413f80 <col:10> 'int' 1
+      `-CompoundStmt 0x2413ff8 <line:7:6, line:9:2>
+        `-ReturnStmt 0x2413fe8 <line:8:3, col:10>
+          `-IntegerLiteral 0x2413fc8 <col:10> 'int' 0
+```
+
+将上图对应的树画出来，可得到下图（源码参见[这里](../tester/functional/027_if2.sysu.c)）。
+
+```mermaid
+flowchart TD;
+0x23d4568-->0x2413d00
+0x23d4568-->0x2413e08
+0x2413e08-->0x2414038
+0x2414038-->0x2413ee8
+0x2414038-->0x2414010
+0x2413ee8-->0x2413ea8
+0x2413ee8-->0x2413ec8
+0x2414010-->0x2413f60
+0x2414010-->0x2413fb0
+0x2414010-->0x2413ff8
+0x2413f60-->0x2413f48
+0x2413f60-->0x2413f28
+0x2413f48-->0x2413f08
+0x2413fb0-->0x2413fa0
+0x2413fa0-->0x2413f80
+0x2413ff8-->0x2413fe8
+0x2413fe8-->0x2413fc8
+0x23d4568["
+  TranslationUnitDecl
+"]
+0x2413d00["
+  VarDecl
+  used a 'int'
+"]
+0x2413e08["
+  FunctionDecl
+  main 'int ()'
+"]
+0x2414038["
+  CompoundStmt
+"]
+0x2413ee8["
+  BinaryOperator
+  'int' '='
+"]
+0x2413ea8["
+  DeclRefExpr
+  'int' lvalue
+"]
+0x2413ec8["
+  IntegerLiteral
+  'int' 10
+"]
+0x2414010["
+  IfStmt
+  has_else
+"]
+0x2413f60["
+  BinaryOperator
+  'int' '>'
+"]
+0x2413f48["
+  ImplicitCastExpr
+  'int' <LValueToRValue>
+"]
+0x2413f08["
+  DeclRefExpr
+  'int' lvalue
+"]
+0x2413f28["
+  IntegerLiteral
+  'int' 0
+"]
+0x2413fb0["
+  CompoundStmt
+"]
+0x2413fa0["
+  ReturnStmt
+"]
+0x2413f80["
+  IntegerLiteral
+  'int' 1
+"]
+0x2413ff8["
+  CompoundStmt
+"]
+0x2413fe8["
+  ReturnStmt
+"]
+0x2413fc8["
+  IntegerLiteral
+  'int' 0
+"]
+```
+
+容易看出，lexer 实验输出的 token 构成了这棵树的叶节点。我们要做的就是，根据叶节点，写出语法规则，逐步自底向上地构造出根节点 `TranslationUnitDecl` 所在的完整子树。
+
 ### Q & A：为什么要输出到 `llvm::json`？
 
 1. 输出到 json，便于使用 python 脚本和 clang 导出的语法树对比，自动批改。
@@ -149,6 +271,8 @@ $ ( export PATH=~/sysu/bin:$PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=parser-1 "**/*.sysu.c" )
 ```
+
+**根据同学们的反馈下调了实验难度，只需通过 `parser-1` 即可通过本次实验，`parser-2`、`parser-3` 列为本次实验的扩展选项。**
 
 ## 扩展方向
 

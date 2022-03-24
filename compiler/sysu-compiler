@@ -53,12 +53,12 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames):
         if testcase in ["parser-0"]:
             key_kind = ["kind", "name", "value"]
         elif testcase in ["parser-1"]:
-            key_kind = ["kind", "name", "value", "type"]
+            key_kind = ["kind", "name", "value"]
         elif testcase in ["parser-2"]:
             key_kind = ["kind", "name", "value", "type", "valueCategory"]
         else:
             key_kind = []
-        key_ignore = ["id", "range"]
+        key_ignore = ["id", "range", "loc"]
         for key, value0 in ast0.items():
             if key in key_ignore:
                 continue
