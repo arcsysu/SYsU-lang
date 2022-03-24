@@ -227,7 +227,7 @@ def benchmark_generator_and_optimizer(
             test_clang = 0
             if test_clang:
                 sysu = subprocess.run(
-                    clang + " -O3 -S -emit-llvm -o- "+filename,
+                    clang + " -O0 -S -emit-llvm -o- "+filename,
                     shell=True,
                     stdout=subprocess.PIPE)
             else:
@@ -292,6 +292,10 @@ def benchmark_generator_and_optimizer(
                     logger.error("fail: no timer")
                     return wk_exit(-1)
                 performance.append(tm[-1]/tm[0])
+                logger.info("[{}/{}] clang -O3: {}us".format(
+                    ff, len(filenames), tm[-1]))
+                logger.info("[{}/{}] sysu-lang: {}us".format(
+                    ff, len(filenames), tm[0]))
             results["tests"][ff]["score"] = 1
         if len(performance):
             results["leaderboard"] = [{

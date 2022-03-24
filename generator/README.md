@@ -93,7 +93,7 @@ entry:
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 
-由于评测机的内存足够大，评测时会设置 `--skip-filesize -1`。在线评测时，评测机会将 `compilier`、`librarian` 与 `tester` 目录下的内容替换成本仓库中的内容。不要投机取巧，即使（可能）没有人在看着你。
+由于评测机的内存足够大（助教将单次评测的内存设置为 32GB），评测时会设置 `--skip-filesize -1`。在线评测时，评测机会将 `compilier`、`librarian` 与 `tester` 目录下的内容替换成本仓库中的内容。不要投机取巧，即使（可能）没有人在看着你。
 
 ## 扩展方向
 
