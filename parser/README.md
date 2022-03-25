@@ -246,6 +246,8 @@ flowchart TD;
 
 容易看出，lexer 实验输出的 token 构成了这棵树的叶节点。我们要做的就是，根据叶节点，写出语法规则，逐步自底向上地构造出根节点 `TranslationUnitDecl` 所在的完整子树。
 
+另外，实验中生成的 json 格式文件，也可以在[这里](https://json2yaml.com/)转换成更易读的 yaml 格式。
+
 ### Q & A：为什么要输出到 `llvm::json`？
 
 1. 输出到 json，便于使用 python 脚本和 clang 导出的语法树对比，自动批改。

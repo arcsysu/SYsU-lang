@@ -57,7 +57,7 @@ entry:
 你可以像这样，借助 `opt -dot-cfg` 选项，生成一个输入的 CFG 可视化。终端执行下述指令，将在目录下生成 `.main.dot` 文件，对应源代码中 `main` 函数的 CFG 图。
 
 ```bash
-( clang -E tester/functional/026_if.sysu.c |
+( clang -E tester/functional/027_if2.sysu.c |
   clang -cc1 -O0 -S -emit-llvm |
   opt -dot-cfg )
 ```
