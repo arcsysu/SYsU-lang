@@ -32,7 +32,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def unittest_parser(testcase, clang, preprocessor, parser, filenames):
+def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out):
     def check_ast(ast0, ast1, testcase, command0, command1):
         def wk_exit(n):
             logger.error("---")
@@ -92,22 +92,22 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames):
         logger.info("[{}/{}] {}".format(ff, len(filenames), filename))
         command = preprocessor + " " + filename
         src = subprocess.run(
-            command, stdout=subprocess.PIPE, shell=True).stdout
+            command, timeout=time_out, stdout=subprocess.PIPE, shell=True).stdout
         command0 = command+" | "+clang + " -cc1 -ast-dump=json"
         command1 = command+" | "+clang + " -cc1 -dump-tokens 2>&1 | "+parser
         ast0 = json.loads(subprocess.run(
             clang + " -cc1 -ast-dump=json",
-            input=src, stdout=subprocess.PIPE, shell=True).stdout)
+            input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
         ast1 = json.loads(subprocess.run(
             clang + " -cc1 -dump-tokens 2>&1 |"+parser,
-            input=src, stdout=subprocess.PIPE, shell=True).stdout)
+            input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
 
         r = check_ast(ast0, ast1, testcase, command0, command1)
         if r:
             return r
 
 
-def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
+def unittest_lexer(testcase, clang, preprocessor, lexer, filenames, time_out):
     for ff in range(len(filenames)):
         filename = filenames[ff]
         logger.info("[{}/{}] {}".format(ff, len(filenames),
@@ -119,10 +119,10 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames):
         command1 = command+" | "+lexer + " 2>&1 "
         tokens0 = subprocess.run(
             clang + " -cc1 -dump-tokens 2>&1 ",
-            input=src, stdout=subprocess.PIPE, shell=True).stdout.splitlines()
+            input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout.splitlines()
         tokens1 = subprocess.run(
             lexer + " 2>&1 ",
-            input=src, stdout=subprocess.PIPE, shell=True).stdout.splitlines()
+            input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout.splitlines()
 
         def wk_exit(n):
             logger.error("---")
@@ -206,7 +206,8 @@ def benchmark_generator_and_optimizer(
         clang,
         generator,
         optimizer,
-        filenames):
+        filenames,
+        time_out):
     results = {"tests": []}
 
     def wk_exit(n):
@@ -224,79 +225,91 @@ def benchmark_generator_and_optimizer(
             filename = filenames[ff]
             logger.info("[{}/{}] {}".format(ff, len(filenames),
                                             filename))
+
+            def get_tm(sp):
+                val = -1
+                matchObj = re.findall(
+                    b'TOTAL: (\\d*)H-(\\d*)M-(\\d*)S-(\\d*)us', sp.stderr)
+                matchObj = matchObj[-1]
+                val = int(matchObj[0])
+                val = val * 60 + int(matchObj[1])
+                val = val * 60 + int(matchObj[2])
+                val = val * 1000000 + int(matchObj[3])
+                return val
+
+            sysu = [subprocess.run(
+                    [clang, "-O3", "-S", "-emit-llvm", "-o-", filename],
+                    timeout=time_out,
+                    stdout=subprocess.PIPE)]
             test_clang = 0
             if test_clang:
-                sysu = subprocess.run(
-                    clang + " -O0 -S -emit-llvm -o- "+filename,
-                    shell=True,
-                    stdout=subprocess.PIPE)
+                sysu.append(subprocess.run(
+                    [clang, "-O0", "-S", "-emit-llvm", "-o-", filename],
+                    timeout=time_out,
+                    stdout=subprocess.PIPE))
             else:
-                sysu = subprocess.run(
-                    clang+" -E -O0 "+filename,
-                    shell=True,
+                s = subprocess.run(
+                    ["clang", "-E", "-O0", filename],
+                    timeout=time_out,
                     stdout=subprocess.PIPE)
-                sysu = subprocess.run(
-                    clang+" -cc1 -O0 -ast-dump=json",
-                    shell=True,
-                    input=sysu.stdout,
+                s = subprocess.run(
+                    [clang, "-cc1", "-O0", "-ast-dump=json"],
+                    timeout=time_out,
+                    input=s.stdout,
                     stdout=subprocess.PIPE)
-                if sysu.returncode:
-                    return wk_exit(sysu.returncode)
+                if s.returncode:
+                    return wk_exit(s.returncode)
                 for it in [generator, optimizer]:
-                    sysu = subprocess.run(
-                        [it], shell=True, input=sysu.stdout, stdout=subprocess.PIPE)
-                    if sysu.returncode:
-                        return wk_exit(sysu.returncode)
-            sysu = [sysu, subprocess.run(
-                clang + " -O3 -S -emit-llvm -o- "+filename,
-                shell=True,
-                stdout=subprocess.PIPE)]
-            res = []
+                    s = subprocess.run(
+                        [it], timeout=time_out, input=s.stdout, stdout=subprocess.PIPE)
+                    if s.returncode:
+                        return wk_exit(s.returncode)
+                sysu.append(s)
             inputs = None
             if filename.endswith(".sysu.c"):
                 gz = filename[0:filename.rfind(".sysu.c")]+".in.gz"
                 if os.path.exists(gz):
                     with gzip.open(gz, "rb") as f:
                         inputs = f.read()
-            for it in sysu:
-                with open(ir, "wb") as f:
-                    f.write(it.stdout)
-                r = subprocess.run(
-                    clang+" -O0 -lsysy -o " + exe+" " + ir,
-                    shell=True).returncode
-                if r:
-                    logger.error("ir error")
-                    return wk_exit(r)
-                if inputs != None:
-                    res.append(subprocess.run(
-                        [exe], input=inputs, stderr=subprocess.PIPE, stdout=subprocess.PIPE))
-                else:
-                    res.append(subprocess.run(
-                        [exe], stderr=subprocess.PIPE, stdout=subprocess.PIPE))
-            if res[0].returncode != res[-1].returncode or res[0].stdout != res[-1].stdout:
-                logger.error("fail: not equ")
-                return wk_exit(-1)
-            tm = []
-            for it in res:
-                val = -1
-                matchObj = re.findall(
-                    b'TOTAL: (\\d*)H-(\\d*)M-(\\d*)S-(\\d*)us', it.stderr)
-                matchObj = matchObj[-1]
-                val = int(matchObj[0])
-                val = val * 60 + int(matchObj[1])
-                val = val * 60 + int(matchObj[2])
-                val = val * 1000000 + int(matchObj[3])
-                tm.append(val)
-            if tm[-1] > 0:
-                if len(tm) != 2 or tm[0] <= 0:
-                    logger.error("fail: no timer")
+            res = []
+            try:
+                for it in sysu:
+                    with open(ir, "wb") as f:
+                        f.write(it.stdout)
+                    r = subprocess.run(
+                        [clang, "-O0", "-lsysy", "-o", exe, ir],
+                        timeout=time_out).returncode
+                    if r:
+                        logger.error("ir error")
+                        return wk_exit(r)
+                    jt = subprocess.run(
+                        [exe],
+                        timeout=time_out,
+                        input=inputs,
+                        stderr=subprocess.PIPE,
+                        stdout=subprocess.PIPE)
+                    res.append(jt)
+                    if len(res) == 1:
+                        logger.info("[{}/{}] clang -O3: {}us, ret {}".format(
+                            ff, len(filenames), get_tm(jt), jt.returncode))
+                    else:
+                        logger.info("[{}/{}] sysu-lang: {}us, ret {}".format(
+                            ff, len(filenames), get_tm(jt), jt.returncode))
+                        if res[0].returncode != jt.returncode or res[0].stdout != jt.stdout:
+                            logger.error("fail: not equ")
+                            return wk_exit(-1)
+                        if get_tm(res[0]) > 0:
+                            if get_tm(jt) <= 0:
+                                logger.error("fail: no timer")
+                                return wk_exit(-1)
+                            performance.append(get_tm(res[0])/get_tm(jt))
+                        results["tests"][ff]["score"] = 1
+            except subprocess.TimeoutExpired:
+                if len(res) != 1:
+                    logger.error("fail: TimeoutExpired")
                     return wk_exit(-1)
-                performance.append(tm[-1]/tm[0])
-                logger.info("[{}/{}] clang -O3: {}us".format(
-                    ff, len(filenames), tm[-1]))
-                logger.info("[{}/{}] sysu-lang: {}us".format(
-                    ff, len(filenames), tm[0]))
-            results["tests"][ff]["score"] = 1
+                if get_tm(res[0]) > 0:
+                    performance.append(0)
         if len(performance):
             results["leaderboard"] = [{
                 "name": "performance",
@@ -316,13 +329,16 @@ def compile(
         linker,
         filenames):
     for filename in filenames:
-        sysu = subprocess.run(preprocessor + " " + filename,
-                              shell=True, stdout=subprocess.PIPE)
+        sysu = subprocess.run(
+            [preprocessor, filename],
+            stdout=subprocess.PIPE)
         if sysu.returncode:
             return sysu.returncode
         for it in [lexer, parser, generator, optimizer, translator]:
             sysu = subprocess.run(
-                [it], shell=True, stdout=subprocess.PIPE, input=sysu.stdout)
+                [it],
+                stdout=subprocess.PIPE,
+                input=sysu.stdout)
             if sysu.returncode:
                 return sysu.returncode
         print(str(sysu.stdout, encoding="utf8"))
@@ -337,6 +353,11 @@ def main(*argv):
     for spec in specs:
         parser.add_argument("--"+spec, help="Specify "+spec, default=spec)
     parser.add_argument("--unittest")
+    parser.add_argument(
+        "--unittest-timeout",
+        help="unittest-timeout in seconds, '-1' for no skip (default 300)",
+        type=int,  # 慎重测试！
+        default=300)
     parser.add_argument(
         "--convert-sysy",
         help="Convert *.sy in [file ...]",
@@ -361,16 +382,25 @@ def main(*argv):
         return convert_sysy(filenames)
     if args.unittest:
         filenames.sort()
+        time_out = None
+        if args.unittest_timeout >= 0:
+            time_out = args.unittest_timeout
         if "lexer" in args.unittest:
             return unittest_lexer(args.unittest, args.clang,
                                   args.sysu_preprocessor, args.sysu_lexer,
-                                  filenames)
+                                  filenames, time_out)
         if "parser" in args.unittest:
             return unittest_parser(args.unittest, args.clang,
                                    args.sysu_preprocessor, args.sysu_parser,
-                                   filenames)
+                                   filenames, time_out)
         if "benchmark_generator_and_optimizer" in args.unittest:
-            return benchmark_generator_and_optimizer(args.unittest, args.clang, args.sysu_generator, args.sysu_optimizer, filenames)
+            return benchmark_generator_and_optimizer(
+                args.unittest,
+                args.clang,
+                args.sysu_generator,
+                args.sysu_optimizer,
+                filenames,
+                time_out)
     returncode = compile(args.sysu_preprocessor, args.sysu_lexer,
                          args.sysu_parser, args.sysu_generator,
                          args.sysu_optimizer, args.sysu_translator,
