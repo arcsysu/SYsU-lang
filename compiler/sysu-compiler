@@ -309,7 +309,7 @@ def benchmark_generator_and_optimizer(
                     logger.error("fail: TimeoutExpired")
                     return wk_exit(-1)
                 if get_tm(res[0]) > 0:
-                    performance.append(0)
+                    performance.append(0.01)
         if len(performance):
             results["leaderboard"] = [{
                 "name": "performance",
