@@ -93,7 +93,7 @@ entry:
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 
-由于评测机的内存足够大（助教将单次评测的内存设置为 32GB），评测时会将 `generator`、`optimizer` 目录的内容替换成本仓库中的内容，同时设置 `--skip-filesize -1`，且运行时长超过 5 分钟的编译结果会被跳过。
+由于评测机的内存足够大（助教将单次评测的内存设置为 20GB），评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，同时设置 `--skip-filesize -1`，且运行时长超过 5 分钟的编译结果会被跳过。
 
 不要投机取巧，即使（可能）没有人在看着你。
 
