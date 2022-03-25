@@ -71,11 +71,10 @@ cmake --build ~/sysu/build -t package_source
 对于使用其他操作系统的同学，我们准备了一份 [docker 开发环境](https://hub.docker.com/repository/docker/wukan0621/sysu-lang)。
 
 ```bash
-docker pull wukan0621/sysu-lang
-docker run -it wukan0621/sysu-lang bash
-# 随后可以在 container 中开发，参见 /autograder 目录
+docker pull wukan0621/sysu-lang:main
+docker run -it wukan0621/sysu-lang:main bash
+# 随后可以在 container 中开发，可查看 /autograder 目录
 ```
-
 
 ## 代码结构
 
