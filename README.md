@@ -68,7 +68,7 @@ cmake --build ~/sysu/build -t package_source
   rm -f a.S a.out )
 ```
 
-对于使用其他操作系统的同学，我们准备了一份 [docker 开发环境](https://hub.docker.com/repository/docker/wukan0621/sysu-lang)。
+对于使用其他操作系统的同学，我们准备了一份 [docker 开发环境](https://hub.docker.com/r/wukan0621/sysu-lang)。
 
 ```bash
 docker pull wukan0621/sysu-lang:main
