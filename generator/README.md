@@ -93,7 +93,9 @@ entry:
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 
-由于评测机的内存足够大（助教将单次评测的内存设置为 20GB），评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，同时设置 `--skip-filesize -1`，且运行时长超过 5 分钟的编译结果会被跳过。
+由于评测机的内存足够大，单次评测内存设置为 20GB，总时限为三小时，评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，且设置 `--skip-filesize -1`，运行时长超过 5 分钟的编译结果会被跳过。因此本次实验中评测系统没有给出满分是正常的情况，助教的示例提交（基于 `clang -O0`）得分为 424/429，性能分约为 13.7%。
+
+评测集群的单核性能非常弱（可能比你的手机还要弱，是来自[超算队](https://github.como/SYSU-SCC)的 KNL 集群，处理器为 [Intel(R) Xeon Phi(TM) CPU 7210](https://ark.intel.com/content/www/us/en/ark/products/94033/intel-xeon-phi-processor-7210-16gb-1-30-ghz-64-core.html)，绝版芯片喔），完整测试示例提交花费了大约两小时时间。此外，评测集群的并发量有限（至多可以同时评测十六份提交）。因此，请大家先在本地测试通过所有非 `tester/third_party` 目录下的算例后再提交。
 
 不要投机取巧，即使（可能）没有人在看着你。
 
@@ -105,10 +107,10 @@ entry:
 2. 完全使用 SYsU 完成本实验，然后用它作为输入测试功能是否正确，以实现自举。
 3. 借助 libclang 实现相同的功能。
 4. 基于语法分析树实现一些优化，如
+   - 死代码删除
    - 常量折叠
    - 常量传播
    - 块间公共子表达式删除
-   - 死代码删除
    - 提取循环无关语句到循环外
    - Do what you want to do
 5. Do what you want to do

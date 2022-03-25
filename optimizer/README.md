@@ -24,17 +24,18 @@
 
 本目录下提供了一个基于 llvm pass manager 的模板，你可以基于此继续完成整个实验。以下是一些优化的方向供参考：
 
-1. 常量折叠
-2. 常量传播
-3. 块间公共子表达式删除
-4. 函数内联
-5. Do what you want to do
+- 死代码删除
+- 常量折叠
+- 常量传播
+- 块间公共子表达式删除
+- 提取循环无关语句到循环外
+- Do what you want to do
 
 并思考，这些优化是否可以在语法树（即 `sysu-generator`）上完成？在这两个阶段各自的优点与缺点是什么？
 
 如果你使用了来自 LLVM 的其他组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `LLVM_MAP_COMPONENTS_TO_LIBNAMES`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，禁止使用任何 LLVM 自带的 [transform-passes](https://releases.llvm.org/11.0.1/docs/Passes.html#transform-passes)，助教会结合 `llvm-objdump` 等工具检查。
 
-### 有关 new pass manager 与 legacy pass manager
+### Q & A：有关 new pass manager 与 legacy pass manager
 
 Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以来已经有数十年历史。由于原有的 PM 编译效率低且错失很多优化机会，2014 年开始 LLVM 团队对其开始重构。在实验环境中使用的 LLVM-11.0.1 默认使用的仍然是旧 PM，但已经包含新 PM；在 LLVM-12 中已经默认使用 new pass manager 代替 the legacy pass manager；在 LLVM-13 的 release 说明中提到：
 
@@ -53,7 +54,7 @@ Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以
 本实验的评分分为两部分：基础部分和扩展部分。
 
 - 对于基础部分的实验，要求通过对应的自动评测，并**提交到[在线评测](https://arcsysu.github.io/SYsU-lang-archive-2022/)，在排行榜上有成绩**。详见自动评测细则一节。
-- 由于本次基础部分的实验很难拿到满分，没有拿到满分的部分可使用前几个实验的扩展部分补充。需要在实验报告中提及所有的扩展工作。
+- 由于本次基础部分的实验很难拿到满分，没有拿到满分的部分可使用前几个实验的扩展选项补充。需要在实验报告中提及所有的扩展工作。
 
 你需要提交一份实验报告，简要记录你的实验过程、遇到的难点以及解决的方法，并在报告中附上排行榜的上榜截图；助教会定期检查排行榜上的代码。
 
@@ -77,9 +78,11 @@ Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 
-评测时会通过 `clang -cc1 -O3 -emit-llvm -S` 得到用于对比的 LLVM-IR；两份 IR 将同时通过 `clang -O0 -lsysy` 编译成二进制可执行文件，执行并获得运行时间。单个评测项的得分是两者运行时间的比值；总得分是各个得分项的几何平均。
+评测时会通过 `clang -cc1 -O3 -emit-llvm -S` 得到用于对比的 LLVM-IR；两份 IR 将同时通过 `clang -O0 -lsysy` 编译成二进制可执行文件，执行并获得运行时间。单个评测项的性能分是两者运行时间的比值；总性能是各个性能项的几何平均。
 
-由于评测机的内存足够大（助教将单次评测的内存设置为 20GB），评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，同时设置 `--skip-filesize -1`，且运行时长超过 5 分钟的编译结果会被跳过。
+由于评测机的内存足够大，单次评测内存设置为 20GB，总时限为三小时，评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，且设置 `--skip-filesize -1`，运行时长超过 5 分钟的编译结果会被跳过。因此本次实验中评测系统没有给出满分是正常的情况，助教的示例提交（基于 `clang -O0`）得分为 424/429，性能分约为 13.7%。
+
+评测集群的单核性能非常弱（可能比你的手机还要弱，是来自[超算队](https://github.como/SYSU-SCC)的 KNL 集群，处理器为 [Intel(R) Xeon Phi(TM) CPU 7210](https://ark.intel.com/content/www/us/en/ark/products/94033/intel-xeon-phi-processor-7210-16gb-1-30-ghz-64-core.html)，绝版芯片喔），完整测试示例提交花费了大约两小时时间。此外，评测集群的并发量有限（至多可以同时评测十六份提交）。因此，请大家先在本地测试通过所有非 `tester/third_party` 目录下的算例后再提交。
 
 不要投机取巧，即使（可能）没有人在看着你。
 

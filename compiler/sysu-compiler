@@ -216,8 +216,13 @@ def benchmark_generator_and_optimizer(
 
     for ff in range(len(filenames)):
         filename = filenames[ff]
-        results["tests"].append({"name": filename, "score": 0, "max_score": 1})
+        results["tests"].append({
+            "name": filename,
+            "score": 0,
+            "max_score": 1,
+            "output": ""})
     performance = []
+    score = 0
     with tempfile.TemporaryDirectory() as tmpdirname:
         ir = os.path.join(tmpdirname, "a.ll")
         exe = os.path.join(tmpdirname, "a.out")
@@ -290,12 +295,18 @@ def benchmark_generator_and_optimizer(
                         stdout=subprocess.PIPE)
                     res.append(jt)
                     if len(res) == 1:
-                        logger.info("[{}/{}] clang -O3: {}us, ret {}".format(
-                            ff, len(filenames), get_tm(jt), jt.returncode))
+                        log = "[{}/{}] clang -O3: {}us, ret {}".format(
+                            ff, len(filenames), get_tm(jt), jt.returncode)
+                        logger.info(log)
+                        results["tests"][ff]["output"] += log + "\n"
                     else:
-                        logger.info("[{}/{}] sysu-lang: {}us, ret {}".format(
-                            ff, len(filenames), get_tm(jt), jt.returncode))
-                        if res[0].returncode != jt.returncode or res[0].stdout != jt.stdout:
+                        log = "[{}/{}] sysu-lang: {}us, ret {}".format(
+                            ff, len(filenames), get_tm(jt), jt.returncode)
+                        logger.info(log)
+                        results["tests"][ff]["output"] += log + "\n"
+
+                        if res[0].returncode != jt.returncode or \
+                                res[0].stdout != jt.stdout:
                             logger.error("fail: not equ")
                             return wk_exit(-1)
                         if get_tm(res[0]) > 0:
@@ -304,6 +315,8 @@ def benchmark_generator_and_optimizer(
                                 return wk_exit(-1)
                             performance.append(get_tm(res[0])/get_tm(jt))
                         results["tests"][ff]["score"] = 1
+
+                        score = score + 1
             except subprocess.TimeoutExpired:
                 if len(res) != 1:
                     logger.error("fail: TimeoutExpired")
@@ -315,7 +328,11 @@ def benchmark_generator_and_optimizer(
                 "name": "performance",
                 "order": 1,
                 "is_desc": True,
-                "value": statistics.geometric_mean(performance)}]
+                "value": statistics.geometric_mean(performance)}, {
+                "name": "score",
+                "order": 2,
+                "is_desc": True,
+                "value": score}]
     return wk_exit(0)
 
 
