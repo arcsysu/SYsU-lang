@@ -246,7 +246,7 @@ def benchmark_generator_and_optimizer(
                     [clang, "-O3", "-S", "-emit-llvm", "-o-", filename],
                     timeout=time_out,
                     stdout=subprocess.PIPE).stdout]
-            test_clang = 1
+            test_clang = 0
             if test_clang:
                 sysu.append(subprocess.run(
                     [clang, "-O0", "-S", "-emit-llvm", "-o-", filename],
