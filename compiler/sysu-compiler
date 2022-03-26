@@ -58,7 +58,7 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out):
             key_kind = ["kind", "name", "value", "type", "valueCategory"]
         else:
             key_kind = []
-        key_ignore = ["id", "range", "loc"]
+        key_ignore = ["id"]
         for key, value0 in ast0.items():
             if key in key_ignore:
                 continue
@@ -269,7 +269,7 @@ def benchmark_generator_and_optimizer(
                     return wk_exit(s.returncode)
                 s = s.stdout
                 s = json.loads(s)
-                s = json.dumps(s)
+                s = str(json.dumps(s), encoding="ascii")
                 for it in [generator, optimizer]:
                     s = subprocess.run(
                         [it],
