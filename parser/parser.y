@@ -58,7 +58,7 @@ auto yylex() {
 
 int main() {
   yyparse();
-  llvm::outs() << llvm::formatv("{0:2}", stak.back()) << "\n";
+  llvm::outs() << stak.back() << "\n";
 }
 %}
 %token T_NUMERIC_CONSTANT
