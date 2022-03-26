@@ -269,7 +269,7 @@ def benchmark_generator_and_optimizer(
                     return wk_exit(s.returncode)
                 s = s.stdout
                 s = json.loads(s)
-                s = str(json.dumps(s), encoding="ascii")
+                s = json.dumps(s).encode(encoding="ascii")
                 for it in [generator, optimizer]:
                     s = subprocess.run(
                         [it],
