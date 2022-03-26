@@ -89,13 +89,14 @@ entry:
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 
-由于评测机的内存足够大，单次评测内存设置为 20GB，总时限为三小时，评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，且设置 `--skip-filesize -1`，运行时长超过 5 分钟的编译结果会被跳过。因此本次实验中评测系统没有给出满分是正常的情况，助教的示例提交（基于 `clang -O0`）得分为 424/429，性能分约为 13.7%。
+由于评测机的内存足够大，单次评测内存设置为 10GB，总时限为一小时，评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，且设置 `--skip-filesize -1`，运行时长超过 2 分钟的编译结果会被跳过。因此本次实验中评测系统没有给出满分是正常的情况，助教的示例提交（基于 `clang -O0`）得分为 425/429，性能分约为 12.2%，评测花费了约二十五分钟。
 
-评测集群的单核性能非常弱（可能比你的手机还要弱，是来自[超算队](https://github.como/SYSU-SCC)的 KNL 集群，处理器为 [Intel(R) Xeon Phi(TM) CPU 7210](https://ark.intel.com/content/www/us/en/ark/products/94033/intel-xeon-phi-processor-7210-16gb-1-30-ghz-64-core.html)，绝版芯片喔），完整测试示例提交花费了大约两小时时间。此外，评测集群的并发量有限（至多可以同时评测十六份提交）。因此，请大家先在本地测试通过所有非 `tester/third_party` 目录下的算例后再提交。
+此外，因为评测集群的并发量有限（至多可以同时评测十六份提交）。请大家先在本地测试通过所有非 `tester/third_party` 目录下的算例后再提交。
 
 不要投机取巧，即使（可能）没有人在看着你。
 

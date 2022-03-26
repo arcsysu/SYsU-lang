@@ -73,7 +73,7 @@ cmake --build ~/sysu/build -t package_source
 ```bash
 docker pull wukan0621/sysu-lang:main
 docker run -it wukan0621/sysu-lang:main bash
-# 随后可以在 container 中开发，可查看 /autograder 目录
+# 随后可以在 container 中开发，可在 /root 目录下查看所需文件
 ```
 
 ## 代码结构

@@ -245,13 +245,13 @@ def benchmark_generator_and_optimizer(
             sysu = [subprocess.run(
                     [clang, "-O3", "-S", "-emit-llvm", "-o-", filename],
                     timeout=time_out,
-                    stdout=subprocess.PIPE)]
-            test_clang = 0
+                    stdout=subprocess.PIPE).stdout]
+            test_clang = 1
             if test_clang:
                 sysu.append(subprocess.run(
                     [clang, "-O0", "-S", "-emit-llvm", "-o-", filename],
                     timeout=time_out,
-                    stdout=subprocess.PIPE))
+                    stdout=subprocess.PIPE).stdout)
             else:
                 s = subprocess.run(
                     ["clang", "-E", "-O0", filename],
@@ -382,9 +382,9 @@ def main(*argv):
     parser.add_argument("--unittest")
     parser.add_argument(
         "--unittest-timeout",
-        help="unittest-timeout in seconds, '-1' for no skip (default 300)",
+        help="unittest-timeout in seconds, '-1' for no skip (default 120)",
         type=int,  # 慎重测试！
-        default=300)
+        default=120)
     parser.add_argument(
         "--recursion-limit",
         help="default 1048576",
