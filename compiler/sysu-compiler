@@ -263,7 +263,7 @@ def benchmark_generator_and_optimizer(
                 s = subprocess.run(
                     [clang, "-cc1", "-O0", "-ast-dump=json"],
                     timeout=time_out,
-                    input=s.stdout,
+                    input=s,
                     stdout=subprocess.PIPE)
                 if s.returncode:
                     return wk_exit(s.returncode)
