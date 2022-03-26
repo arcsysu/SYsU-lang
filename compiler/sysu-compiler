@@ -390,7 +390,6 @@ def main(*argv):
         help="default 1048576",
         type=int,  # 防爆
         default=1048576)
-    sys.setrecursionlimit(args.recursion_limit)
     parser.add_argument(
         "--convert-sysy",
         help="Convert *.sy in [file ...]",
@@ -402,6 +401,7 @@ def main(*argv):
         default=32768)
     parser.add_argument("file", default=["-"], nargs="*")
     args = parser.parse_args(argv[1:])
+    sys.setrecursionlimit(args.recursion_limit)
     filenames = []
     for f in args.file:
         tmp = glob.glob(f, recursive=True)
