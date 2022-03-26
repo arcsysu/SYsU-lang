@@ -21,6 +21,7 @@ import glob
 import gzip
 import json
 import logging
+import multiprocessing
 import os
 import re
 import statistics
@@ -201,6 +202,74 @@ def convert_sysy(filenames):
     return 0
 
 
+def get_output_init(l, fs, to, tmp, log):
+    global lock
+    global filenames
+    global time_out
+    global tmpdirname
+    global logger
+    lock = l
+    filenames = fs
+    time_out = to
+    tmpdirname = tmp
+    logger = log
+
+
+def get_output(ff):
+    def get_tm(sp):
+        val = -1
+        matchObj = re.findall(
+            b'TOTAL: (\\d*)H-(\\d*)M-(\\d*)S-(\\d*)us', sp.stderr)
+        matchObj = matchObj[-1]
+        val = int(matchObj[0])
+        val = val * 60 + int(matchObj[1])
+        val = val * 60 + int(matchObj[2])
+        val = val * 1000000 + int(matchObj[3])
+        return val
+    inputs = None
+    filename = filenames[ff]
+    if filename.endswith(".sysu.c"):
+        gz = filename[0:filename.rfind(".sysu.c")]+".in.gz"
+        if os.path.exists(gz):
+            with gzip.open(gz, "rb") as f:
+                inputs = f.read()
+    res = []
+    log = ""
+    try:
+        for it in range(2):
+            res.append(subprocess.run(
+                [os.path.join(tmpdirname, str(ff) + "." + str(it)+".out")],
+                timeout=time_out,
+                input=inputs,
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE))
+    except subprocess.TimeoutExpired:
+        if len(res) != 1:
+            log = "clang -O3: -1us, ret -1\n" +\
+                "sysu-lang: -1us, ret -1\n" +\
+                "error: -1\n"
+        if get_tm(res[0]) > 0:
+            log = "clang -O3: {}us, ret {}\n".format(
+                get_tm(res[0]), res[0].returncode) +\
+                "sysu-lang: {}us, ret {}\n".format(
+                time_out * 1000000, res[0].returncode) +\
+                "error: -1\n"
+    log = "clang -O3: {}us, ret {}\n".format(
+        get_tm(res[0]), res[0].returncode) +\
+        "sysu-lang: {}us, ret {}\n".format(
+        get_tm(res[1]), res[1].returncode) +\
+        "error: {}\n".format(
+        1 if res[0].returncode != res[-1].returncode
+        or res[0].stdout != res[-1].stdout else 0)
+    log = "[{}/{}] {}: Running\n".format(ff, len(filenames), filename) + log
+    lock.acquire()
+    try:
+        logger.info(log)
+    finally:
+        lock.release()
+    return log
+
+
 def benchmark_generator_and_optimizer(
         testcase,
         clang,
@@ -221,26 +290,12 @@ def benchmark_generator_and_optimizer(
             "score": 0,
             "max_score": 1,
             "output": ""})
-    performance = []
-    score = 0
     with tempfile.TemporaryDirectory() as tmpdirname:
         ir = os.path.join(tmpdirname, "a.ll")
-        exe = os.path.join(tmpdirname, "a.out")
         for ff in range(len(filenames)):
             filename = filenames[ff]
-            logger.info("[{}/{}] {}".format(ff, len(filenames),
-                                            filename))
-
-            def get_tm(sp):
-                val = -1
-                matchObj = re.findall(
-                    b'TOTAL: (\\d*)H-(\\d*)M-(\\d*)S-(\\d*)us', sp.stderr)
-                matchObj = matchObj[-1]
-                val = int(matchObj[0])
-                val = val * 60 + int(matchObj[1])
-                val = val * 60 + int(matchObj[2])
-                val = val * 1000000 + int(matchObj[3])
-                return val
+            logger.info("[{}/{}] {}: Compiling".format(ff, len(filenames),
+                                                       filename))
 
             sysu = [subprocess.run(
                     [clang, "-O3", "-S", "-emit-llvm", "-o-", filename],
@@ -270,69 +325,55 @@ def benchmark_generator_and_optimizer(
                     if s.returncode:
                         return wk_exit(s.returncode)
                 sysu.append(s)
-            inputs = None
-            if filename.endswith(".sysu.c"):
-                gz = filename[0:filename.rfind(".sysu.c")]+".in.gz"
-                if os.path.exists(gz):
-                    with gzip.open(gz, "rb") as f:
-                        inputs = f.read()
-            res = []
-            try:
-                for it in sysu:
-                    with open(ir, "wb") as f:
-                        f.write(it.stdout)
-                    r = subprocess.run(
-                        [clang, "-O0", "-lsysy", "-o", exe, ir],
-                        timeout=time_out).returncode
-                    if r:
-                        logger.error("ir error")
-                        return wk_exit(r)
-                    jt = subprocess.run(
-                        [exe],
-                        timeout=time_out,
-                        input=inputs,
-                        stderr=subprocess.PIPE,
-                        stdout=subprocess.PIPE)
-                    res.append(jt)
-                    if len(res) == 1:
-                        log = "[{}/{}] clang -O3: {}us, ret {}".format(
-                            ff, len(filenames), get_tm(jt), jt.returncode)
-                        logger.info(log)
-                        results["tests"][ff]["output"] += log + "\n"
-                    else:
-                        log = "[{}/{}] sysu-lang: {}us, ret {}".format(
-                            ff, len(filenames), get_tm(jt), jt.returncode)
-                        logger.info(log)
-                        results["tests"][ff]["output"] += log + "\n"
+            for it in range(len(sysu)):
+                with open(ir, "wb") as f:
+                    f.write(sysu[it].stdout)
+                exe = os.path.join(tmpdirname, str(ff) + "." + str(it)+".out")
+                r = subprocess.run(
+                    [clang, "-O0", "-lsysy", "-o", exe, ir],
+                    timeout=time_out).returncode
+                if r:
+                    logger.error("ir error")
+                    return wk_exit(r)
 
-                        if res[0].returncode != jt.returncode or \
-                                res[0].stdout != jt.stdout:
-                            logger.error("fail: not equ")
-                            return wk_exit(-1)
-                        if get_tm(res[0]) > 0:
-                            if get_tm(jt) <= 0:
-                                logger.error("fail: no timer")
-                                return wk_exit(-1)
-                            performance.append(get_tm(res[0])/get_tm(jt))
-                        results["tests"][ff]["score"] = 1
-
-                        score = score + 1
-            except subprocess.TimeoutExpired:
-                if len(res) != 1:
-                    logger.error("fail: TimeoutExpired")
-                    return wk_exit(-1)
-                if get_tm(res[0]) > 0:
-                    performance.append(get_tm(res[0])/(time_out * 1000000))
-        if len(performance):
-            results["leaderboard"] = [{
-                "name": "performance",
-                "order": 1,
-                "is_desc": True,
-                "value": statistics.geometric_mean(performance)}, {
-                "name": "score",
-                "order": 2,
-                "is_desc": True,
-                "value": score}]
+        lock = multiprocessing.Lock()
+        with multiprocessing.Pool(
+                initializer=get_output_init,
+                initargs=(lock, filenames, time_out, tmpdirname, logger)) as p:
+            output = p.map(get_output, range(len(filenames)))
+        for ff in range(len(filenames)):
+            results["tests"][ff]["output"] = output[ff]
+    performance = []
+    score = 0
+    for ff in range(len(filenames)):
+        s = results["tests"][ff]["output"].splitlines()
+        error = int(re.findall(
+            "error: (\\d*)",
+            s[3])[-1][0])
+        cl = int(re.findall(
+            "clang -O3: (\\d*)us, ret (\\d*)",
+            s[1])[-1][0])
+        sy = int(re.findall(
+            "sysu-lang: (\\d*)us, ret (\\d*)",
+            s[2])[-1][0])
+        if error == 1:
+            return wk_exit(error)
+        if error == 0:
+            score = score + 1
+        if cl > 0:
+            if sy <= 0:
+                return wk_exit(-1)
+            performance.append(cl/sy)
+    if len(performance):
+        results["leaderboard"] = [{
+            "name": "performance",
+            "order": 1,
+            "is_desc": True,
+            "value": statistics.geometric_mean(performance)}, {
+            "name": "score",
+            "order": 2,
+            "is_desc": True,
+            "value": score}]
     return wk_exit(0)
 
 
