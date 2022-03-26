@@ -34,11 +34,11 @@ cp -r /root/SYsU-lang-*-Source/optimizer /root/SYsU-lang
 # rm -rf /root/SYsU-lang/compiler
 # cp -r /root/SYsU-lang-*-Source/compiler /root/SYsU-lang
 /root/build_install
-mkdir -p /root/results
+mkdir -p /autograder/results
 sysu-compiler \\
     --unittest=benchmark_generator_and_optimizer_1 \\
     --skip-filesize -1 \\
-    "/root/SYsU-lang/**/*.sysu.c" >/root/results/results.json
+    "/root/SYsU-lang/**/*.sysu.c" >/autograder/results/results.json
 run.sh
 RUN <<EOF
 mv /root/SYsU-lang/run.sh /autograder/run
