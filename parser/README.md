@@ -7,6 +7,7 @@
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -cc1 -E tester/functional/000_main.sysu.c |
   clang -cc1 -ast-dump=json )
@@ -131,6 +132,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -cc1 -E tester/functional/027_if2.sysu.c |
   clang -cc1 -ast-dump )
@@ -270,6 +272,7 @@ flowchart TD;
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=parser-1 "**/*.sysu.c" )
 ```

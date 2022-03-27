@@ -7,6 +7,7 @@
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   clang -cc1 -S -emit-llvm )
@@ -37,6 +38,7 @@ attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-ma
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   clang -cc1 -ast-dump=json |

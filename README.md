@@ -92,6 +92,7 @@ SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能�
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler tester/functional/000_main.sysu.c )
 ```
@@ -105,6 +106,7 @@ SYsU 的预处理器，通过调用 `cpp` 实现（偷懒）。
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c )
 # 1 "tester/functional/000_main.sysu.c"
@@ -126,6 +128,7 @@ SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输�
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer )
@@ -148,35 +151,12 @@ SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 jso
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser )
-{
-  "inner": [
-    {
-      "inner": [
-        {
-          "inner": [
-            {
-              "inner": [
-                {
-                  "kind": "IntegerLiteral",
-                  "value": "3"
-                }
-              ],
-              "kind": "ReturnStmt"
-            }
-          ],
-          "kind": "CompoundStmt"
-        }
-      ],
-      "kind": "FunctionDecl",
-      "name": "main"
-    }
-  ],
-  "kind": "TranslationUnitDecl"
-}
+{"inner":[{"inner":[{"inner":[{"inner":[{"kind":"IntegerLiteral","value":"3"}],"kind":"ReturnStmt"}],"kind":"CompoundStmt"}],"kind":"FunctionDecl","name":"main"}],"kind":"TranslationUnitDecl"}
 ```
 
 当然，也可以直接从 `clang -cc1 -dump-tokens 2>&1` 获得输入。
@@ -184,6 +164,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 |
@@ -197,6 +178,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
@@ -216,6 +198,7 @@ entry:
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
@@ -236,6 +219,7 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
@@ -263,6 +247,7 @@ entry:
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
@@ -290,10 +275,6 @@ entry:
 ```bash
 git submodule update --init
 ```
-
-### `.github`
-
-github action，保存 CI 自动化配置文件。
 
 ## 实验反馈
 

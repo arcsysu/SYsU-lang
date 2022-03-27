@@ -7,6 +7,7 @@
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -cc1 -E tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 )
@@ -51,7 +52,10 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 评测脚本忽略空白符，可以查看[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
 
 ```bash
-( export PATH=~/sysu/bin:$PATH CPATH=~/sysu/include:$CPATH &&
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=lexer-1 "**/*.sysu.c" )
 ```
 
