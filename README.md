@@ -72,8 +72,14 @@ cmake --build ~/sysu/build -t package_source
 
 ```bash
 docker pull wukan0621/sysu-lang:main
-docker run -it wukan0621/sysu-lang:main bash
-# 随后可以在 container 中开发，可在 /root 目录下查看所需文件
+docker run \
+  --name sysu-lang \
+  -v "$PWD/project:/root/project" \
+  -it wukan0621/sysu-lang:main \
+  bash
+# 在容器中执行下属指令
+cp -r /root/SYsU-lang /root/project/
+# 随后可以在宿主机当前目录的 project/SYsU-lang 目录下开发
 ```
 
 ## 代码结构
@@ -148,6 +154,8 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 
 SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
 
+<!-- {%raw%} -->
+
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
@@ -158,6 +166,8 @@ $ ( export PATH=~/sysu/bin:$PATH \
   sysu-parser )
 {"inner":[{"inner":[{"inner":[{"inner":[{"kind":"IntegerLiteral","value":"3"}],"kind":"ReturnStmt"}],"kind":"CompoundStmt"}],"kind":"FunctionDecl","name":"main"}],"kind":"TranslationUnitDecl"}
 ```
+
+<!-- {% endraw %} -->
 
 当然，也可以直接从 `clang -cc1 -dump-tokens 2>&1` 获得输入。
 
