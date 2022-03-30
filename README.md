@@ -89,14 +89,24 @@ cp -r /root/SYsU-lang /root/project/
 本项目的运行架构如下图。
 
 ```mermaid
-flowchart LR
+flowchart TB
 subgraph sysu-compiler
-preprocessor--preprocessed-source-code-->lexer
+direction TB
+subgraph frontend
+direction LR
+preprocessor--Code-->lexer
 lexer--TokenFlow-->parser
 parser--JsonAST-->generator
-generator--LLVM-IR-->optimizer
-optimizer--LLVM-IR-->translator
+end
+subgraph midend
+optimizer
+end
+subgraph backend
+direction LR
 translator--Assemble-->linker
+end
+frontend--LLVM-IR-->midend
+midend--LLVM-IR-->backend
 end
 ```
 
