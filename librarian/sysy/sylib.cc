@@ -1,5 +1,5 @@
 #define SYSY_NO_DEFINE
-#include "sysy/sylib.h"
+#include "sylib.h"
 #include <chrono>
 #include <cstdio>
 #include <tuple>

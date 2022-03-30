@@ -7,7 +7,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 3. 按照自顶向下的顺序进行实验，各个实验模块之间可通过管道进行通信（微 内 核）。
 4. 支持在线/本地/Github Action 自动批改。
 
-同样欢迎其他高校相关课程使用！我们同样开源了基于 docker 的[在线评测框架](https://autograder-docs.howardlau.me/)。
+同样欢迎其他高校相关课程使用！我们同样开源了基于 docker 的[在线评测框架](https://zhuanlan.zhihu.com/p/479027855)。
 
 ## 语法特征
 
@@ -39,6 +39,8 @@ git clone https://github.com/arcsysu/SYsU-lang
 cd SYsU-lang
 
 # 编译安装
+# `${CMAKE_C_COMPILER}` 仅用于编译 `.sysu.c`
+# 非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）
 rm -rf ~/sysu
 cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
@@ -82,9 +84,21 @@ cp -r /root/SYsU-lang /root/project/
 # 随后可以在宿主机当前目录的 project/SYsU-lang 目录下开发
 ```
 
-## 代码结构
+## 运行架构
 
-本项目中 `${CMAKE_C_COMPILER}` 仅用于编译 `.sysu.c`，非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）。
+本项目的运行架构如下图。
+
+```mermaid
+flowchart LR
+subgraph sysu-compiler
+preprocessor--preprocessed-source-code-->lexer
+lexer--TokenFlow-->parser
+parser--JsonAST-->generator
+generator--LLVM-IR-->optimizer
+optimizer--LLVM-IR-->translator
+translator--Assemble-->linker
+end
+```
 
 ### `compiler`
 
@@ -103,11 +117,11 @@ SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能�
   sysu-compiler tester/functional/000_main.sysu.c )
 ```
 
-后续功能开发中。
+后续功能开发中，详见 `--help`。
 
 ### `preprocessor`
 
-SYsU 的预处理器，通过调用 `cpp` 实现（偷懒）。
+SYsU 的预处理器。当前 `sysu-preprocessor` 直接调用 `cpp`，后续会替换成借助 libclang 实现的版本，学有余力的同学也可自行实现。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -266,15 +280,23 @@ entry:
 
 ### `translator`
 
-将 LLVM-IR 翻译成汇编或二进制文件。当前 `sysu-translator` 通过直接调用 `llc` 实现。
+将 LLVM-IR 翻译成汇编或二进制文件。当前 `sysu-translator` 直接调用 `llc`，学有余力的同学也可自行实现。
 
 ### `linker`
 
-链接器。当前 `sysu-linker` 通过直接调用 `ld.lld` 实现。
+链接器。当前 `sysu-linker` 直接调用 `ld.lld`，学有余力的同学也可自行实现。
 
 ### `librarian`
 
-包含运行时库 `libsysy.so`。注意，此处为自行实现的 `libsysy` ，与原 `libsysy` 代码预期效果一致，但具有更强的可移植性以及与 stdio 的兼容性。
+#### SysY 运行时库
+
+此处为自行实现的 `libsysy` ，与原 `libsysy` 代码预期效果一致，但具有更强的可移植性以及与 stdio 的兼容性。
+
+#### SYsU 运行时库
+
+`libsysu` 暴露了类似于 `open()`、`read()`、`write()`、`close()` 的系统调用，使 SYsU 具有了处理文件的能力（可用于 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv)或实现编译器自举）。
+
+后续会逐步增加更多 C 语言标准库函数与 Linux 系统函数。
 
 ### `tester`
 
