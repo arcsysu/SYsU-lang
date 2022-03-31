@@ -189,11 +189,19 @@ def convert_sysy(filenames):
             file = open(filename, mode="r")
             src = file.read()
             file.close()
-            patterns = ["getint", "getch", "getarray", "putint",
-                        "putch", "putarray", "starttime", "stoptime"]
+            patterns22 = ["getfloat", "putfloat",
+                          "getfarray", "putfarray", "putf"]
+            patterns = patterns22+[
+                "getint", "getch", "getarray", "putint",
+                "putch", "putarray", "starttime", "stoptime"]
             for pattern in patterns:
                 if src.find(pattern) != -1:
                     src = "#include <sysy/sylib.h>\n"+src
+                    if src.find(pattern22) != -1:
+                        src = "#ifndef __SYSY\n" +\
+                            "#define __SYSY 202203L\n" +\
+                            "#endif\n" +\
+                            src
                     break
             file = open(filename+"su.c", mode="w")
             file.write(src)
@@ -292,7 +300,7 @@ def benchmark_generator_and_optimizer(
                     with open(ir, "wb") as f:
                         f.write(it)
                     r = subprocess.run(
-                        [clang, "-O0", "-lsysy", "-o", exe, ir],
+                        [clang, "-O0", "-lsysy", "-lsysu", "-o", exe, ir],
                         timeout=time_out).returncode
                     if r:
                         logger.error("ir error")
@@ -356,19 +364,24 @@ def compile(
         linker,
         filenames):
     for filename in filenames:
-        sysu = subprocess.run(
+        s = subprocess.run(
             [preprocessor, filename],
             stdout=subprocess.PIPE)
-        if sysu.returncode:
-            return sysu.returncode
+        if s.returncode:
+            return s.returncode
+        s = s.stdout
         for it in [lexer, parser, generator, optimizer, translator]:
-            sysu = subprocess.run(
+            s = subprocess.run(
                 [it],
                 stdout=subprocess.PIPE,
-                input=sysu.stdout)
-            if sysu.returncode:
-                return sysu.returncode
-        print(str(sysu.stdout, encoding="utf8"))
+                input=s)
+            if s.returncode:
+                return s.returncode
+            s = s.stdout
+            if it == parser:
+                s = json.loads(s)
+                s = json.dumps(s).encode(encoding="ascii")
+        print(str(s, encoding="utf8"))
 
     return 0
 
@@ -379,6 +392,15 @@ def main(*argv):
              "sysu-generator", "sysu-optimizer", "sysu-translator", "sysu-linker"]
     for spec in specs:
         parser.add_argument("--"+spec, help="Specify "+spec, default=spec)
+    parser.add_argument(
+        "--recursion-limit",
+        help="(default 1048576)",
+        type=int,  # 防爆
+        default=1048576)
+    parser.add_argument(
+        "--convert-sysy",
+        help="Convert *.sy in [file ...]",
+        action="store_true")
     parser.add_argument("--unittest")
     parser.add_argument(
         "--unittest-timeout",
@@ -386,16 +408,7 @@ def main(*argv):
         type=int,  # 慎重测试！
         default=120)
     parser.add_argument(
-        "--recursion-limit",
-        help="default 1048576",
-        type=int,  # 防爆
-        default=1048576)
-    parser.add_argument(
-        "--convert-sysy",
-        help="Convert *.sy in [file ...]",
-        action="store_true")
-    parser.add_argument(
-        "--skip-filesize",
+        "--unittest-skip-filesize",
         help="'-1' for no skip (default 32768)",
         type=int,  # 慎重测试！
         default=32768)
@@ -406,14 +419,14 @@ def main(*argv):
     for f in args.file:
         tmp = glob.glob(f, recursive=True)
         for t in tmp:
-            if args.skip_filesize >= 0:
-                if os.path.getsize(t) >= args.skip_filesize:
-                    continue
             if t not in filenames:
                 filenames.append(t)
     if args.convert_sysy:
         return convert_sysy(filenames)
     if args.unittest:
+        if args.unittest_skip_filesize >= 0:
+            filenames = list(filter(lambda x: os.path.getsize(
+                x) >= args.unittest_skip_filesize, filenames))
         filenames.sort()
         time_out = None
         if args.unittest_timeout >= 0:
