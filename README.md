@@ -304,7 +304,7 @@ entry:
 
 #### SYsU 运行时库
 
-`libsysu` 暴露了类似于 `open()`、`read()`、`write()`、`close()` 的系统调用，使 SYsU 具有了处理文件的能力（可用于 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv)或实现编译器自举）。
+`libsysu` 暴露了类似于 `open()`、`read()`、`write()`、`close()` 的系统调用，使 SYsU 具有了处理文件的能力（可用于 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv) 或实现编译器自举）。
 
 后续会逐步增加更多 C 语言标准库函数与 Linux 系统函数。
 
