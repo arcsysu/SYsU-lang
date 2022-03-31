@@ -37,7 +37,7 @@ cp -r /root/SYsU-lang-*-Source/optimizer /root/SYsU-lang
 mkdir -p /autograder/results
 sysu-compiler \\
     --unittest=benchmark_generator_and_optimizer_1 \\
-    --skip-filesize -1 \\
+    --unittest-skip-filesize -1 \\
     "/root/SYsU-lang/**/*.sysu.c" >/autograder/results/results.json
 run.sh
 RUN <<EOF
