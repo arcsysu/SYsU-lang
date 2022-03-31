@@ -197,7 +197,7 @@ def convert_sysy(filenames):
             for pattern in patterns:
                 if src.find(pattern) != -1:
                     src = "#include <sysy/sylib.h>\n"+src
-                    if src.find(pattern22) != -1:
+                    if pattern in patterns22:
                         src = "#ifndef __SYSY\n" +\
                             "#define __SYSY 202203L\n" +\
                             "#endif\n" +\
