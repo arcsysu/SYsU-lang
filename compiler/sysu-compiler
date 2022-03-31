@@ -181,34 +181,6 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames, time_out):
                     return wk_exit(-1)
 
 
-def convert_sysy(filenames):
-    for ff in range(len(filenames)):
-        filename = filenames[ff]
-        logger.info("[{}/{}] {}".format(ff, len(filenames), filename))
-        if filename.endswith(".sy"):
-            file = open(filename, mode="r")
-            src = file.read()
-            file.close()
-            patterns22 = ["getfloat", "putfloat",
-                          "getfarray", "putfarray", "putf"]
-            patterns = patterns22+[
-                "getint", "getch", "getarray", "putint",
-                "putch", "putarray", "starttime", "stoptime"]
-            for pattern in patterns:
-                if src.find(pattern) != -1:
-                    src = "#include <sysy/sylib.h>\n"+src
-                    if pattern in patterns22:
-                        src = "#ifndef __SYSY\n" +\
-                            "#define __SYSY 202203L\n" +\
-                            "#endif\n" +\
-                            src
-                    break
-            file = open(filename+"su.c", mode="w")
-            file.write(src)
-            file.close()
-    return 0
-
-
 def benchmark_generator_and_optimizer(
         testcase,
         clang,
@@ -354,6 +326,34 @@ def benchmark_generator_and_optimizer(
     return wk_exit(0)
 
 
+def convert_sysy(filenames):
+    for ff in range(len(filenames)):
+        filename = filenames[ff]
+        logger.info("[{}/{}] {}".format(ff, len(filenames), filename))
+        if filename.endswith(".sy"):
+            file = open(filename, mode="r")
+            src = file.read()
+            file.close()
+            patterns22 = ["getfloat", "putfloat",
+                          "getfarray", "putfarray", "putf"]
+            patterns = patterns22+[
+                "getint", "getch", "getarray", "putint",
+                "putch", "putarray", "starttime", "stoptime"]
+            for pattern in patterns:
+                if src.find(pattern) != -1:
+                    src = "#include <sysy/sylib.h>\n"+src
+                    if pattern in patterns22:
+                        src = "#ifndef __SYSY\n" +\
+                            "#define __SYSY 202203L\n" +\
+                            "#endif\n" +\
+                            src
+                    break
+            file = open(filename+"su.c", mode="w")
+            file.write(src)
+            file.close()
+    return 0
+
+
 def compile(
         preprocessor,
         lexer,
@@ -412,9 +412,15 @@ def main(*argv):
         help="'-1' for no skip (default 32768)",
         type=int,  # 慎重测试！
         default=32768)
+    parser.add_argument(
+        "-o",
+        help="Write output to <file>",
+        default="-")
     parser.add_argument("file", default=["-"], nargs="*")
     args = parser.parse_args(argv[1:])
     sys.setrecursionlimit(args.recursion_limit)
+    if args.o != "-":
+        sys.stdout = open(args.o, "w")
     filenames = []
     for f in args.file:
         tmp = glob.glob(f, recursive=True)

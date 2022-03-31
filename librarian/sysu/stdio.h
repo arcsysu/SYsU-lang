@@ -10,8 +10,6 @@ int sysu_getchar();
 
 int sysu_putchar(int ch);
 
-int sysu_gets_s(char str[], int n);
-
 int sysu_puts(const char str[]);
 
 #ifdef __cplusplus
