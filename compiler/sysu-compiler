@@ -432,7 +432,7 @@ def main(*argv):
     if args.unittest:
         if args.unittest_skip_filesize >= 0:
             filenames = list(filter(lambda x: os.path.getsize(
-                x) >= args.unittest_skip_filesize, filenames))
+                x) < args.unittest_skip_filesize, filenames))
         filenames.sort()
         time_out = None
         if args.unittest_timeout >= 0:
