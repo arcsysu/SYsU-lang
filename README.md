@@ -63,7 +63,7 @@ cmake --build ~/sysu/build -t package_source
   CPATH=~/sysu/include:$CPATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  sysu-compiler tester/functional/000_main.sysu.c -o a.S &&
+  sysu-compiler -S -o a.S tester/functional/000_main.sysu.c &&
   clang -O0 -lsysy -o a.out a.S &&
   ./a.out ;
   echo $? &&

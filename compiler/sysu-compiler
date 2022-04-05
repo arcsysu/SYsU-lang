@@ -17,6 +17,7 @@ exit 1
 ":"""
 
 import argparse
+import gc
 import glob
 import gzip
 import json
@@ -249,6 +250,7 @@ def benchmark_generator_and_optimizer(
                     return wk_exit(s.returncode)
                 s = s.stdout
                 s = json.loads(s)
+                gc.collect()
                 s = json.dumps(s).encode(encoding="ascii")
                 for it in [generator, optimizer]:
                     s = subprocess.run(
@@ -354,7 +356,7 @@ def convert_sysy(filenames):
     return 0
 
 
-def compile(
+def compile_S(
         preprocessor,
         lexer,
         parser,
@@ -380,6 +382,7 @@ def compile(
             s = s.stdout
             if it == parser:
                 s = json.loads(s)
+                gc.collect()
                 s = json.dumps(s).encode(encoding="ascii")
         print(str(s, encoding="utf8"))
 
@@ -412,6 +415,10 @@ def main(*argv):
         help="'-1' for no skip (default 32768)",
         type=int,  # 慎重测试！
         default=32768)
+    parser.add_argument(
+        "-S",
+        help="Only run preprocess and compilation steps",
+        action="store_true")
     parser.add_argument(
         "-o",
         help="Write output to <file>",
@@ -453,11 +460,14 @@ def main(*argv):
                 args.sysu_optimizer,
                 filenames,
                 time_out)
-    returncode = compile(args.sysu_preprocessor, args.sysu_lexer,
-                         args.sysu_parser, args.sysu_generator,
-                         args.sysu_optimizer, args.sysu_translator,
-                         args.sysu_linker, filenames)
-    return returncode
+    if args.S:
+        returncode = compile_S(
+            args.sysu_preprocessor, args.sysu_lexer,
+            args.sysu_parser, args.sysu_generator,
+            args.sysu_optimizer, args.sysu_translator,
+            args.sysu_linker, filenames)
+        return returncode
+    return 0
 
 
 if __name__ == '__main__':
