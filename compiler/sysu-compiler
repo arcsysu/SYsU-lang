@@ -29,24 +29,21 @@ import subprocess
 import sys
 import tempfile
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out):
     def check_ast(ast0, ast1, testcase, command0, command1):
         def wk_exit(n):
-            logger.error("---")
+            logging.getLogger(__name__).error("---")
             ast0.pop("inner")
-            logger.error("current node: ")
-            logger.error(ast0)
-            logger.error("---")
-            logger.error(command0)
-            logger.error(command1)
+            logging.getLogger(__name__).error("current node: ")
+            logging.getLogger(__name__).error(ast0)
+            logging.getLogger(__name__).error("---")
+            logging.getLogger(__name__).error(command0)
+            logging.getLogger(__name__).error(command1)
             return n
 
         if type(ast0) != type(ast1):
-            logger.error("\nfail: type err.")
+            logging.getLogger(__name__).error("\nfail: type err.")
             return wk_exit(-1)
 
         key_inner = ["inner"]
@@ -66,7 +63,8 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out):
 
             def get_value1():
                 if key not in ast1:
-                    logger.error("\nfail: key '"+key+"' not find")
+                    logging.getLogger(__name__).error(
+                        "\nfail: key '"+key+"' not find")
                     return wk_exit(-1)
                 return ast1.get(key)
 
@@ -76,7 +74,8 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out):
                         value0.pop(0)
                 value1 = get_value1()
                 if len(value0) != len(value1):
-                    logger.error("\nfail: inner not match")
+                    logging.getLogger(__name__).error(
+                        "\nfail: inner not match")
                     return wk_exit(-1)
                 for i in range(len(value0)):
                     check_ast(value0[i], value1[i],
@@ -84,13 +83,14 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out):
             elif len(key_kind) == 0 or key in key_kind:
                 value1 = get_value1()
                 if value0 != value1:
-                    logger.error("\nfail: key not match")
-                    logger.error(key)
+                    logging.getLogger(__name__).error("\nfail: key not match")
+                    logging.getLogger(__name__).error(key)
                     return wk_exit(-1)
         return 0
     for ff in range(len(filenames)):
         filename = filenames[ff]
-        logger.info("[{}/{}] {}".format(ff, len(filenames), filename))
+        logging.getLogger(__name__).info(
+            "[{}/{}] {}".format(ff, len(filenames), filename))
         command = preprocessor + " " + filename
         src = subprocess.run(
             command, timeout=time_out, stdout=subprocess.PIPE, shell=True).stdout
@@ -111,8 +111,8 @@ def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out):
 def unittest_lexer(testcase, clang, preprocessor, lexer, filenames, time_out):
     for ff in range(len(filenames)):
         filename = filenames[ff]
-        logger.info("[{}/{}] {}".format(ff, len(filenames),
-                                        filename))
+        logging.getLogger(__name__).info("[{}/{}] {}".format(ff, len(filenames),
+                                                             filename))
         command = preprocessor + " " + filename
         src = subprocess.run(
             command, stdout=subprocess.PIPE, shell=True).stdout
@@ -126,13 +126,14 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames, time_out):
             input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout.splitlines()
 
         def wk_exit(n):
-            logger.error("---")
-            logger.error(command0)
-            logger.error(command1)
+            logging.getLogger(__name__).error("---")
+            logging.getLogger(__name__).error(command0)
+            logging.getLogger(__name__).error(command1)
             return n
 
         if len(tokens0) != len(tokens1):
-            logger.error("\nfail: counts of tokens are different")
+            logging.getLogger(__name__).error(
+                "\nfail: counts of tokens are different")
             return wk_exit(-1)
         for i in range(len(tokens0)):
             def split_tokens(t):
@@ -141,9 +142,9 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames, time_out):
                 k2 = tmp.rfind("'")
                 k3 = tmp.rfind("Loc=<")
                 if k1 == -1 or k2 == -1 or k3 == -1:
-                    logger.error("\nfail: format error")
-                    logger.error("---")
-                    logger.error(t)
+                    logging.getLogger(__name__).error("\nfail: format error")
+                    logging.getLogger(__name__).error("---")
+                    logging.getLogger(__name__).error(t)
                     return wk_exit(-1)
                 tok0 = tmp.split()[0].strip()
                 str0 = tmp[k1+1:k2].strip()
@@ -155,30 +156,34 @@ def unittest_lexer(testcase, clang, preprocessor, lexer, filenames, time_out):
 
             if testcase in ["lexer-3"]:
                 if mid0 != mid1:
-                    logger.error("\nfail: mid " + str(i+1) + "c" + str(i+1))
-                    logger.error("< " + mid0)
-                    logger.error("---")
-                    logger.error("> " + mid1)
+                    logging.getLogger(__name__).error(
+                        "\nfail: mid " + str(i+1) + "c" + str(i+1))
+                    logging.getLogger(__name__).error("< " + mid0)
+                    logging.getLogger(__name__).error("---")
+                    logging.getLogger(__name__).error("> " + mid1)
                     return wk_exit(-1)
             if testcase in ["lexer-2", "lexer-3"]:
                 if loc0 != loc1:
-                    logger.error("\nfail: loc " + str(i+1) + "c" + str(i+1))
-                    logger.error("< " + loc0)
-                    logger.error("---")
-                    logger.error("> " + loc1)
+                    logging.getLogger(__name__).error(
+                        "\nfail: loc " + str(i+1) + "c" + str(i+1))
+                    logging.getLogger(__name__).error("< " + loc0)
+                    logging.getLogger(__name__).error("---")
+                    logging.getLogger(__name__).error("> " + loc1)
                     return wk_exit(-1)
             if testcase in ["lexer-0", "lexer-1", "lexer-2", "lexer-3"]:
                 if tok0 != tok1:
-                    logger.error("\nfail: tok " + str(i+1) + "c" + str(i+1))
-                    logger.error("< " + tok0)
-                    logger.error("---")
-                    logger.error("> " + tok1)
+                    logging.getLogger(__name__).error(
+                        "\nfail: tok " + str(i+1) + "c" + str(i+1))
+                    logging.getLogger(__name__).error("< " + tok0)
+                    logging.getLogger(__name__).error("---")
+                    logging.getLogger(__name__).error("> " + tok1)
                     return wk_exit(-1)
                 if str0 != str1:
-                    logger.error("\nfail: str " + str(i+1) + "c" + str(i+1))
-                    logger.error("< " + str0)
-                    logger.error("---")
-                    logger.error("> " + str1)
+                    logging.getLogger(__name__).error(
+                        "\nfail: str " + str(i+1) + "c" + str(i+1))
+                    logging.getLogger(__name__).error("< " + str0)
+                    logging.getLogger(__name__).error("---")
+                    logging.getLogger(__name__).error("> " + str1)
                     return wk_exit(-1)
 
 
@@ -209,8 +214,8 @@ def benchmark_generator_and_optimizer(
         exe = os.path.join(tmpdirname, "a.out")
         for ff in range(len(filenames)):
             filename = filenames[ff]
-            logger.info("[{}/{}] {}".format(ff, len(filenames),
-                                            filename))
+            logging.getLogger(__name__).info("[{}/{}] {}".format(ff, len(filenames),
+                                                                 filename))
 
             def get_tm(sp):
                 val = -1
@@ -277,7 +282,7 @@ def benchmark_generator_and_optimizer(
                         [clang, "-O0", "-lsysy", "-lsysu", "-o", exe, ir],
                         timeout=time_out).returncode
                     if r:
-                        logger.error("ir error")
+                        logging.getLogger(__name__).error("ir error")
                         return wk_exit(r)
                     jt = subprocess.run(
                         [exe],
@@ -289,21 +294,22 @@ def benchmark_generator_and_optimizer(
                     if len(res) == 1:
                         log = "[{}/{}] clang -O3: {}us, ret {}".format(
                             ff, len(filenames), get_tm(jt), jt.returncode)
-                        logger.info(log)
+                        logging.getLogger(__name__).info(log)
                         results["tests"][ff]["output"] += log + "\n"
                     else:
                         log = "[{}/{}] sysu-lang: {}us, ret {}".format(
                             ff, len(filenames), get_tm(jt), jt.returncode)
-                        logger.info(log)
+                        logging.getLogger(__name__).info(log)
                         results["tests"][ff]["output"] += log + "\n"
 
                         if res[0].returncode != jt.returncode or \
                                 res[0].stdout != jt.stdout:
-                            logger.error("fail: not equ")
+                            logging.getLogger(__name__).error("fail: not equ")
                             return wk_exit(-1)
                         if get_tm(res[0]) > 0:
                             if get_tm(jt) <= 0:
-                                logger.error("fail: no timer")
+                                logging.getLogger(__name__).error(
+                                    "fail: no timer")
                                 return wk_exit(-1)
                             performance.append(get_tm(res[0])/get_tm(jt))
                         results["tests"][ff]["score"] = 1
@@ -311,7 +317,7 @@ def benchmark_generator_and_optimizer(
                         score = score + 1
             except subprocess.TimeoutExpired:
                 if len(res) != 1:
-                    logger.error("fail: TimeoutExpired")
+                    logging.getLogger(__name__).error("fail: TimeoutExpired")
                     return wk_exit(-1)
                 if get_tm(res[0]) > 0:
                     performance.append(get_tm(res[0])/(time_out * 1000000))
@@ -331,7 +337,8 @@ def benchmark_generator_and_optimizer(
 def convert_sysy(filenames):
     for ff in range(len(filenames)):
         filename = filenames[ff]
-        logger.info("[{}/{}] {}".format(ff, len(filenames), filename))
+        logging.getLogger(__name__).info(
+            "[{}/{}] {}".format(ff, len(filenames), filename))
         if filename.endswith(".sy"):
             file = open(filename, mode="r")
             src = file.read()
@@ -390,6 +397,11 @@ def compile_S(
 
 
 def main(*argv):
+    logging.getLogger(__name__).setLevel(level=logging.INFO)
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    logging.getLogger(__name__).addHandler(console)
+
     parser = argparse.ArgumentParser(prog=os.path.basename(argv[0]))
     specs = ["clang", "sysu-preprocessor", "sysu-lexer", "sysu-parser",
              "sysu-generator", "sysu-optimizer", "sysu-translator", "sysu-linker"]
@@ -425,6 +437,7 @@ def main(*argv):
         default="-")
     parser.add_argument("file", default=["-"], nargs="*")
     args = parser.parse_args(argv[1:])
+
     sys.setrecursionlimit(args.recursion_limit)
     if args.o != "-":
         sys.stdout = open(args.o, "w")
@@ -467,7 +480,9 @@ def main(*argv):
             args.sysu_optimizer, args.sysu_translator,
             args.sysu_linker, filenames)
         return returncode
-    return 0
+
+    logging.getLogger(__name__).error("nothing to do")
+    return -1
 
 
 if __name__ == '__main__':
