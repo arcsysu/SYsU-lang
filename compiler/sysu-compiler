@@ -434,6 +434,7 @@ def main(*argv):
     parser.add_argument(
         "-o",
         help="Write output to <file>",
+        metavar="<file>",
         default="-")
     parser.add_argument("file", default=["-"], nargs="*")
     args = parser.parse_args(argv[1:])
