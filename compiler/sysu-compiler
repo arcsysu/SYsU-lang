@@ -119,6 +119,7 @@ def main(*argv):
             r = check_ast(ast0, ast1, testcase, command0, command1)
             if r:
                 return r
+        return 0
 
     def unittest_lexer(testcase, clang, preprocessor, lexer, filenames, time_out):
         for ff in range(len(filenames)):
@@ -198,6 +199,7 @@ def main(*argv):
                         logging.getLogger(__name__).error("---")
                         logging.getLogger(__name__).error("> " + str1)
                         return wk_exit(-1)
+        return 0
 
     def benchmark_generator_and_optimizer(
             testcase,
