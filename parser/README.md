@@ -9,7 +9,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  clang -cc1 -E tester/functional/000_main.sysu.c |
+  clang -E tester/functional/000_main.sysu.c |
   clang -cc1 -ast-dump=json )
 {
   "id": "0x1c9b558",

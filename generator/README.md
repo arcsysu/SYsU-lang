@@ -9,7 +9,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  sysu-preprocessor tester/functional/000_main.sysu.c |
+  clang -E tester/functional/000_main.sysu.c |
   clang -cc1 -S -emit-llvm )
 ; ModuleID = '-'
 source_filename = "-"
@@ -40,7 +40,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  sysu-preprocessor tester/functional/000_main.sysu.c |
+  clang -E tester/functional/000_main.sysu.c |
   clang -cc1 -ast-dump=json |
   sysu-generator )
 ; ModuleID = '-'
