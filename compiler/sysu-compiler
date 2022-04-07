@@ -52,12 +52,16 @@ def main(*argv):
 
             if testcase in ["parser-0"]:
                 key_kind = ["kind", "name", "value"]
+                skip_inner = ["InitListExpr"]
             elif testcase in ["parser-1"]:
                 key_kind = ["kind", "name", "value"]
+                skip_inner = ["InitListExpr"] # 跳过列表初始化
             elif testcase in ["parser-2"]:
                 key_kind = ["kind", "name", "value", "type", "valueCategory"]
+                skip_inner = []
             else:
                 key_kind = []
+                skip_inner = []
             key_ignore = ["id"]
             for key, value0 in ast0.items():
                 if key in key_ignore:
@@ -71,6 +75,8 @@ def main(*argv):
                     return ast1.get(key)
 
                 if key in key_inner:
+                    if ast0.get("kind") in skip_inner:
+                        continue
                     if ast0.get("kind") == "TranslationUnitDecl":
                         while len(value0[0].get("loc")) == 0:
                             value0.pop(0)
