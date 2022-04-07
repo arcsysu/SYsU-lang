@@ -20,7 +20,7 @@ void _sysy_putint(int a);
 int _sysy_getarray(int a[]);
 void _sysy_putarray(int n, int a[]);
 
-#ifndef SYSY_NO_DEFINE
+#ifndef __SYSY_NO_DEFINE
 
 #define starttime() _sysy_starttime(__LINE__)
 #define stoptime() _sysy_stoptime(__LINE__)
@@ -33,6 +33,30 @@ void _sysy_putarray(int n, int a[]);
 
 #define getarray(a) _sysy_getarray(a)
 #define putarray(n, a) _sysy_putarray(n, a)
+
+#endif
+
+#if __SYSY >= 202203L
+
+float _sysy_getfloat();
+void _sysy_putfloat(float a);
+
+int _sysy_getfarray(float a[]);
+void _sysy_putfarray(int n, float a[]);
+
+void _sysy_putf(char a[], ...);
+
+#ifndef __SYSY_NO_DEFINE
+
+#define getfloat() _sysy_getfloat()
+#define putfloat() _sysy_putfloat()
+
+#define getfarray(a) _sysy_getfarray(a)
+#define putfarray(n, a) _sysy_putfarray(n, a)
+
+#define putf(a, ...) _sysy_putf(a, ...)
+
+#endif
 
 #endif
 

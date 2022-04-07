@@ -1,6 +1,8 @@
-#define SYSY_NO_DEFINE
-#include "sysy/sylib.h"
+#define __SYSY 202203L
+#define __SYSY_NO_DEFINE
+#include "sylib.h"
 #include <chrono>
+#include <cstdarg>
 #include <cstdio>
 #include <tuple>
 #include <vector>
@@ -93,6 +95,46 @@ void _sysy_putarray(int n, int a[]) {
   }
   _sysy_putch("\n"[0]);
 }
+
+#if __SYSY >= 202203L
+
+float _sysy_getfloat() {
+  float n;
+  std::scanf("%f", &n);
+  return n;
+}
+void _sysy_putfloat(float a) { std::printf("%f", a); }
+
+int _sysy_getfarray(float a[]) {
+  int n = _sysy_getint();
+  int i = 0;
+  while (i < n) {
+    a[i] = _sysy_getfloat();
+    i = i + 1;
+  }
+  return n;
+}
+void _sysy_putfarray(int n, float a[]) {
+  _sysy_putint(n);
+  _sysy_putch(":"[0]);
+  int i = 0;
+  while (i < n) {
+    _sysy_putch(" "[0]);
+    _sysy_putfloat(a[i]);
+    i = i + 1;
+  }
+  _sysy_putch("\n"[0]);
+}
+
+void _sysy_putf(char a[], ...) {
+  std::va_list args;
+  va_start(args, a);
+  std::vfprintf(stdout, a, args);
+  va_end(args);
+}
+
+#endif
+
 #ifdef __cplusplus
 }
 #endif

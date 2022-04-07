@@ -7,7 +7,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 3. 按照自顶向下的顺序进行实验，各个实验模块之间可通过管道进行通信（微 内 核）。
 4. 支持在线/本地/Github Action 自动批改。
 
-同样欢迎其他高校相关课程使用！我们同样开源了基于 docker 的[在线评测框架](https://autograder-docs.howardlau.me/)。
+同样欢迎其他高校相关课程使用！我们同样开源了基于 docker 的[在线评测框架](https://zhuanlan.zhihu.com/p/479027855)。
 
 ## 语法特征
 
@@ -26,7 +26,7 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 
 ## 编译运行
 
-需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容本项目推荐使用 `clang` 编译，本地版本为 `clang-11`，操作系统为 `debian:11`（对于使用其他操作系统的同学，建议使用 [docker](https://hub.docker.com/_/debian)）。
+需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容本项目推荐使用 `clang` 编译，版本为 `clang-11`，操作系统为 `debian:11`。
 
 ```bash
 # 安装依赖
@@ -39,6 +39,8 @@ git clone https://github.com/arcsysu/SYsU-lang
 cd SYsU-lang
 
 # 编译安装
+# `${CMAKE_C_COMPILER}` 仅用于编译 `.sysu.c`
+# 非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）
 rm -rf ~/sysu
 cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
@@ -61,16 +63,52 @@ cmake --build ~/sysu/build -t package_source
   CPATH=~/sysu/include:$CPATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  sysu-compiler tester/functional/000_main.sysu.c > a.S &&
+  sysu-compiler -S -o a.S tester/functional/000_main.sysu.c &&
   clang -O0 -lsysy -o a.out a.S &&
   ./a.out ;
   echo $? &&
   rm -f a.S a.out )
 ```
 
-## 代码结构
+对于使用其他操作系统的同学，我们准备了一份 [docker 开发环境](https://hub.docker.com/r/wukan0621/sysu-lang)。
 
-本项目中 `${CMAKE_C_COMPILER}` 仅用于编译 `.sysu.c`，非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）。
+```bash
+docker pull wukan0621/sysu-lang:main
+docker run \
+  --name sysu-lang \
+  -v "$PWD/project:/root/project" \
+  -it wukan0621/sysu-lang:main \
+  bash
+# 在容器中执行下属指令
+cp -r /root/SYsU-lang /root/project/
+# 随后可以在宿主机当前目录的 project/SYsU-lang 目录下开发
+```
+
+## 运行架构
+
+本项目的运行架构如下图。
+
+```mermaid
+flowchart TB
+subgraph sysu-compiler
+direction TB
+subgraph frontend
+direction LR
+preprocessor--Code-->lexer
+lexer--TokenFlow-->parser
+parser--JsonAST-->generator
+end
+subgraph midend
+optimizer
+end
+subgraph backend
+direction LR
+translator--Assemble-->linker
+end
+frontend--LLVM-IR-->midend
+midend--LLVM-IR-->backend
+end
+```
 
 ### `compiler`
 
@@ -83,19 +121,21 @@ SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能�
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler tester/functional/000_main.sysu.c )
 ```
 
-后续功能开发中。
+后续功能开发中，详见 `--help`。
 
 ### `preprocessor`
 
-SYsU 的预处理器，通过调用 `cpp` 实现（偷懒）。
+SYsU 的预处理器。当前 `sysu-preprocessor` 直接调用 `cpp`，后续会替换成借助 libclang 实现的版本，学有余力的同学也可自行实现。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c )
 # 1 "tester/functional/000_main.sysu.c"
@@ -117,6 +157,7 @@ SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输�
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer )
@@ -136,45 +177,27 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 
 SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
 
+<!-- {%raw%} -->
+
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser )
-{
-  "inner": [
-    {
-      "inner": [
-        {
-          "inner": [
-            {
-              "inner": [
-                {
-                  "kind": "IntegerLiteral",
-                  "value": "3"
-                }
-              ],
-              "kind": "ReturnStmt"
-            }
-          ],
-          "kind": "CompoundStmt"
-        }
-      ],
-      "kind": "FunctionDecl",
-      "name": "main"
-    }
-  ],
-  "kind": "TranslationUnitDecl"
-}
+{"inner":[{"inner":[{"inner":[{"inner":[{"kind":"IntegerLiteral","value":"3"}],"kind":"ReturnStmt"}],"kind":"CompoundStmt"}],"kind":"FunctionDecl","name":"main"}],"kind":"TranslationUnitDecl"}
 ```
+
+<!-- {% endraw %} -->
 
 当然，也可以直接从 `clang -cc1 -dump-tokens 2>&1` 获得输入。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 |
@@ -188,6 +211,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
@@ -207,6 +231,7 @@ entry:
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
@@ -227,6 +252,7 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
@@ -254,6 +280,7 @@ entry:
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
@@ -262,15 +289,23 @@ entry:
 
 ### `translator`
 
-将 LLVM-IR 翻译成汇编或二进制文件。当前 `sysu-translator` 通过直接调用 `llc` 实现。
+将 LLVM-IR 翻译成汇编或二进制文件。当前 `sysu-translator` 直接调用 `llc`，学有余力的同学也可自行实现。
 
 ### `linker`
 
-链接器。当前 `sysu-linker` 通过直接调用 `ld.lld` 实现。
+链接器。当前 `sysu-linker` 直接调用 `ld.lld`，学有余力的同学也可自行实现。
 
 ### `librarian`
 
-包含运行时库 `libsysy.so`。注意，此处为自行实现的 `libsysy` ，与原 `libsysy` 代码预期效果一致，但具有更强的可移植性以及与 stdio 的兼容性。
+#### SysY 运行时库
+
+此处为自行实现的 `libsysy` ，与原 `libsysy` 代码预期效果一致，但具有更强的可移植性以及与 stdio 的兼容性。
+
+#### SYsU 运行时库
+
+`libsysu` 暴露了类似于 `open()`、`read()`、`write()`、`close()` 的系统调用，使 SYsU 具有了处理文件的能力（可用于 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv) 或实现编译器自举）。
+
+后续会逐步增加更多 C 语言标准库函数与 Linux 系统函数。
 
 ### `tester`
 
@@ -281,10 +316,6 @@ entry:
 ```bash
 git submodule update --init
 ```
-
-### `.github`
-
-github action，保存 CI 自动化配置文件。
 
 ## 实验反馈
 
