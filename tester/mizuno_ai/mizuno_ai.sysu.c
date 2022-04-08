@@ -12,15 +12,16 @@ The raw image can be found from <https://www.pixiv.net/artworks/72126656>.
 - <https://ursinus-cs173-s2020.github.io/CoursePage/Assignments/HW7_ASCIIArt/>
 
 */
-#include <sysy/sylib.h>
-int wk_puts(char s[]) {
-  int i = -1;
-  if (s[i = i + 1])
+#include <sysu/stdio.h>
+int wk_puts(const char s[]) {
+  int i = 0;
+  if (s[i])
     do {
-      putch(s[i]);
-    } while (s[i = i + 1]);
+      sysu_putchar(s[i]);
+      i = i + 1;
+    } while (s[i]);
   const char r[9] = "\\\\\\\"", t[9] = "\n\\\"\\n\\\\\\";
-  putch(t[0]);
+  sysu_putchar(t[0]);
   return i;
 }
 int main() {
