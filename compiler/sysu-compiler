@@ -91,8 +91,10 @@ def main(*argv):
                             str(len(value1)))
                         return wk_exit(-1)
                     for i in range(len(value0)):
-                        check_ast(value0[i], value1[i],
-                                  testcase, command0, command1)
+                        r = check_ast(value0[i], value1[i],
+                                      testcase, command0, command1)
+                        if r != 0:
+                            return r
                 elif len(key_kind) == 0 or key in key_kind:
                     value1 = get_value1()
                     if value0 != value1:
