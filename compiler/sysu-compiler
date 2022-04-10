@@ -118,7 +118,7 @@ def main(*argv):
                 input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
 
             r = check_ast(ast0, ast1, testcase, command0, command1)
-            if r:
+            if r != 0:
                 return r
         return 0
 
