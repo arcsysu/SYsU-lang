@@ -115,10 +115,11 @@ def main(*argv):
             ast0 = json.loads(subprocess.run(
                 clang + " -cc1 -ast-dump=json",
                 input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
+            gc.collect()
             ast1 = json.loads(subprocess.run(
                 clang + " -cc1 -dump-tokens 2>&1 |"+parser,
                 input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
-
+            gc.collect()
             r = check_ast(ast0, ast1, testcase, command0, command1)
             if r != 0:
                 return r
