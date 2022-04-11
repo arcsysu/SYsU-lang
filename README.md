@@ -31,9 +31,9 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 ```bash
 # 安装依赖
 sudo apt install \
-  ninja-build cmake git python3 \
-  cpp lld flex bison zlib1g-dev \
-  clang libclang-dev llvm-dev
+  clang libclang-dev llvm-dev \
+  zlib1g-dev lld cpp flex bison \
+  ninja-build cmake python3 git
 
 git clone https://github.com/arcsysu/SYsU-lang
 cd SYsU-lang

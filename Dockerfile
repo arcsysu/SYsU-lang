@@ -4,10 +4,9 @@ RUN <<EOF
 apt update -y
 apt upgrade -y
 apt install -y \
-    ninja-build cmake git python3 \
-    cpp lld flex bison zlib1g-dev \
     clang libclang-dev llvm-dev \
-    tar gzip
+    zlib1g-dev lld cpp flex bison \
+    ninja-build cmake python3 git
 apt clean -y
 EOF
 WORKDIR /autograder
@@ -26,13 +25,11 @@ cmake --build /root/sysu/build
 cmake --build /root/sysu/build -t install
 build_install.sh
 #!/bin/sh
-tar -C /root -zxvf /autograder/submission/*.tar.gz
+python3 -m tarfile -e /autograder/submission/*.tar.gz /root
 rm -rf /root/SYsU-lang/generator
 cp -r /root/SYsU-lang-*-Source/generator /root/SYsU-lang
 rm -rf /root/SYsU-lang/optimizer
 cp -r /root/SYsU-lang-*-Source/optimizer /root/SYsU-lang
-# rm -rf /root/SYsU-lang/compiler
-# cp -r /root/SYsU-lang-*-Source/compiler /root/SYsU-lang
 /root/build_install
 mkdir -p /autograder/results
 sysu-compiler \\
