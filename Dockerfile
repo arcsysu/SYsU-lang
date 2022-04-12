@@ -1,14 +1,5 @@
 # syntax=docker/dockerfile:1.4
 FROM debian:11
-RUN <<EOF
-apt update -y
-apt upgrade -y
-apt install -y \
-    clang libclang-dev llvm-dev \
-    zlib1g-dev lld cpp flex bison \
-    ninja-build cmake python3 git
-apt clean -y
-EOF
 WORKDIR /autograder
 WORKDIR /root
 COPY <<build_install.sh <<run.sh . /root/SYsU-lang/
@@ -38,6 +29,13 @@ sysu-compiler \\
     "/root/SYsU-lang/**/*.sysu.c" >/autograder/results/results.json
 run.sh
 RUN <<EOF
+apt update -y
+apt upgrade -y
+apt install -y \
+    clang libclang-dev llvm-dev \
+    zlib1g-dev lld cpp flex bison \
+    ninja-build cmake python3 git
+apt clean -y
 mv /root/SYsU-lang/run.sh /autograder/run
 chmod +x /autograder/run
 mv /root/SYsU-lang/build_install.sh /root/build_install
