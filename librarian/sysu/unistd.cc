@@ -13,6 +13,12 @@ int sysu_write(int fd, const char buf[], int count) {
   return write(fd, buf, count);
 }
 
+int sysu_fork() { return fork(); }
+
+int sysu_getpid() { return getpid(); }
+
+int sysu_getppid() { return getppid(); }
+
 #ifdef __cplusplus
 }
 #endif

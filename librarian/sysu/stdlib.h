@@ -8,6 +8,8 @@ extern "C" {
 
 int sysu_atoi(const char str[]);
 
+void sysu_exit(int status);
+
 #ifdef __cplusplus
 }
 #endif

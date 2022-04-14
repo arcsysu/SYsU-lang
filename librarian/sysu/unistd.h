@@ -12,6 +12,12 @@ int sysu_read(int fd, char buf[], int count);
 
 int sysu_write(int fd, const char buf[], int count);
 
+int sysu_fork();
+
+int sysu_getpid();
+
+int sysu_getppid();
+
 #ifdef __cplusplus
 }
 #endif
