@@ -14,7 +14,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言的超集，在后者的基础上进行了一些调整，以适应课程需要：
 
 1. 源代码后缀名由 `.sy` 调整为 `.sysu.c`。
-2. 元素类型增加 `char`。
+2. 元素类型增加 `char`、`long long`。
 3. 常量类型增加字符串常量。多行字符串只支持多个`""`的拼接，不支持斜杠 `\` 语法。
 4. 不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
 5. 语句类型增加 `do` - `while` 循环。
@@ -347,7 +347,7 @@ git submodule update --init
 2. 后缀名变成 `.sysu.c`，指明了 SYsU 是 C 的严格子集，可以让 `clang` 直接编译代码，方便学生与正确实现对拍。
 3. 加入 `#include` 等预处理语句的支持，可以让学生更加熟悉预编译过程（即使不用实现一个预编译器），也为 SYsU 增加了实现库或调用外部库的可能（可用于实现 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv)）。
 4. 增加 `do` - `while` 循环，因为这是很好用的[语法糖](https://mp.weixin.qq.com/s/Wwu-prowKKNDsNlzC2k9Ow)。
-5. 增加字符型和字符串，同样便于实现 OS。
+5. 增加 `char`、`long long` 和字符串，同样便于实现 OS。
 6. 不支持字符常量，因为对其的支持和字符串常量是完全类似的，但在词法分析的时候可能会与词法分析器的输出格式产生微妙的冲突。
 
 ## 你可能会感兴趣的
