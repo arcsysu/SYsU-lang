@@ -82,6 +82,9 @@ def main(*argv):
                         "isImplicit", False) == False and x.get(
                         "implicit", False) == False, value0))
                     value1 = get_value1()
+                    value1 = list(filter(lambda x: x.get(
+                        "isImplicit", False) == False and x.get(
+                        "implicit", False) == False, value1))
                     if len(value0) != len(value1):
                         logging.getLogger(__name__).error(
                             "\nfail: inner not match")
