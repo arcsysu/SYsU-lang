@@ -1,1 +1,1 @@
-INSTALL(PROGRAMS sysu-preprocessor TYPE BIN)
+install(PROGRAMS sysu-preprocessor TYPE BIN)

@@ -1,1 +1,1 @@
-INSTALL(PROGRAMS sysu-linker TYPE BIN)
+install(PROGRAMS sysu-linker TYPE BIN)

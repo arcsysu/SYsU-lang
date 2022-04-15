@@ -1,1 +1,1 @@
-INSTALL(PROGRAMS sysu-compiler TYPE BIN)
+install(PROGRAMS sysu-compiler TYPE BIN)
