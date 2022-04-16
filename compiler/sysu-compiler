@@ -421,11 +421,16 @@ def main(*argv):
     console.setLevel(logging.INFO)
     logging.getLogger(__name__).addHandler(console)
 
-    parser = argparse.ArgumentParser(prog=os.path.basename(argv[0]))
+    parser = argparse.ArgumentParser(
+        prog=os.path.basename(argv[0]))
     specs = ["clang", "sysu-preprocessor", "sysu-lexer", "sysu-parser",
              "sysu-generator", "sysu-optimizer", "sysu-translator", "sysu-linker"]
     for spec in specs:
-        parser.add_argument("--"+spec, help="Specify "+spec, default=spec)
+        parser.add_argument(
+            "--"+spec,
+            help="Specify "+spec,
+            default=spec if spec == "clang" else
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), spec))
     parser.add_argument(
         "--recursion-limit",
         help="(default 1048576)",
@@ -456,7 +461,12 @@ def main(*argv):
         metavar="<file>",
         default="-")
     parser.add_argument("file", default=["-"], nargs="*")
-    args = parser.parse_args(argv[1:])
+    try:
+        args = parser.parse_args(argv[1:])
+    except:
+        logging.getLogger(__name__).error("sysu-lang: argumentError")
+        logging.getLogger(__name__).error("sysu-lang: try to use clang")
+        return subprocess.run(("clang",)+argv[1:]).returncode
 
     sys.setrecursionlimit(args.recursion_limit)
     if args.o != "-":
@@ -501,8 +511,8 @@ def main(*argv):
             args.sysu_linker, filenames)
         return returncode
 
-    logging.getLogger(__name__).error("nothing to do")
-    return -1
+    logging.getLogger(__name__).error("sysu-lang: try to use clang")
+    return subprocess.run((args.clang,)+argv[1:]).returncode
 
 
 if __name__ == '__main__':

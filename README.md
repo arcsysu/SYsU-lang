@@ -68,6 +68,17 @@ cmake --build ~/sysu/build -t package_source
   ./a.out ;
   echo $? &&
   rm -f a.S a.out )
+
+# 编译器自举（预留接口，当前直接调用 clang）
+rm -rf ~/sysu-stage2
+cmake -G Ninja \
+  -DCMAKE_C_COMPILER=$HOME/sysu/bin/sysu-compiler \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_INSTALL_PREFIX=~/sysu-stage2 \
+  -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
+  -B ~/sysu-stage2/build
+cmake --build ~/sysu-stage2/build
+cmake --build ~/sysu-stage2/build -t install
 ```
 
 对于使用其他操作系统的同学，我们准备了一份 [docker 开发环境](https://hub.docker.com/r/wukan0621/sysu-lang)。
