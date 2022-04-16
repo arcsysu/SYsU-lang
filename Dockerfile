@@ -16,11 +16,12 @@ cmake --build /root/sysu/build
 cmake --build /root/sysu/build -t install
 build_install.sh
 #!/bin/sh
-python3 -m tarfile -e /autograder/submission/*.tar.gz /root
+python3 -m tarfile -e /autograder/submission/*.tar.gz /autograder/submission
 rm -rf /root/SYsU-lang/generator
-cp -r /root/SYsU-lang-*-Source/generator /root/SYsU-lang
+cp -r /autograder/submission/SYsU-lang-*-Source/generator /root/SYsU-lang
 rm -rf /root/SYsU-lang/optimizer
-cp -r /root/SYsU-lang-*-Source/optimizer /root/SYsU-lang
+cp -r /autograder/submission/SYsU-lang-*-Source/optimizer /root/SYsU-lang
+rm -rf /autograder/submission/SYsU-lang-*-Source
 /root/build_install
 mkdir -p /autograder/results
 sysu-compiler \\
@@ -33,7 +34,7 @@ apt update -y
 apt upgrade -y
 apt install -y \
     clang libclang-dev llvm-dev \
-    zlib1g-dev lld cpp flex bison \
+    zlib1g-dev lld flex bison \
     ninja-build cmake python3 git
 apt clean -y
 mv /root/SYsU-lang/run.sh /autograder/run

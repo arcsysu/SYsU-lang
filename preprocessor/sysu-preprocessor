@@ -21,7 +21,7 @@ import subprocess
 
 
 def main(*argv):
-    return subprocess.run(("cpp",)+argv[1:]).returncode
+    return subprocess.run(("clang","--driver-mode=cpp")+argv[1:]).returncode
 
 
 if __name__ == '__main__':

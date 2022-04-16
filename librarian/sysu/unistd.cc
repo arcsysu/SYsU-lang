@@ -7,9 +7,11 @@ extern "C" {
 
 int sysu_close(int fd) { return close(fd); }
 
-int sysu_read(int fd, char buf[], int count) { return read(fd, buf, count); }
+long long sysu_read(int fd, char buf[], long long count) {
+  return read(fd, buf, count);
+}
 
-int sysu_write(int fd, const char buf[], int count) {
+long long sysu_write(int fd, const char buf[], long long count) {
   return write(fd, buf, count);
 }
 

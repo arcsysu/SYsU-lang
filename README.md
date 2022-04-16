@@ -32,7 +32,7 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 # 安装依赖
 sudo apt install \
   clang libclang-dev llvm-dev \
-  zlib1g-dev lld cpp flex bison \
+  zlib1g-dev lld flex bison \
   ninja-build cmake python3 git
 
 git clone https://github.com/arcsysu/SYsU-lang
@@ -130,7 +130,7 @@ SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能�
 
 ### `preprocessor`
 
-SYsU 的预处理器。当前 `sysu-preprocessor` 直接调用 `cpp`，后续会替换成借助 libclang 实现的版本，学有余力的同学也可自行实现。
+SYsU 的预处理器。当前 `sysu-preprocessor` 直接调用 `clang --driver-mode=cpp`，学有余力的同学也可自行实现。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -139,12 +139,12 @@ $ ( export PATH=~/sysu/bin:$PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c )
 # 1 "tester/functional/000_main.sysu.c"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 31 "<command-line>"
-# 1 "/usr/include/stdc-predef.h" 1 3 4
-# 32 "<command-line>" 2
-# 1 "tester/functional/000_main.sysu.c"
+# 1 "<built-in>" 1
+# 1 "<built-in>" 3
+# 341 "<built-in>" 3
+# 1 "<command line>" 1
+# 1 "<built-in>" 2
+# 1 "tester/functional/000_main.sysu.c" 2
 int main(){
     return 3;
 }

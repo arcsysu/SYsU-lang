@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-int sysu_strlen(const char str[]) { return strlen(str); }
+long long sysu_strlen(const char str[]) { return strlen(str); }
 
 int sysu_strcmp(const char lhs[], const char rhs[]) { return strcmp(lhs, rhs); }
 
