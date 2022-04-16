@@ -177,7 +177,7 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 
 SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
 
-<!-- {%raw%} -->
+<!-- {% raw %} -->
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -299,13 +299,13 @@ entry:
 
 #### SysY 运行时库
 
-此处为自行实现的 `libsysy` ，与原 `libsysy` 代码预期效果一致，但具有更强的可移植性以及与 stdio 的兼容性。
+为了可移植性以及与 C 标准库的兼容性，此处自行实现了 `libsysy`，与 [nscscc/compiler2021](https://gitlab.eduxiji.net/nscscc/compiler2021/) 中提供的 [`sylib.h`](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/%E5%85%AC%E5%BC%80%E7%94%A8%E4%BE%8B%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BA%93/sylib.h) 保持 API 兼容性，但不保证 ABI 兼容性。换言之，原有的 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 代码需要转换为 SYsU 并重新编译。
 
 #### SYsU 运行时库
 
-`libsysu` 暴露了类似于 `open()`、`read()`、`write()`、`close()` 的系统调用，使 SYsU 具有了处理文件的能力（可用于 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv) 或实现编译器自举）。
+`libsysu` 暴露了类似于 `open()`、`read()`、`write()`、`close()`、`fork()` 的系统调用，使 SYsU 具有了处理文件、使用多进程的可能。
 
-后续会逐步增加更多 C 语言标准库函数与 Linux 系统函数。
+后续会逐步支持更多 C 标准库函数与 Linux 系统函数，以用于 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv) 或实现编译器自举。
 
 ### `tester`
 
