@@ -5,9 +5,11 @@
 extern "C" {
 #endif
 
-int sysu_open(const char pathname[], int flags) {
-  return open(pathname, flags);
+int sysu_open(const char pathname[], int flags, int mode) {
+  return open(pathname, flags, mode);
 }
+
+int sysu_fcntl(int fd, int cmd, int arg) { return fcntl(fd, cmd, arg); }
 
 #ifdef __cplusplus
 }

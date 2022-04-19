@@ -6,7 +6,9 @@
 extern "C" {
 #endif
 
-int sysu_open(const char pathname[], int flags);
+int sysu_open(const char pathname[], int flags, int mode);
+
+int sysu_fcntl(int fd, int cmd, int arg);
 
 #ifdef __cplusplus
 }

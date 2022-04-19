@@ -12,6 +12,8 @@ long long sysu_read(int fd, char buf[], long long count);
 
 long long sysu_write(int fd, const char buf[], long long count);
 
+long long sysu_lseek64(int fd, long long offset, int whence);
+
 int sysu_fork();
 
 int sysu_getpid();
