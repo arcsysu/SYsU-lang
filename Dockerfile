@@ -18,10 +18,10 @@ build_install.sh
 #!/bin/sh
 python3 -m tarfile -e /autograder/submission/*.tar.gz /autograder/submission
 rm -rf /root/SYsU-lang/generator
-cp -r /autograder/submission/SYsU-lang-*-Source/generator /root/SYsU-lang
+cp -r /autograder/submission/*-Source/generator /root/SYsU-lang
 rm -rf /root/SYsU-lang/optimizer
-cp -r /autograder/submission/SYsU-lang-*-Source/optimizer /root/SYsU-lang
-rm -rf /autograder/submission/SYsU-lang-*-Source
+cp -r /autograder/submission/*-Source/optimizer /root/SYsU-lang
+rm -rf /autograder/submission/*-Source
 /root/build_install
 mkdir -p /autograder/results
 sysu-compiler \\
