@@ -76,6 +76,7 @@ cmake -G Ninja \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_INSTALL_PREFIX=~/sysu-stage2 \
   -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
+  -DSYSU_TESTER=1 \
   -B ~/sysu-stage2/build
 cmake --build ~/sysu-stage2/build
 cmake --build ~/sysu-stage2/build -t install

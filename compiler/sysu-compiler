@@ -464,8 +464,10 @@ def main(*argv):
     try:
         args = parser.parse_args(argv[1:])
     except:
-        logging.getLogger(__name__).error("sysu-lang: argumentError")
-        logging.getLogger(__name__).error("sysu-lang: try to use clang")
+        logging.getLogger(__name__).error(
+            os.path.basename(argv[0])+": argumentError")
+        logging.getLogger(__name__).error(
+            os.path.basename(argv[0])+": try to use clang")
         return subprocess.run(("clang",)+argv[1:]).returncode
 
     sys.setrecursionlimit(args.recursion_limit)
@@ -511,7 +513,8 @@ def main(*argv):
             args.sysu_linker, filenames)
         return returncode
 
-    logging.getLogger(__name__).error("sysu-lang: try to use clang")
+    logging.getLogger(__name__).error(
+        os.path.basename(argv[0])+": try to use clang")
     return subprocess.run((args.clang,)+argv[1:]).returncode
 
 
