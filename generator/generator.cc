@@ -26,8 +26,7 @@ llvm::Function *buildFunctionDecl(const llvm::json::Object *O) {
 
   // Create a new basic block to start insertion into.
   auto BB = llvm::BasicBlock::Create(TheContext, "entry", TheFunction);
-  llvm::IRBuilder<> Builder(TheContext);
-  Builder.SetInsertPoint(BB);
+  llvm::IRBuilder<> Builder(BB);
 
   if (auto RetVal = llvm::ConstantInt::get(
           TheContext, /* i32 3(decimal) */ llvm::APInt(32, "3", 10))) {
