@@ -7,13 +7,11 @@
   do {                                                                         \
     llvm::errs() << (x);                                                       \
   } while (0)
-
 namespace {
 auto llvmin = llvm::MemoryBuffer::getFileOrSTDIN("-");
 auto input = llvmin.get() -> getBuffer();
-
 auto end = input.end(), it = input.begin();
-auto wk_getline(char endline = '\n') {
+auto wk_getline(char endline = "\n"[0]) {
   auto beg = it;
   while (it != end && *it != endline)
     ++it;
@@ -22,14 +20,12 @@ auto wk_getline(char endline = '\n') {
     ++it;
   return llvm::StringRef(beg, len);
 }
-
 llvm::json::Array stak;
 } // namespace
-
 auto yylex() {
   auto tk = wk_getline();
   auto b = tk.find("'") + 1, e = tk.rfind("'");
-  auto s = tk.substr(b, e - b), t = tk.substr(0, tk.find(" "));
+  auto s = tk.substr(b, e - b).str(), t = tk.substr(0, tk.find(" ")).str();
   if (t == "numeric_constant") {
     stak.push_back(
         llvm::json::Object{{"kind", "IntegerLiteral"}, {"value", s}});
@@ -55,7 +51,6 @@ auto yylex() {
     return T_R_BRACE;
   return YYEOF;
 }
-
 int main() {
   yyparse();
   llvm::outs() << stak.back() << "\n";
@@ -72,48 +67,40 @@ int main() {
 %token T_R_BRACE
 %start CompUnit
 %%
-
-CompUnit: FuncDef {
+CompUnit: CompUnit CompUnitItem {
   auto inner = stak.back();
   stak.pop_back();
-  stak.push_back(llvm::json::Object{{"kind", "TranslationUnitDecl"},
-                                    {"inner", llvm::json::Array{inner}}});
+  stak.back().getAsObject()->get("inner")->getAsArray()->push_back(inner);
 }
-
-FuncDef: FuncType Ident T_L_PAREN T_R_PAREN Block {
+CompUnit: CompUnitItem {
+  auto inner = stak.back();
+  stak.back() = llvm::json::Object{{"kind", "TranslationUnitDecl"},
+                                   {"inner", llvm::json::Array{inner}}};
+}
+CompUnitItem: VarDecl {}
+CompUnitItem: FuncDef {}
+VarDecl: T_INT T_IDENTIFIER T_SEMI {
+  auto name = stak.back().getAsObject()->get("value")->getAsString()->str();
+  stak.back() = llvm::json::Object{{"kind", "VarDecl"}, {"name", name}};
+}
+FuncDef: T_INT T_IDENTIFIER T_L_PAREN T_R_PAREN Block {
   auto inner = stak.back();
   stak.pop_back();
-  auto name = stak.back().getAsObject();
-  assert(name != nullptr);
-  assert(name->get("value") != nullptr);
-  stak.pop_back();
-  stak.push_back(llvm::json::Object{{"kind", "FunctionDecl"},
-                                    {"name", *(name->get("value"))},
-                                    {"inner", llvm::json::Array{inner}}});
+  auto name = stak.back().getAsObject()->get("value")->getAsString()->str();
+  stak.back() = llvm::json::Object{{"kind", "FunctionDecl"},
+                                   {"name", name},
+                                   {"inner", llvm::json::Array{inner}}};
 }
-
-FuncType: T_INT {}
-
-Ident: T_IDENTIFIER {}
-
 Block: T_L_BRACE T_R_BRACE {}
-
 Block: T_L_BRACE BlockItem T_R_BRACE {}
-
 BlockItem: Stmt {
   auto inner = stak.back();
-  stak.pop_back();
-  stak.push_back(llvm::json::Object{{"kind", "CompoundStmt"},
-                                    {"inner", llvm::json::Array{inner}}});
+  stak.back() = llvm::json::Object{{"kind", "CompoundStmt"},
+                                   {"inner", llvm::json::Array{inner}}};
 }
-
-Stmt: T_RETURN Exp T_SEMI {
+Stmt: T_RETURN T_NUMERIC_CONSTANT T_SEMI {
   auto inner = stak.back();
-  stak.pop_back();
-  stak.push_back(llvm::json::Object{{"kind", "ReturnStmt"},
-                                    {"inner", llvm::json::Array{inner}}});
+  stak.back() = llvm::json::Object{{"kind", "ReturnStmt"},
+                                   {"inner", llvm::json::Array{inner}}};
 }
-
-Exp: T_NUMERIC_CONSTANT {}
-
 %%

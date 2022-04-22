@@ -13,13 +13,13 @@ llvm::Module TheModule("-", TheContext);
 
 llvm::Function *buildFunctionDecl(const llvm::json::Object *O) {
   // First, check for an existing function from a previous declaration.
-  auto TheName = O->get("name")->getAsString();
-  llvm::Function *TheFunction = TheModule.getFunction(*TheName);
+  auto TheName = O->get("name")->getAsString()->str();
+  llvm::Function *TheFunction = TheModule.getFunction(TheName);
 
   if (!TheFunction)
     TheFunction = llvm::Function::Create(
         llvm::FunctionType::get(llvm::Type::getInt32Ty(TheContext), {}, false),
-        llvm::Function::ExternalLinkage, *TheName, &TheModule);
+        llvm::Function::ExternalLinkage, TheName, &TheModule);
 
   if (!TheFunction)
     return nullptr;
