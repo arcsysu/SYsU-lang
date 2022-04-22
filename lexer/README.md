@@ -74,5 +74,6 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 
 - [Lexical Analysis With Flex](http://westes.github.io/flex/manual/)
 - [FindFLEX — CMake 3.18.6 Documentation](https://cmake.org/cmake/help/v3.18/module/FindFLEX.html)
+- [Preprocessor Output](https://gcc.gnu.org/onlinedocs/gcc-10.2.0/cpp/Preprocessor-Output.html)
 - [这篇博客](https://wu-kan.cn/2020/05/14/%E4%BD%BF%E7%94%A8%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%99%A8-Flex-%E6%8F%90%E5%8F%96%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E5%92%8C%E6%B5%AE%E7%82%B9%E6%95%B0/)提到了一种处理注释的方案，如果你不想使用 [flex 自带的注释处理方法](http://westes.github.io/flex/manual/Comments-in-the-Input.html)（当然，实际上注释在预处理阶段已经去除了…）。
 - [这篇博客](https://wu-kan.cn/2020/07/03/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%85%B3%E7%B3%BB%E5%88%A4%E5%AE%9A/)通过构造有限自动机，判断两个正则表达式的关系。

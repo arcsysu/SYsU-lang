@@ -123,3 +123,5 @@ entry:
 - [Kaleidoscope: Code generation to LLVM IR](https://releases.llvm.org/11.0.1/docs/tutorial/MyFirstLanguageFrontend/LangImpl03.html)
 - [LLVM 与 LLVM IR](https://buaa-se-compiling.github.io/miniSysY-tutorial/pre/llvm.html)
 - [Viz.js — Graphviz in your browser.](http://viz-js.com/)
+- [llvm::IRBuilder](https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/llvm/include/llvm/IR/IRBuilder.h)
+  - 该文件同样位于 debian:11 中 [llvm-dev](https://packages.debian.org/bullseye/devel/llvm-dev) 包的 </usr/include/llvm/IR/IRBuilder.h>。

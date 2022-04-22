@@ -9,7 +9,6 @@
 
 namespace {
 llvm::LLVMContext TheContext;
-llvm::IRBuilder<> Builder(TheContext);
 llvm::Module TheModule("-", TheContext);
 
 llvm::Function *buildFunctionDecl(const llvm::json::Object *O) {
@@ -27,6 +26,7 @@ llvm::Function *buildFunctionDecl(const llvm::json::Object *O) {
 
   // Create a new basic block to start insertion into.
   auto BB = llvm::BasicBlock::Create(TheContext, "entry", TheFunction);
+  llvm::IRBuilder<> Builder(TheContext);
   Builder.SetInsertPoint(BB);
 
   if (auto RetVal = llvm::ConstantInt::get(
