@@ -32,7 +32,7 @@ run.sh
 RUN <<EOF
 apt update -y
 apt upgrade -y
-apt install -y \
+apt install --no-install-recommends -y \
     clang libclang-dev llvm-dev \
     zlib1g-dev lld flex bison \
     ninja-build cmake python3 git
