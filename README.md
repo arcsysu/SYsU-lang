@@ -18,7 +18,7 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 3. 常量类型增加字符串常量。多行字符串只支持多个`""`的拼接，不支持斜杠 `\` 语法。
 4. 不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
 5. 语句类型增加 `do` - `while` 循环。
-6. 源代码通过**预处理器**（如 `clang -cc1 -E`）处理后传给**编译器**。
+6. 源代码通过**预处理器**（如 `clang -E`）处理后传给**编译器**。
 7. 预处理语句以 `#` 开头，并且总是占据一整行。
 8. 运行时库提供的函数需要预先 `#include`。
 9. 不要求每个文件都包含 `main` 函数，可以分模块编译并链接。
@@ -30,7 +30,7 @@ SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscs
 
 ```bash
 # 安装依赖
-sudo apt install \
+sudo apt install --no-install-recommends \
   clang libclang-dev llvm-dev \
   zlib1g-dev lld flex bison \
   ninja-build cmake python3 git
@@ -48,7 +48,6 @@ cmake -G Ninja \
   -DCMAKE_INSTALL_PREFIX=~/sysu \
   -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
   -B ~/sysu/build
-
 cmake --build ~/sysu/build
 cmake --build ~/sysu/build -t install
 
@@ -87,9 +86,9 @@ cmake --build ~/sysu-stage2/build -t install
 ```bash
 docker pull wukan0621/sysu-lang:main
 docker run \
-  --name sysu-lang \
   -v "$PWD/project:/root/project" \
   -it wukan0621/sysu-lang:main \
+  --name sysu-lang \
   bash
 # 在容器中执行下属指令
 cp -r /root/SYsU-lang /root/project/
