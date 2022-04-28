@@ -134,7 +134,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  clang -cc1 -E tester/functional/027_if2.sysu.c |
+  clang -E tester/functional/027_if2.sysu.c |
   clang -cc1 -ast-dump )
 TranslationUnitDecl 0x23d4568 <<invalid sloc>> <invalid sloc>
 |-TypedefDecl # 原先第二行到第十五行为内置类型，此处省略
