@@ -86,13 +86,11 @@ cmake --build ~/sysu-stage2/build -t install
 ```bash
 docker pull wukan0621/sysu-lang:main
 docker run \
-  -v "$PWD/project:/root/project" \
-  -it wukan0621/sysu-lang:main \
   --name sysu-lang \
+  -v "$PWD/workspace:/workspace" \
+  -it wukan0621/sysu-lang:main \
   bash
-# 在容器中执行下属指令
-cp -r /root/SYsU-lang /root/project/
-# 随后可以在宿主机当前目录的 project/SYsU-lang 目录下开发
+# 随后可以在宿主机当前目录的 workspace/SYsU-lang 目录下开发
 ```
 
 ## 运行架构
