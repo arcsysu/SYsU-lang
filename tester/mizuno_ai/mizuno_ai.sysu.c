@@ -13,8 +13,8 @@ The raw image can be found from <https://www.pixiv.net/artworks/72126656>.
 
 */
 #include <sysu/stdio.h>
-int wk_puts(const char s[]) {
-  int i = 0;
+long long wk_puts(const char s[]) {
+  long long i = 0;
   if (s[i])
     do {
       sysu_putchar(s[i]);
@@ -22,10 +22,10 @@ int wk_puts(const char s[]) {
     } while (s[i]);
   const char r[9] = "\\\\\\\"", t[9] = "\n\\\"\\n\\\\\\";
   sysu_putchar(t[0]);
-  return i;
+  return i + 1;
 }
 int main() {
-  wk_puts(
+  return wk_puts(
       "                                                                        "
       "     \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\n"
       "                                                                    "
@@ -316,5 +316,4 @@ int main() {
       "                                                 "
       "\"[(((((((((((((((((()[((((((()[[[[[[[(()[([[[[!!!!!)[[[[[[[[[(([[[[[[[["
       ")[(((((((((((([!\"\n");
-  return 0;
 }
