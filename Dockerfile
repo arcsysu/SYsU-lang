@@ -5,7 +5,7 @@ WORKDIR /workspace
 VOLUME /workspace
 COPY <<build_install.sh <<run.sh . /workspace/SYsU-lang/
 #!/bin/sh
-rm -rf /workspace/sysu
+rm -rf ~/sysu
 cmake -G Ninja \\
     -DCMAKE_C_COMPILER=clang \\
     -DCMAKE_CXX_COMPILER=clang++ \\
