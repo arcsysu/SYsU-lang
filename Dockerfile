@@ -10,6 +10,7 @@ cmake -G Ninja \\
     -DCMAKE_C_COMPILER=clang \\
     -DCMAKE_CXX_COMPILER=clang++ \\
     -DCMAKE_INSTALL_PREFIX=~/sysu \\
+    -DCMAKE_MODULE_PATH=$(llvm-config --cmakedir) \\
     -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \\
     -S /workspace/SYsU-lang \\
     -B ~/sysu/build

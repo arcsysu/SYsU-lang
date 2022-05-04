@@ -267,7 +267,13 @@ flowchart TD;
 
 ### 自动评测细则
 
-本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项详见[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
+本次实验的评测项目为 `parser-[0-3]`。`parser-0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查：
+
+1. `sysu-parser` 是否提取出正确的 `"kind"`、`"name"`、`"value"` 键值，不含 `"InitListExpr"`（60 分）。
+2. `sysu-parser` 是否提取出正确的 `"type"` 键值及是否构造正确的 `"InitListExpr"` 生成树（30 分）。
+3. `sysu-parser` 是否提取出其它非 `"id"` 以外的键值（10 分）。
+
+评测脚本忽略空白符，可以查看[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。**根据同学们的反馈下调了实验难度，只需通过 `parser-1` 即可通过本次实验，`parser-2`、`parser-3` 列为本次实验的挑战选项。**你也可以像这样调用评测脚本，单独执行其中某一个评测项。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
@@ -276,8 +282,6 @@ flowchart TD;
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=parser-1 "**/*.sysu.c" )
 ```
-
-**根据同学们的反馈下调了实验难度，只需通过 `parser-1` 即可通过本次实验，`parser-2`、`parser-3` 列为本次实验的挑战选项。**
 
 ## 挑战方向
 
@@ -302,7 +306,8 @@ flowchart TD;
      - 或者相反！
 6. 将 `sysu-lexer` 与 `sysu-parser` 的核心代码链接到一起，作为 `sysu-lang` 完整编译器的一部分。
    - 输入一个经过预处理的 SYsU 源程序，输出其语法分析树。
-   - 提示：`ADD_FLEX_BISON_DEPENDENCY`
+   - 建议：将 `sysu-lexer` 的核心代码打包成一个 `libsysuLexer.so`，将 `sysu-parser` 的核心代码打包成一个 `libsysuParser.so`，然后链接到到同一个 `main.cc`。
+   - 注意：`add_flex_bison_dependency`
 7. 鉴于本次实验已经开始进入 LLVM 开发范畴，建议遵守 [LLVM Coding Standards](https://releases.llvm.org/11.0.1/docs/CodingStandards.html)
    - 可以使用 `clang-tidy` 与 `clang-format` 工具检查你的代码是否规范，如 `cmake -DCMAKE_CXX_CLANG_TIDY=clang-tidy #...`
    - 将 [LLVM Coding Standards](https://releases.llvm.org/11.0.1/docs/CodingStandards.html) 与 [GNU](https://www.gnu.org/prep/standards/standards.html)、[Google](https://google.github.io/styleguide/)、[Chromium](https://chromium.googlesource.com/chromium/src/+/HEAD/styleguide/c++/c++-dos-and-donts.md)、[Microsoft](https://docs.microsoft.com/zh-cn/dotnet/csharp/fundamentals/coding-style/coding-conventions)、[Mozilla](https://firefox-source-docs.mozilla.org/code-quality/coding-style/coding_style_cpp.html)、[WebKit](https://webkit.org/code-style-guidelines/) 等其他知名编程规范进行比较，选出一种或是基于他们归纳出一个你认为最合理的编程规范，编写对应的 `.clang-format` 与 `.clang-tidy` 文件，并在以后坚持使用下去！~~（就助教来说更加偏好 LLVM，毕竟没有人会比编译器更懂语言）~~

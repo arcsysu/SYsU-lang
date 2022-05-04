@@ -51,14 +51,11 @@ def main(*argv):
 
             key_inner = ["inner"]
 
-            if testcase in ["parser-0"]:
-                key_kind = ["kind", "name", "value"]
-                skip_inner = ["InitListExpr"]
-            elif testcase in ["parser-1"]:
+            if testcase in ["parser-0", "parser-1"]:
                 key_kind = ["kind", "name", "value"]
                 skip_inner = ["InitListExpr"]  # 跳过列表初始化
             elif testcase in ["parser-2"]:
-                key_kind = ["kind", "name", "value", "type", "valueCategory"]
+                key_kind = ["kind", "name", "value", "type"]
                 skip_inner = []
             else:
                 key_kind = []
@@ -361,7 +358,7 @@ def main(*argv):
             filename = filenames[ff]
             logging.getLogger(__name__).info(
                 "[{}/{}] {}".format(ff, len(filenames), filename))
-            if filename.endswith(".sy"):
+            if filename.endswith(".sy") or filename.endswith(".sysy"):
                 file = open(filename, mode="r")
                 src = file.read()
                 file.close()
@@ -373,12 +370,15 @@ def main(*argv):
                 for pattern in patterns:
                     if src.find(pattern) != -1:
                         src = "#include <sysy/sylib.h>\n"+src
-                        if pattern in patterns22:
+                        if filename.endswith(".sysy") or \
+                                pattern in patterns22:
                             src = "#ifndef __SYSY\n" +\
                                 "#define __SYSY 202203L\n" +\
                                 "#endif\n" +\
                                 src
                         break
+                if filename.endswith(".sysy"):
+                    filename = filename[0:-2]
                 file = open(filename+"su.c", mode="w")
                 file.write(src)
                 file.close()

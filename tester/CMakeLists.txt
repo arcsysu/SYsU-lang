@@ -10,7 +10,6 @@ if(SYSU_TESTER)
   endforeach()
 endif()
 
-find_package(Clang REQUIRED PATHS "/usr/lib/llvm-11/lib/cmake/clang")
 find_package(
   Python3
   COMPONENTS Interpreter
@@ -21,7 +20,7 @@ foreach(_test lexer-0)
     NAME ${_test}
     COMMAND
       ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/compiler/sysu-compiler
-      --unittest ${_test} --clang $<TARGET_FILE:clang> --sysu-preprocessor
+      --unittest ${_test} --sysu-preprocessor
       ${CMAKE_SOURCE_DIR}/preprocessor/sysu-preprocessor --sysu-lexer
       $<TARGET_FILE:sysu-lexer>
       "${CMAKE_CURRENT_SOURCE_DIR}/functional/000_main.sysu.c")
@@ -38,7 +37,7 @@ foreach(_test lexer-1 lexer-2 lexer-3)
     NAME ${_test}
     COMMAND
       ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/compiler/sysu-compiler
-      --unittest ${_test} --clang $<TARGET_FILE:clang> --sysu-preprocessor
+      --unittest ${_test} --sysu-preprocessor
       ${CMAKE_SOURCE_DIR}/preprocessor/sysu-preprocessor --sysu-lexer
       $<TARGET_FILE:sysu-lexer> "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
   set_tests_properties(
@@ -54,7 +53,7 @@ foreach(_test parser-0)
     NAME ${_test}
     COMMAND
       ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/compiler/sysu-compiler
-      --unittest ${_test} --clang $<TARGET_FILE:clang> --sysu-preprocessor
+      --unittest ${_test} --sysu-preprocessor
       ${CMAKE_SOURCE_DIR}/preprocessor/sysu-preprocessor --sysu-parser
       $<TARGET_FILE:sysu-parser>
       "${CMAKE_CURRENT_SOURCE_DIR}/functional/000_main.sysu.c")
@@ -71,7 +70,7 @@ foreach(_test parser-1 parser-2 parser-3)
     NAME ${_test}
     COMMAND
       ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/compiler/sysu-compiler
-      --unittest ${_test} --clang $<TARGET_FILE:clang> --sysu-preprocessor
+      --unittest ${_test} --sysu-preprocessor
       ${CMAKE_SOURCE_DIR}/preprocessor/sysu-preprocessor --sysu-parser
       $<TARGET_FILE:sysu-parser> "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
   set_tests_properties(
@@ -87,9 +86,8 @@ foreach(_test benchmark_generator_and_optimizer_0)
     NAME ${_test}
     COMMAND
       ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/compiler/sysu-compiler
-      --unittest ${_test} --clang $<TARGET_FILE:clang> --sysu-generator
-      $<TARGET_FILE:sysu-generator> --sysu-optimizer
-      $<TARGET_FILE:sysu-optimizer>
+      --unittest ${_test} --sysu-generator $<TARGET_FILE:sysu-generator>
+      --sysu-optimizer $<TARGET_FILE:sysu-optimizer>
       "${CMAKE_CURRENT_SOURCE_DIR}/functional/000_main.sysu.c")
   set_tests_properties(
     ${_test}
@@ -104,9 +102,9 @@ foreach(_test benchmark_generator_and_optimizer_1)
     NAME ${_test}
     COMMAND
       ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/compiler/sysu-compiler
-      --unittest ${_test} --clang $<TARGET_FILE:clang> --sysu-generator
-      $<TARGET_FILE:sysu-generator> --sysu-optimizer
-      $<TARGET_FILE:sysu-optimizer> "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
+      --unittest ${_test} --sysu-generator $<TARGET_FILE:sysu-generator>
+      --sysu-optimizer $<TARGET_FILE:sysu-optimizer>
+      "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
   set_tests_properties(
     ${_test}
     PROPERTIES

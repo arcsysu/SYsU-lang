@@ -1,60 +1,86 @@
-#include "plugin.hh"
-#include <llvm/IRReader/IRReader.h>
+#include "optimizer.hh"
+
 #include <llvm/Passes/PassBuilder.h>
-#include <llvm/Support/CommandLine.h>
-#include <llvm/Support/SourceMgr.h>
-#include <llvm/Support/raw_ostream.h>
 
-namespace {
-llvm::cl::OptionCategory CallCounterCategory{"call counter options"};
+llvm::PreservedAnalyses
+sysu::StaticCallCounterPrinter::run(llvm::Module &M,
+                                    llvm::ModuleAnalysisManager &MAM) {
 
-llvm::cl::opt<decltype(llvm::StringRef("").str())> InputModule{
-    llvm::cl::Positional, llvm::cl::desc{"<Module to analyze>"},
-    llvm::cl::value_desc{"filename, *.bc or *.ll or - (use stdin, default)"},
-    llvm::cl::init("-"), llvm::cl::cat{CallCounterCategory}};
-} // namespace
+  auto DirectCalls = MAM.getResult<sysu::StaticCallCounter>(M);
 
-int main(int argc, char **argv) {
-  // Hide all options apart from the ones specific to this tool
-  llvm::cl::HideUnrelatedOptions(CallCounterCategory);
+  OS << "=================================================\n";
+  OS << "sysu-optimizer: static analysis results\n";
+  OS << "=================================================\n";
+  const char *str1 = "NAME", *str2 = "#N DIRECT CALLS";
+  OS << llvm::format("%-20s %-10s\n", str1, str2);
+  OS << "-------------------------------------------------\n";
 
-  llvm::cl::ParseCommandLineOptions(argc, argv,
-                                    "Counts the number of static function "
-                                    "calls in the input IR file\n");
-
-  // Makes sure llvm_shutdown() is called (which cleans up LLVM objects)
-  //  http://llvm.org/docs/ProgrammersManual.html#ending-execution-with-llvm-shutdown
-  llvm::llvm_shutdown_obj SDO;
-
-  // Parse the IR file passed on the command line.
-  llvm::SMDiagnostic Err;
-  llvm::LLVMContext Ctx;
-  auto M = llvm::parseIRFile(InputModule.getValue(), Err, Ctx);
-
-  if (!M) {
-    llvm::errs() << "Error reading bitcode file: " << InputModule << "\n";
-    Err.print(argv[0], llvm::errs());
-    return -1;
+  for (auto &CallCount : DirectCalls) {
+    OS << llvm::format("%-20s %-10lu\n",
+                       CallCount.first->getName().str().c_str(),
+                       CallCount.second);
   }
 
-  // Create a module pass manager and add StaticCallCounterPrinter to it.
-  llvm::ModulePassManager MPM;
-  MPM.addPass(sysu::StaticCallCounterPrinter(llvm::errs()));
+  OS << "-------------------------------------------------\n\n";
+  return llvm::PreservedAnalyses::all();
+}
 
-  // Create an analysis manager and register StaticCallCounter with it.
-  llvm::ModuleAnalysisManager MAM;
-  MAM.registerPass([&] { return sysu::StaticCallCounter(); });
+sysu::StaticCallCounter::Result
+sysu::StaticCallCounter::run(llvm::Module &M, llvm::ModuleAnalysisManager &) {
+  llvm::MapVector<const llvm::Function *, unsigned> Res;
 
-  // Register all available module analysis passes defined in PassRegisty.def.
-  // We only really need PassInstrumentationAnalysis (which is pulled by
-  // default by PassBuilder), but to keep this concise, let PassBuilder do all
-  // the _heavy-lifting_.
-  llvm::PassBuilder PB;
-  PB.registerModuleAnalyses(MAM);
+  for (auto &Func : M) {
+    for (auto &BB : Func) {
+      for (auto &Ins : BB) {
 
-  // Finally, run the passes registered with MPM
-  MPM.run(*M, MAM);
+        // If this is a call instruction then CB will be not null.
+        auto *CB = llvm::dyn_cast<llvm::CallBase>(&Ins);
+        if (nullptr == CB) {
+          continue;
+        }
 
-  M->print(llvm::outs(), nullptr);
-  return 0;
+        // If CB is a direct function call then DirectInvoc will be not null.
+        auto DirectInvoc = CB->getCalledFunction();
+        if (nullptr == DirectInvoc) {
+          continue;
+        }
+
+        // We have a direct function call - update the count for the function
+        // being called.
+        auto CallCount = Res.find(DirectInvoc);
+        if (Res.end() == CallCount) {
+          CallCount = Res.insert({DirectInvoc, 0}).first;
+        }
+        ++CallCount->second;
+      }
+    }
+  }
+
+  return Res;
+}
+
+llvm::AnalysisKey sysu::StaticCallCounter::Key;
+
+extern "C" {
+llvm::PassPluginLibraryInfo LLVM_ATTRIBUTE_WEAK llvmGetPassPluginInfo() {
+  return {LLVM_PLUGIN_API_VERSION, "sysu-optimizer-pass", LLVM_VERSION_STRING,
+          [](llvm::PassBuilder &PB) {
+            // #1 REGISTRATION FOR "opt -passes=sysu-optimizer-pass"
+            PB.registerPipelineParsingCallback(
+                [&](llvm::StringRef Name, llvm::ModulePassManager &MPM,
+                    llvm::ArrayRef<llvm::PassBuilder::PipelineElement>) {
+                  if (Name == "sysu-optimizer-pass") {
+                    MPM.addPass(sysu::StaticCallCounterPrinter(llvm::errs()));
+                    return true;
+                  }
+                  return false;
+                });
+            // #2 REGISTRATION FOR
+            // "MAM.getResult<sysu::StaticCallCounter>(Module)"
+            PB.registerAnalysisRegistrationCallback(
+                [](llvm::ModuleAnalysisManager &MAM) {
+                  MAM.registerPass([&] { return sysu::StaticCallCounter(); });
+                });
+          }};
+}
 }

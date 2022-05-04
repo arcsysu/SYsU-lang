@@ -10,7 +10,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/functional/000_main.sysu.c |
-  clang -cc1 -S -emit-llvm )
+  clang -cc1 -O0 -S -emit-llvm )
 ; ModuleID = '-'
 source_filename = "-"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
@@ -33,7 +33,7 @@ attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-ma
 !1 = !{!"Debian clang version 11.0.1-2"}
 ```
 
-注意，你的输出不必与 `clang -cc1 -S -emit-llvm` 完全相同，只要你的 LLVM-IR 在经过编译后与其有相同的输出与返回值。
+注意，你的输出不必与 `clang -cc1 -O0 -S -emit-llvm` 完全相同，只要你的 LLVM-IR 在经过编译后与其有相同的输出与返回值。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -52,7 +52,7 @@ entry:
 }
 ```
 
-本目录下提供了一个模板，你可以基于此继续完成整个实验。如果你使用了来自 LLVM 的组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `LLVM_MAP_COMPONENTS_TO_LIBNAMES`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，不得使用任何封装好的库从源码直接获得 LLVM-IR，如 `libclang`。
+本目录下提供了一个模板，你可以基于此继续完成整个实验。如果你使用了来自 LLVM 的组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `llvm_map_components_to_libnames`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，不得使用任何封装好的库从源码直接获得 LLVM-IR，如 `libclang`。
 
 ### 一些可能有用的小技巧：LLVM-IR 可视化
 

@@ -46,6 +46,7 @@ cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_INSTALL_PREFIX=~/sysu \
+  -DCMAKE_MODULE_PATH=$(llvm-config --cmakedir) \
   -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
   -B ~/sysu/build
 cmake --build ~/sysu/build
@@ -123,7 +124,7 @@ end
 
 SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能包括：
 
-- `--help`：查看完整使用帮助
+- `-h`：查看完整使用帮助
 - `--unittest`：单元测试
 - `--convert-sysy`：转换 SysY 到 SYsU
 
@@ -135,7 +136,7 @@ SYsU 编译器的上层驱动，类似于 `clang`。当前支持的额外功能�
   sysu-compiler tester/functional/000_main.sysu.c )
 ```
 
-后续功能开发中，详见 `--help`。
+后续功能开发中，详见 `-h`；未支持的参数将尝试传递给 `clang` 执行。
 
 ### `preprocessor`
 
@@ -293,7 +294,7 @@ entry:
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -S -emit-llvm |
-  opt --enable-new-pm -S -load-pass-plugin=libsysu-optimizer-plugin.so -passes="sysu-optimizer-pass" )
+  opt --enable-new-pm -S -load-pass-plugin=libsysuOptimizer.so -passes="sysu-optimizer-pass" )
 ```
 
 ### `translator`
