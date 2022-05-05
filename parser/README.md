@@ -273,7 +273,7 @@ flowchart TD;
 2. `sysu-parser` 是否提取出正确的 `"type"` 键值及是否构造正确的 `"InitListExpr"` 生成树（30 分）。
 3. `sysu-parser` 是否提取出其它非 `"id"` 以外的键值（10 分）。
 
-评测脚本忽略空白符，可以查看[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。**根据同学们的反馈下调了实验难度，只需通过 `parser-1` 即可通过本次实验，`parser-2`、`parser-3` 列为本次实验的挑战选项。**你也可以像这样调用评测脚本，单独执行其中某一个评测项。
+评测脚本忽略空白符，可以查看[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
@@ -282,6 +282,8 @@ flowchart TD;
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=parser-1 "**/*.sysu.c" )
 ```
+
+**根据同学们的反馈下调了实验难度，只需通过 `parser-1` 即可通过本次实验，`parser-2`、`parser-3` 列为本次实验的挑战选项。**
 
 ## 挑战方向
 

@@ -46,7 +46,7 @@ cmake -G Ninja \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_INSTALL_PREFIX=~/sysu \
-  -DCMAKE_MODULE_PATH=$(llvm-config --cmakedir) \
+  -DCMAKE_MODULE_PATH="$(llvm-config --cmakedir)" \
   -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
   -B ~/sysu/build
 cmake --build ~/sysu/build
@@ -85,11 +85,11 @@ cmake --build ~/sysu-stage2/build -t install
 对于使用其他操作系统的同学，我们准备了一份 [docker 开发环境](https://hub.docker.com/r/wukan0621/sysu-lang)。
 
 ```bash
-docker pull wukan0621/sysu-lang:main
+docker pull wukan0621/sysu-lang
 docker run \
   --name sysu-lang \
   -v "$PWD/workspace:/workspace" \
-  -it wukan0621/sysu-lang:main \
+  -it wukan0621/sysu-lang \
   bash
 # 随后可以在宿主机当前目录的 workspace/SYsU-lang 目录下开发
 ```
@@ -359,6 +359,20 @@ git submodule update --init
 4. 增加 `do` - `while` 循环，因为这是很好用的[语法糖](https://mp.weixin.qq.com/s/Wwu-prowKKNDsNlzC2k9Ow)。
 5. 增加 `char`、`long long` 和字符串，同样便于实现 OS。
 6. 不支持字符常量，因为对其的支持和字符串常量是完全类似的，但在词法分析的时候可能会与词法分析器的输出格式产生微妙的冲突。
+
+### Q & A: 本项目的版本管理的规则是？
+
+版本号的命名格式为 `<major>.<minor>.<patch>.<tweak>`，如 `11.0.1.20220505`。一般来说，`<major>`、`<minor>`、`<patch>` 发生变化时，学生应当尽快更新至最新版本。
+
+- `<major>` 指示了该版本的软件依赖为对应的 debian 版本
+- `<minor>` 指示了该版本的功能版本，不同 `<minor>` 间可能不直接兼容
+- `<patch>` 指示了该版本的补丁版本，不同 `<patch>` 间预期可以直接更新，修正前一个版本中存在的问题
+- `<tweak>` 指示了当前版本代码（不含文档）的日期，可能存在微调，但不同 `<tweak>` 的代码应当具有完全相同的表现
+
+目前本项目存在两个 branch：
+
+- `latest` 分支下为课程教学中使用的代码，较为稳定，预期在 `debian:latest` 环境中工作。
+- `unstable-slim` 分支下为助教探索后续实验改革方案（如 mlir）的代码，预期在`debian:unstable-slim` 环境中工作。该分支中的文档可能不会及时更新，以 [Dockerfile](./Dockerfile) 中的测试语句为准；该分支下的 `<major>` 值等于 `latest` 分支下的 `<major>`+2。
 
 ## 你可能会感兴趣的
 
