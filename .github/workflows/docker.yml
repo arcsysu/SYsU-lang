@@ -7,11 +7,11 @@ name: Docker
 
 on:
   push:
-    branches: [latest, unstable-slim]
+    branches: [latest]
     # Publish semver tags as releases.
     tags: ["v*.*.*.*"]
   pull_request:
-    branches: [latest, unstable-slim]
+    branches: [latest]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -31,16 +31,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        if: ${{ github.ref != 'refs/heads/unstable-slim' }}
         uses: actions/checkout@v2
         with:
           submodules: true
-
-      - name: Checkout repository for unstable-slim
-        if: ${{ github.ref == 'refs/heads/unstable-slim' }}
-        uses: actions/checkout@v2
-        with:
-          submodules: false
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
@@ -102,9 +95,9 @@ jobs:
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image for riscv64
-        if: ${{ github.ref == 'refs/heads/unstable-slim' }}
         id: build-and-push-riscv64
         uses: docker/build-push-action@v2.10.0
+        continue-on-error: true
         with:
           platforms: linux/riscv64
           context: .

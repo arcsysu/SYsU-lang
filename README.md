@@ -360,7 +360,7 @@ git submodule update --init
 5. 增加 `char`、`long long` 和字符串，同样便于实现 OS。
 6. 不支持字符常量，因为对其的支持和字符串常量是完全类似的，但在词法分析的时候可能会与词法分析器的输出格式产生微妙的冲突。
 
-### Q & A: 本项目的版本管理的规则是？
+### Q & A: 本项目的版本管理的规则是？为什么项目名为 SYsU-lang，而非 SYsU-compiler ？
 
 版本号的命名格式为 `<major>.<minor>.<patch>.<tweak>`，如 `11.0.1.20220505`。一般来说，`<major>`、`<minor>`、`<patch>` 发生变化时，学生应当尽快更新至最新版本。
 
@@ -369,10 +369,12 @@ git submodule update --init
 - `<patch>` 指示了该版本的补丁版本，不同 `<patch>` 间预期可以直接更新，修正前一个版本中存在的问题
 - `<tweak>` 指示了当前版本代码（不含文档）的日期，可能存在微调，但不同 `<tweak>` 的代码应当具有完全相同的表现
 
-目前本项目存在两个 branch：
+目前本项目存在两个分支：
 
-- `latest` 分支下为课程教学中使用的代码，较为稳定，预期在 `debian:latest` 环境中工作。
-- `unstable-slim` 分支下为助教探索后续实验改革方案（如 mlir）的代码，预期在`debian:unstable-slim` 环境中工作。该分支中的文档可能不会及时更新，以 [Dockerfile](./Dockerfile) 中的测试语句为准；该分支下的 `<major>` 值等于 `latest` 分支下的 `<major>`+2。
+- [`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为课程教学中使用的代码，功能稳定，预期在 `debian:latest` 环境中工作。
+- [`unstable-slim`](https://github.com/arcsysu/SYsU-lang/tree/unstable-slim) 分支下为助教探索后续实验改革方案（如 mlir）的代码，预期在`debian:unstable-slim` 环境中工作。该分支中的文档可能不会及时更新，以 [Dockerfile](./Dockerfile) 中的测试语句为准；该分支下的 `<major>` 值等于 `latest` 分支下的 `<major>`+2。
+
+由于本项目并没有提供一个完整的 `sysu-compiler`，而只提供了相关的开发环境，因此项目名为 SYsU-lang。[SYsU-compiler](https://github.com/SYSU-SCC/sysu-compiler)的开发已在进行，暂不对外开放。
 
 ## 你可能会感兴趣的
 
