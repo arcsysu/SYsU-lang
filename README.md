@@ -247,7 +247,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
   sysu-lexer |
   sysu-parser |
   sysu-generator |
-  lli --load=libsysy.so ) # 该输出来自运行时库的计时统计
+  lli --load=libsysy.so --load=libsysu.so ) # 该输出来自运行时库的计时统计
 TOTAL: 0H-0M-0S-0us
 $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
 3
