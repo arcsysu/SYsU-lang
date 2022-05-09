@@ -2,7 +2,7 @@
 
 ## 实验描述
 
-在本次 IR（中间代码）优化实验中，你被希望完成一个 IR 优化器，接受来自 `sysu-generator` 或 `clang -cc1 -O0 -S -emit-llvm` 的 LLVM-IR，输出优化后的 LLVM-IR。
+在本次 IR（中间代码）优化实验中，你被希望完成一个 IR 优化器，接受来自 `sysu-generator` 或 `clang -cc1 -O0 -S -emit-llvm` 的 LLVM IR，输出优化后的 LLVM IR。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH \
@@ -26,10 +26,10 @@
 
 本目录下提供了一个基于 llvm pass manager 的模板，你可以基于此继续完成整个实验。以下是助教测试时运行时间超过两分钟的几个算例，你可以重点关注它们并进行优化：
 
-- [dead-code-elimination-3.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/main/performance_test2021-private/dead-code-elimination-3.sysu.c)
-- [hoist-3.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/main/performance_test2021-private/hoist-3.sysu.c)
-- [integer-divide-optimization-2.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/main/performance_test2021-private/integer-divide-optimization-2.sysu.c)
-- [integer-divide-optimization-3.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/main/performance_test2021-private/integer-divide-optimization-3.sysu.c)
+- [dead-code-elimination-3.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/latest/performance_test2021-private/dead-code-elimination-3.sysu.c)
+- [hoist-3.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/latest/performance_test2021-private/hoist-3.sysu.c)
+- [integer-divide-optimization-2.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/latest/performance_test2021-private/integer-divide-optimization-2.sysu.c)
+- [integer-divide-optimization-3.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/latest/performance_test2021-private/integer-divide-optimization-3.sysu.c)
 
 以下是一些优化的方向供参考：
 
@@ -88,7 +88,7 @@ Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 
-评测时会通过 `clang -cc1 -O3 -S -emit-llvm` 得到用于对比的 LLVM-IR；两份 IR 将同时通过 `clang -O0 -lsysy` 编译成二进制可执行文件，执行并获得运行时间。单个评测项的性能分是两者运行时间的比值；总性能是各个性能项的几何平均。
+评测时会通过 `clang -cc1 -O3 -S -emit-llvm` 得到用于对比的 LLVM IR；两份 IR 将同时通过 `clang -O0 -lsysy` 编译成二进制可执行文件，执行并获得运行时间。单个评测项的性能分是两者运行时间的比值；总性能是各个性能项的几何平均。
 
 由于评测机的内存足够大，单次评测内存设置为 10GB，总时限为一小时，评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，且设置 `--unittest-skip-filesize -1`，运行时长超过 2 分钟的编译结果会被跳过。助教的示例提交（基于 `clang -O0`）得分为 425/429，性能分约为 12.2%，评测花费了约二十五分钟。
 

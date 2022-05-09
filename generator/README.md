@@ -2,7 +2,7 @@
 
 ## 实验描述
 
-在本次 IR（中间代码）生成实验中，你被希望完成一个 IR 生成器，接受来自 `sysu-parser` 或 `clang -cc1 -ast-dump=json` 的语法树输入，产生 LLVM-IR。
+在本次 IR（中间代码）生成实验中，你被希望完成一个 IR 生成器，接受来自 `sysu-parser` 或 `clang -cc1 -ast-dump=json` 的语法树输入，产生 LLVM IR。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -33,7 +33,7 @@ attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-ma
 !1 = !{!"Debian clang version 11.0.1-2"}
 ```
 
-注意，你的输出不必与 `clang -cc1 -O0 -S -emit-llvm` 完全相同，只要你的 LLVM-IR 在经过编译后与其有相同的输出与返回值。
+注意，你的输出不必与 `clang -cc1 -O0 -S -emit-llvm` 完全相同，只要你的 LLVM IR 在经过编译后与其有相同的输出与返回值。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -52,9 +52,9 @@ entry:
 }
 ```
 
-本目录下提供了一个模板，你可以基于此继续完成整个实验。如果你使用了来自 LLVM 的组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `llvm_map_components_to_libnames`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，不得使用任何封装好的库从源码直接获得 LLVM-IR，如 `libclang`。
+本目录下提供了一个模板，你可以基于此继续完成整个实验。如果你使用了来自 LLVM 的组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `llvm_map_components_to_libnames`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，不得使用任何封装好的库从源码直接获得 LLVM IR，如 `libclang`。
 
-### 一些可能有用的小技巧：LLVM-IR 可视化
+### 一些可能有用的小技巧：LLVM IR 可视化
 
 你可以像这样，借助 `opt -dot-cfg` 选项，生成一个输入的 CFG 可视化。终端执行下述指令，将在目录下生成 `.main.dot` 文件，对应源代码中 `main` 函数的 CFG 图。
 

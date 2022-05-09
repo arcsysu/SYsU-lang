@@ -115,8 +115,8 @@ subgraph backend
 direction LR
 translator--Assemble-->linker
 end
-frontend--LLVM-IR-->midend
-midend--LLVM-IR-->backend
+frontend--LLVM IR-->midend
+midend--LLVM IR-->backend
 end
 ```
 
@@ -255,7 +255,7 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 ### `optimizer`
 
-`sysu-optimizer` 是 SYsU 的优化器，从 `sysu-generator` 获得输入，输出优化后的 LLVM-IR。作为代码优化实验模块，本仓库中的 `sysu-optimizer` 并没有实现优化 IR 的功能，需要学生将其补充完整（[详细实验要求](optimizer/README.md)）。
+`sysu-optimizer` 是 SYsU 的优化器，从 `sysu-generator` 获得输入，输出优化后的 LLVM IR。作为代码优化实验模块，本仓库中的 `sysu-optimizer` 并没有实现优化 IR 的功能，需要学生将其补充完整（[详细实验要求](optimizer/README.md)）。
 
 注意在以下的输出中，`; ModuleID = '<stdin>'` 前的输出来自 `stderr`，包含了一个来自 [banach-space/llvm-tutor](https://github.com/banach-space/llvm-tutor/blob/main/lib/StaticCallCounter.cpp) 的 `StaticCallCounter` Pass，可以统计生成代码中包含哪些 `call` 调用。
 
@@ -299,7 +299,7 @@ entry:
 
 ### `translator`
 
-将 LLVM-IR 翻译成汇编或二进制文件。当前 `sysu-translator` 直接调用 `llc`，学有余力的同学也可自行实现。
+将 LLVM IR 翻译成汇编或二进制文件。当前 `sysu-translator` 直接调用 `llc`，学有余力的同学也可自行实现。
 
 ### `linker`
 
@@ -339,11 +339,11 @@ git submodule update --init
 2. LLVM 是久经考验的编译器框架，我们希望学生可以熟悉 LLVM，培养出业界真正需要的人才。
 3. 本项目中每个实验提供的模板都只有一百行左右，可以降低学生上手的门槛；当学生完成整个项目后，也会具备从零开始实现一个编译器的能力，从课堂教学的角度已经足够。
 
-### Q & A：为什么是编译到 LLVM-IR，而不是某种汇编，如 RV32I？
+### Q & A：为什么是编译到 LLVM IR，而不是某种汇编，如 RV32I？
 
 1. 一个观点是，在编译原理课程上，不应该过多涉及硬件架构的细节。
-2. LLVM-IR 已经相对底层，非常好翻译成各种汇编，实际上也可以用与本项目相同的方式写一个编译器。
-3. 我们也预留了 LLVM-IR 到汇编的接口 `sysu-translator` 以及链接器的接口 `sysu-linker`，学有余力的同学可以自行实现。
+2. LLVM IR 已经相对底层，非常好翻译成各种汇编，实际上也可以用与本项目相同的方式写一个编译器。
+3. 我们也预留了 LLVM IR 到汇编的接口 `sysu-translator` 以及链接器的接口 `sysu-linker`，学有余力的同学可以自行实现。
 
 ### Q & A：为什么将词法分析器等模块实现为单独的可执行文件，可能导致运行低效率？
 
