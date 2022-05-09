@@ -46,14 +46,14 @@
 
 ### Q & A：有关 new pass manager 与 legacy pass manager
 
-Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以来已经有数十年历史。由于原有的 PM 编译效率低且错失很多优化机会，2014 年开始 LLVM 团队对其开始重构。在实验环境中使用的 LLVM-11.0.1 默认使用的仍然是旧 PM，但已经包含新 PM；在 LLVM-12 中已经默认使用 new pass manager 代替 the legacy pass manager；在助教写下这段话的 2022 年 03 月 25 日，LLVM-14 正式发布，其 [ReleaseNotes](https://releases.llvm.org/14.0.0/docs/ReleaseNotes.html) 中提到：
+Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以来已经有数十年历史。由于原有的 PM 编译效率低且错失很多优化机会，2014 年开始 LLVM 团队对其开始重构。在实验环境中使用的 LLVM-11.0.1 默认使用的仍然是旧 PM，但已经包含新 PM；在 LLVM-12 中已经默认使用 new pass manager 代替 legacy pass manager；在助教写下这段话的 2022 年 03 月 25 日，LLVM-14 正式发布，其 [ReleaseNotes](https://releases.llvm.org/14.0.0/docs/ReleaseNotes.html) 中提到：
 
 > Using the legacy pass manager for the optimization pipeline is deprecated and will be removed after LLVM 14.
 
 新 Pass 写起来更简单，不涉及虚函数等容易出问题的特性，只需要实现一个 `run` 函数；同时 Pass 的注册机制也更简单，是实现一个 `llvmGetPassPluginInfo` 而不是默认初始化一个对象。因此助教鼓励大家写新 Pass，模板也同样基于新 PM。然而网上很多学习资料（中文编程社区消息的滞后性加重了这一点）仍然基于旧 PM。[一般来说](https://www.zhihu.com/question/45051197/answer/290078011)：
 
 > 1. CRTP 了 PassInfoMixin 的是 new Pass, 继承了 BasicBlockPass, LoopPass, RegionPass, FunctionPass, ModulePass 的这种是 legacy Pass.
-> 2. 如果你看到 INITIALIZE_PASS_BEGIN, INITIALIZE_PASS_END 这种，则为 legacy Pass（我觉得似乎 void initializeAddressSanitizerModulePass(PassRegistry&);这种也是 legacy Pass 的标志，但是我不是特别确认
+> 2. 如果你看到 INITIALIZE_PASS_BEGIN, INITIALIZE_PASS_END 这种，则为 legacy Pass（我觉得似乎 `void initializeAddressSanitizerModulePass(PassRegistry&);` 这种也是 legacy Pass 的标志，但是我不是特别确认
 > 3. 通常看到 SomethingWrapperPass, SomethingLegacyPass 这种一般是 legacy Pass(但是名字不是这样的也可能是 legacy Pass)
 
 助教在文末附上了一些写新 Pass 的参考材料。
