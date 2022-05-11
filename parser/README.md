@@ -2,7 +2,9 @@
 
 ## 实验描述
 
-在本次语法分析实验中，你被希望完成一个语法分析器，接受来自 `sysu-lexer` 的输入，产生与 `clang -cc1 -ast-dump=json` 相当的输出。注意，以下 log 省略了无关内容。
+在本次语法分析实验中，你被希望完成一个语法分析器，接受来自 `sysu-lexer` 的输入，产生与 `clang -cc1 -ast-dump=json` 相当的输出。预期的代码行数为 1000 行，预期的完成时间为 24 小时 ～ 72 小时。
+
+注意，以下 log 省略了无关内容。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
