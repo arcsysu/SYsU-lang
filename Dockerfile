@@ -46,7 +46,7 @@ mv /workspace/SYsU-lang/build_install.sh ~/build_install
 chmod +x ~/build_install
 ~/build_install
 EOF
-ENV PATH=~/sysu/bin:$PATH \
-    CPATH=~/sysu/include:$CPATH \
-    LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-    LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH
+ENV PATH=/root/sysu/bin:$PATH \
+    CPATH=/root/sysu/include:$CPATH \
+    LIBRARY_PATH=/root/sysu/lib:$LIBRARY_PATH \
+    LD_LIBRARY_PATH=/root/sysu/lib:$LD_LIBRARY_PATH
