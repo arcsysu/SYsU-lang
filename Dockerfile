@@ -24,7 +24,6 @@ cp -r /workspace/submission/*-Source/generator /workspace/SYsU-lang
 rm -rf /workspace/SYsU-lang/optimizer
 cp -r /workspace/submission/*-Source/optimizer /workspace/SYsU-lang
 rm -rf /workspace/submission
-rm /workspace/SYsU-lang/tester/h_functional/107_long_code2.sysu.c
 ~/build_install
 mkdir -p /autograder/results
 sysu-compiler \\
@@ -46,6 +45,7 @@ chmod +x /autograder/run
 mv /workspace/SYsU-lang/build_install.sh ~/build_install
 chmod +x ~/build_install
 ~/build_install
+rm -rf /workspace/SYsU-lang/tester/h_functional/107_long_code2.sysu.c
 EOF
 ENV PATH=/root/sysu/bin:$PATH \
     CPATH=/root/sysu/include:$CPATH \
