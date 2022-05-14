@@ -24,6 +24,7 @@ cp -r /workspace/submission/*-Source/generator /workspace/SYsU-lang
 rm -rf /workspace/SYsU-lang/optimizer
 cp -r /workspace/submission/*-Source/optimizer /workspace/SYsU-lang
 rm -rf /workspace/submission
+rm /workspace/SYsU-lang/tester/h_functional/107_long_code2.sysu.c
 ~/build_install
 mkdir -p /autograder/results
 sysu-compiler \\
