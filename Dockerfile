@@ -11,6 +11,7 @@ cmake -G Ninja \\
     -DCMAKE_CXX_COMPILER=clang++ \\
     -DCMAKE_INSTALL_PREFIX=~/sysu \\
     -DCMAKE_MODULE_PATH="$(llvm-config --cmakedir)" \\
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \\
     -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \\
     -S /workspace/SYsU-lang \\
     -B ~/sysu/build
