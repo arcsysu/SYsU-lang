@@ -31,6 +31,10 @@
 - [integer-divide-optimization-2.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/latest/performance_test2021-private/integer-divide-optimization-2.sysu.c)
 - [integer-divide-optimization-3.sysu.c](https://github.com/arcsysu/SYsU-lang-tester-perfermance/blob/latest/performance_test2021-private/integer-divide-optimization-3.sysu.c)
 
+以下算例由于语法树层级过多，编译器会在 `llvm::json::parse` 处产生瓶颈。实验中允许跳过该算例，但你被鼓励去解决这一问题。
+
+- [107_long_code2.sys.c`](../tester/h_functional/107_long_code2.sysu.c)
+
 以下是一些优化的方向供参考：
 
 - 死代码删除
@@ -62,7 +66,7 @@ Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以
 
 本实验的评分分为两部分：基础部分和挑战部分。
 
-- 对于基础部分的实验，要求通过对应的自动评测，并提交到[在线评测](https://arcsysu.github.io/SYsU-lang-archive-2022/)，在排行榜上有成绩，**并且在时限内通过所有算例（即得分为 429/429）**。详见自动评测细则一节。
+- 对于基础部分的实验，要求通过对应的自动评测，并提交到[在线评测](https://arcsysu.github.io/SYsU-lang-archive-2022/)，在排行榜上有成绩，**并且在时限内通过上述四个算例**。详见自动评测细则一节。
 - 由于本次基础部分的实验很难拿到满分，没有拿到满分的部分可使用前几个实验的挑战选项补充。需要在实验报告中提及所有的挑战工作。
 
 你需要提交一份实验报告，简要记录你的实验过程、遇到的难点以及解决的方法，并在报告中附上排行榜的上榜截图；助教会定期检查排行榜上的代码。
@@ -88,9 +92,7 @@ Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 
-评测时会通过 `clang -cc1 -O3 -S -emit-llvm` 得到用于对比的 LLVM IR；两份 IR 将同时通过 `clang -O0 -lsysy -lsysu` 编译成二进制可执行文件，执行并获得运行时间。单个评测项的性能分是两者运行时间的比值；总性能是各个性能项的几何平均。
-
-由于评测机的内存足够大，单次评测内存设置为 10GB，总时限为一小时，评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，且设置 `--unittest-skip-filesize -1`，运行时长超过 2 分钟的编译结果会被跳过。助教的示例提交（基于 `clang -O0`）得分为 425/429，性能分约为 12.2%，评测花费了约二十五分钟。
+评测时会通过 `clang -cc1 -O3 -S -emit-llvm` 得到用于对比的 LLVM IR；两份 IR 将同时通过 `clang -O0 -lsysy -lsysu` 编译成二进制可执行文件，执行并获得运行时间。单个评测项的性能分是两者运行时间的比值；总性能是各个性能项的几何平均。评测机单次评测内存设置为 1GB，总时限为一小时，评测时会将 `generator`、`optimizer` 目录以外的内容替换成本仓库中的内容，且运行时长超过 2 分钟的编译结果会被跳过。助教的示例提交（基于 `clang -O0`）得分为 425/429，性能分约为 12.2%，评测花费了约二十五分钟。
 
 此外，因为评测集群的并发量有限（至多可以同时评测十六份提交）。请大家先在本地测试通过所有非 `tester/third_party` 目录下的算例后再提交。
 

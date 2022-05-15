@@ -460,11 +460,6 @@ def main(*argv):
         type=int,  # 慎重测试！
         default=120)
     parser.add_argument(
-        "--unittest-skip-filesize",
-        help="'-1' for no skip (default 32768)",
-        type=int,  # 慎重测试！
-        default=32768)
-    parser.add_argument(
         "-S",
         help="Only run preprocess and compilation steps",
         action="store_true")
@@ -495,9 +490,6 @@ def main(*argv):
     if args.convert_sysy:
         return convert_sysy(filenames)
     if args.unittest:
-        if args.unittest_skip_filesize >= 0:
-            filenames = list(filter(lambda x: os.path.getsize(
-                x) < args.unittest_skip_filesize, filenames))
         filenames.sort()
         time_out = None
         if args.unittest_timeout >= 0:
