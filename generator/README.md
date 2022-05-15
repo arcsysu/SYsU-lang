@@ -116,7 +116,8 @@ entry:
    - 块间公共子表达式删除
    - 提取循环无关语句到循环外
    - Do what you want to do
-5. Do what you want to do
+5. [107_long_code2.sys.c`](../tester/h_functional/107_long_code2.sysu.c) 这个算例在本地会被跳过，在服务器上由于开启了 `--unittest-skip-filesize -1` 因此会被测试。测试时 `clang` 会产生一个 8.9G 大小的语法树，随后通过 python 去掉空白符（大约 8s）得到一个[压缩后的语法树](../tester/h_functional/107_long_code2.json.gz)。由于 `llvm::json::parse` 的性能过弱，助教在服务器上运行了十五分钟才解析完整棵语法树。你可以使用编译原理课程上学到的知识实现一个高性能的 json 渲染库，并与 [RapidJSON](https://github.com/Tencent/rapidjson) 等高性能的 json 库进行性能对比。
+6. Do what you want to do
 
 ## 你可能会感兴趣的
 

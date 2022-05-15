@@ -1,9 +1,10 @@
-FILE(GLOB mains *.sysu.c)
-FOREACH(mainfile ${mains})
-    # Get file name without directory
-    GET_FILENAME_COMPONENT(mainname ${mainfile} NAME_WE)
-    ADD_EXECUTABLE(sysu-tester-function_test2021_${mainname} ${mainfile})
-    TARGET_LINK_LIBRARIES(sysu-tester-function_test2021_${mainname} sysy)
-    TARGET_INCLUDE_DIRECTORIES(sysu-tester-function_test2021_${mainname} PRIVATE ${CMAKE_SOURCE_DIR}/librarian)
-    INSTALL(TARGETS sysu-tester-function_test2021_${mainname})
-ENDFOREACH()
+file(GLOB mains *.sysu.c)
+foreach(mainfile ${mains})
+  # Get file name without directory
+  get_filename_component(mainname ${mainfile} NAME_WE)
+  add_executable(sysu-tester-function_test2021_${mainname} ${mainfile})
+  target_link_libraries(sysu-tester-function_test2021_${mainname} sysy)
+  target_include_directories(sysu-tester-function_test2021_${mainname}
+                             PRIVATE ${CMAKE_SOURCE_DIR}/librarian)
+  install(TARGETS sysu-tester-function_test2021_${mainname})
+endforeach()
