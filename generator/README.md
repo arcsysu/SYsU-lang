@@ -2,7 +2,7 @@
 
 ## 实验描述
 
-在本次 IR（中间代码）生成实验中，你被希望完成一个 IR 生成器，接受来自 `sysu-parser` 或 `clang -cc1 -ast-dump=json` 的语法树输入，产生 LLVM IR。
+在本次 IR（中间代码）生成实验中，你被希望完成一个 IR 生成器，接受来自 `sysu-parser` 或 `clang -cc1 -ast-dump=json` 的语法树输入，产生 LLVM IR。预期的代码行数为 1500 行，预期的完成时间为 36 小时 ～ 108 小时。
 
 ```bash
 $ ( export PATH=~/sysu/bin:$PATH \
@@ -52,7 +52,7 @@ entry:
 }
 ```
 
-本目录下提供了一个模板，你可以基于此继续完成整个实验。如果你使用了来自 LLVM 的组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `llvm_map_components_to_libnames`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，不得使用任何封装好的库从源码直接获得 LLVM IR，如 `libclang`。
+如果你使用了来自 LLVM 的其他组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `llvm_map_components_to_libnames`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，不得使用任何封装好的库从 C 语言源码直接获得 LLVM IR，如 `libclang`。
 
 ### 一些可能有用的小技巧：LLVM IR 可视化
 
@@ -116,7 +116,7 @@ entry:
    - 块间公共子表达式删除
    - 提取循环无关语句到循环外
    - Do what you want to do
-5. [107_long_code2.sys.c`](../tester/h_functional/107_long_code2.sysu.c) 这个算例在测试时直接使用 `clang` 导出的语法树大小为 8.9G，助教这里直接给出了[压缩后的语法树](../tester/h_functional/107_long_code2.json.gz)。然而由于 `llvm::json::parse` 的性能过弱，在服务器上运行了十五分钟才解析完（对比 python 的 `json.loads` 仅花费八秒）。你可以使用编译原理课程上学到的知识实现一个高性能的 json 渲染库，并与 [RapidJSON](https://github.com/Tencent/rapidjson) 等高性能的 json 库进行性能对比。
+5. [107_long_code2.sysu.c](../tester/h_functional/107_long_code2.sysu.c) 这个算例在测试时直接使用 `clang` 导出的语法树大小为 8.9G，助教这里直接给出了[压缩后的语法树](../tester/h_functional/107_long_code2.json.gz)。然而由于 `llvm::json::parse` 的性能过弱，在服务器上运行了十五分钟才解析完（对比 python 的 `json.loads` 仅花费八秒）。你可以使用编译原理课程上学到的知识实现一个高性能的 json 渲染库，并与 [RapidJSON](https://github.com/Tencent/rapidjson) 等高性能的 json 库进行性能对比。
 6. Do what you want to do
 
 ## 你可能会感兴趣的

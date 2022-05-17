@@ -33,7 +33,7 @@
 
 以下算例由于语法树层级过多，编译器会在 `llvm::json::parse` 处产生瓶颈。实验中允许跳过该算例，但你被鼓励去解决这一问题。
 
-- [107_long_code2.sys.c`](../tester/h_functional/107_long_code2.sysu.c)
+- [107_long_code2.sysu.c](../tester/h_functional/107_long_code2.sysu.c)
 
 以下是一些优化的方向供参考：
 
