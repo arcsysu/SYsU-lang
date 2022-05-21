@@ -2,7 +2,7 @@
 
 ## 实验描述
 
-在本次 IR（中间代码）优化实验中，你被希望完成一个 IR 优化器，接受来自 `sysu-generator` 或 `clang -cc1 -O0 -S -emit-llvm` 的 LLVM IR，输出优化后的 LLVM IR。
+在本次 IR（中间代码）优化实验中，你被希望完成一个 IR 优化器，接受来自 `sysu-generator` 或 `clang -cc1 -O0 -S -emit-llvm` 的 LLVM IR，输出优化后的 LLVM IR。本实验为开放性实验，没有预期完成时间与代码行数。
 
 ```bash
 ( export PATH=~/sysu/bin:$PATH \

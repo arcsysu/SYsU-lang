@@ -5,16 +5,14 @@
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
 
-namespace {
-llvm::cl::OptionCategory CallCounterCategory{"call counter options"};
-
-llvm::cl::opt<decltype(llvm::StringRef("").str())> InputModule{
-    llvm::cl::Positional, llvm::cl::desc{"<Module to analyze>"},
-    llvm::cl::value_desc{"filename, *.bc or *.ll or - (use stdin, default)"},
-    llvm::cl::init("-"), llvm::cl::cat{CallCounterCategory}};
-} // namespace
-
 int main(int argc, char **argv) {
+  llvm::cl::OptionCategory CallCounterCategory{"call counter options"};
+
+  llvm::cl::opt<decltype(llvm::StringRef("").str())> InputModule{
+      llvm::cl::Positional, llvm::cl::desc{"<Module to analyze>"},
+      llvm::cl::value_desc{"filename, *.bc or *.ll or - (use stdin, default)"},
+      llvm::cl::init("-"), llvm::cl::cat{CallCounterCategory}};
+
   // Hide all options apart from the ones specific to this tool
   llvm::cl::HideUnrelatedOptions(CallCounterCategory);
 
@@ -23,7 +21,7 @@ int main(int argc, char **argv) {
                                     "calls in the input IR file\n");
 
   // Makes sure llvm_shutdown() is called (which cleans up LLVM objects)
-  //  http://llvm.org/docs/ProgrammersManual.html#ending-execution-with-llvm-shutdown
+  //  https://releases.llvm.org/11.0.1/docs/ProgrammersManual.html#ending-execution-with-llvm-shutdown
   llvm::llvm_shutdown_obj SDO;
 
   // Parse the IR file passed on the command line.

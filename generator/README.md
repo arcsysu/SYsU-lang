@@ -52,6 +52,23 @@ entry:
 }
 ```
 
+至此一个初级的 SYsU 编译器就完成了！你可以使用 `lli` JIT 地执行编译出来的代码。
+
+```bash
+$ ( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-preprocessor tester/functional/000_main.sysu.c |
+  sysu-lexer |
+  sysu-parser |
+  sysu-generator |
+  lli --load=libsysy.so --load=libsysu.so ) # 该输出来自运行时库的计时统计
+TOTAL: 0H-0M-0S-0us
+$ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
+3
+```
+
 如果你使用了来自 LLVM 的其他组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `llvm_map_components_to_libnames`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，不得使用任何封装好的库从 C 语言源码直接获得 LLVM IR，如 `libclang`。
 
 ### 一些可能有用的小技巧：LLVM IR 可视化

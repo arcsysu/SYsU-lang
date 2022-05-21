@@ -209,7 +209,7 @@ $ ( export PATH=~/sysu/bin:$PATH \
   CPATH=~/sysu/include:$CPATH \
   LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  sysu-preprocessor tester/functional/000_main.sysu.c |
+  clang -E tester/functional/000_main.sysu.c |
   clang -cc1 -dump-tokens 2>&1 |
   sysu-parser )
 ```
@@ -234,23 +234,6 @@ define i32 @main() {
 entry:
   ret i32 3
 }
-```
-
-至此一个初级的 SYsU 编译器就完成了！你可以使用 `lli` JIT 地执行编译出来的代码。
-
-```bash
-$ ( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
-  sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
-  sysu-generator |
-  lli --load=libsysy.so --load=libsysu.so ) # 该输出来自运行时库的计时统计
-TOTAL: 0H-0M-0S-0us
-$ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的命令的返回值对 256 取模后的结果。
-3
 ```
 
 ### `optimizer`

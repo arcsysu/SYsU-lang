@@ -107,31 +107,34 @@ def main(*argv):
             filename = filenames[ff]
             logging.getLogger(__name__).info(
                 "[{}/{}] {}".format(ff, len(filenames), filename))
-            command = preprocessor + " " + filename
-            src = subprocess.run(
-                command, timeout=time_out, stdout=subprocess.PIPE, shell=True).stdout
-            command0 = command+" | "+clang + " -cc1 -ast-dump=json"
-            command1 = command+" | "+clang + " -cc1 -dump-tokens 2>&1 | "+parser
-            ast0 = None
-            if filename.endswith(".sysu.c"):
-                gz = filename[0:filename.rfind(".sysu.c")]+".json.gz"
-                if os.path.exists(gz):
-                    with gzip.open(gz, "rb") as f:
-                        ast0 = f.read()
-            if ast0 == None:
-                ast0 = subprocess.run(
-                    clang + " -cc1 -ast-dump=json",
-                    input=src, timeout=time_out,
-                    stdout=subprocess.PIPE, shell=True).stdout
-            ast0 = json.loads(ast0)
-            gc.collect()
-            ast1 = json.loads(subprocess.run(
-                clang + " -cc1 -dump-tokens 2>&1 |"+parser,
-                input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
-            gc.collect()
-            r = check_ast(ast0, ast1, testcase, command0, command1)
-            if r != 0:
-                return r
+            try:
+                command = preprocessor + " " + filename
+                src = subprocess.run(
+                    command, timeout=time_out, stdout=subprocess.PIPE, shell=True).stdout
+                command0 = command+" | "+clang + " -cc1 -ast-dump=json"
+                command1 = command+" | "+clang + " -cc1 -dump-tokens 2>&1 | "+parser
+                ast0 = None
+                if filename.endswith(".sysu.c"):
+                    gz = filename[0:filename.rfind(".sysu.c")]+".json.gz"
+                    if os.path.exists(gz):
+                        with gzip.open(gz, "rb") as f:
+                            ast0 = f.read()
+                if ast0 == None:
+                    ast0 = subprocess.run(
+                        clang + " -cc1 -ast-dump=json",
+                        input=src, timeout=time_out,
+                        stdout=subprocess.PIPE, shell=True).stdout
+                ast0 = json.loads(ast0)
+                gc.collect()
+                ast1 = json.loads(subprocess.run(
+                    clang + " -cc1 -dump-tokens 2>&1 |"+parser,
+                    input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
+                gc.collect()
+                r = check_ast(ast0, ast1, testcase, command0, command1)
+                if r != 0:
+                    return r
+            except subprocess.TimeoutExpired:
+                logging.getLogger(__name__).warning("TimeoutExpired. Skip.")
         return 0
 
     def unittest_lexer(testcase, clang, preprocessor, lexer, filenames, time_out):
@@ -354,6 +357,7 @@ def main(*argv):
                 except subprocess.TimeoutExpired:
                     if len(res) == 1 and get_tm(res[0]) > 0:
                         performance.append(get_tm(res[0])/(time_out * 1000000))
+                    logging.getLogger(__name__).warning("TimeoutExpired.")
             if len(performance):
                 results["leaderboard"] = [{
                     "name": "performance",
