@@ -307,6 +307,9 @@ def main(*argv):
                                 return wk_exit(s.returncode)
                             s = s.stdout
                         sysu.append(s)
+                    log = "Compile Finish."
+                    logging.getLogger(__name__).info(log)
+                    results["tests"][ff]["output"] += log + "\n"
                     inputs = None
                     if filename.endswith(".sysu.c"):
                         gz = filename[0:filename.rfind(".sysu.c")]+".in.gz"
@@ -357,7 +360,9 @@ def main(*argv):
                 except subprocess.TimeoutExpired:
                     if len(res) == 1 and get_tm(res[0]) > 0:
                         performance.append(get_tm(res[0])/(time_out * 1000000))
-                    logging.getLogger(__name__).warning("TimeoutExpired.")
+                    log = "TimeoutExpired."
+                    logging.getLogger(__name__).warning(log)
+                    results["tests"][ff]["output"] += log + "\n"
             if len(performance):
                 results["leaderboard"] = [{
                     "name": "performance",
