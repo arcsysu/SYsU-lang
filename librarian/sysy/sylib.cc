@@ -100,10 +100,10 @@ void _sysy_putarray(int n, int a[]) {
 
 float _sysy_getfloat() {
   float n;
-  std::scanf("%f", &n);
+  std::scanf("%a", &n);
   return n;
 }
-void _sysy_putfloat(float a) { std::printf("%f", a); }
+void _sysy_putfloat(float a) { std::printf("%a", a); }
 
 int _sysy_getfarray(float a[]) {
   int n = _sysy_getint();
