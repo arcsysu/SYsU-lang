@@ -9,24 +9,9 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 
 同样欢迎其他高校相关课程使用！我们同样开源了基于 docker 的[在线评测框架](https://zhuanlan.zhihu.com/p/479027855)。
 
-## 语法特征
-
-SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言的超集，在后者的基础上进行了一些调整，以适应课程需要：
-
-1. 源代码后缀名由 `.sy` 调整为 `.sysu.c`。
-2. 元素类型增加 `char`、`long long`。
-3. 常量类型增加字符串常量。多行字符串只支持多个`""`的拼接，不支持斜杠 `\` 语法。
-4. 不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
-5. 语句类型增加 `do` - `while` 循环。
-6. 源代码通过**预处理器**（如 `clang -E`）处理后传给**编译器**。
-7. 预处理语句以 `#` 开头，并且总是占据一整行。
-8. 运行时库提供的函数需要预先 `#include`。
-9. 不要求每个文件都包含 `main` 函数，可以分模块编译并链接。
-10. Do what you want to do
-
 ## 编译运行
 
-需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容本项目推荐使用 `clang` 编译，版本为 `clang-11`，操作系统为 `debian:11`。
+需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容推荐使用 `clang` 编译。经过测试的实验环境为 `debian:11`。
 
 ```bash
 # 安装依赖
@@ -43,10 +28,11 @@ cd SYsU-lang
 # 非 SYsU 语言的代码都将直接/间接使用 `${CMAKE_CXX_COMPILER}` 编译（后缀为 `.cc`）
 rm -rf ~/sysu
 cmake -G Ninja \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_INSTALL_PREFIX=~/sysu \
-  -DCMAKE_MODULE_PATH="$(llvm-config --cmakedir)" \
+  -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir)" \
   -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
   -B ~/sysu/build
 cmake --build ~/sysu/build
@@ -93,6 +79,21 @@ docker run \
   bash
 # 随后可以在宿主机当前目录的 workspace/SYsU-lang 目录下开发
 ```
+
+## 语法特征
+
+SYsU 是 C 语言的子集，同时也是 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言的超集，在后者的基础上进行了一些调整，以适应课程需要：
+
+1. 源代码后缀名由 `.sy` 调整为 `.sysu.c`。
+2. 元素类型增加 `char`、`long long`。
+3. 常量类型增加字符串常量。多行字符串只支持多个`""`的拼接，不支持斜杠 `\` 语法。
+4. 不支持字符常量，而应当用字符串常量与下标寻址表示（如`"c"[0]`）。
+5. 语句类型增加 `do` - `while` 循环。
+6. 源代码通过**预处理器**（如 `clang -E`）处理后传给**编译器**。
+7. 预处理语句以 `#` 开头，并且总是占据一整行。
+8. 运行时库提供的函数需要预先 `#include`。
+9. 不要求每个文件都包含 `main` 函数，可以分模块编译并链接。
+10. Do what you want to do
 
 ## 运行架构
 
@@ -364,9 +365,9 @@ git submodule update --init
 - [SYsU-lang 实验一、二总结+常见问题指导（不定期更新）](https://wu-kan.cn/2022/05/12/SYsU-lang-%E5%AE%9E%E9%AA%8C%E4%B8%80-%E4%BA%8C%E6%80%BB%E7%BB%93+%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%8C%87%E5%AF%BC-%E4%B8%8D%E5%AE%9A%E6%9C%9F%E6%9B%B4%E6%96%B0/)
 - [2021 编译系统设计赛（华为毕昇杯）](https://compiler.educg.net/2021CSCC)
   - 可找到各参赛学校的开源代码
-- 其它基于 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语法设计的编译器实验
+- 其它基于 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 或类似语法设计的编译器实验
   - [buaa-se-compiling/miniSysY-tutorial](https://github.com/buaa-se-compiling/miniSysY-tutorial)
   - [Komorebi660/SysYF-Compiler](https://github.com/Komorebi660/SysYF-Compiler)
   - [pku-minic/online-doc](https://github.com/pku-minic/online-doc)
-  - [ustb-owl/Lava](https://github.com/ustb-owl/Lava)
   - [tinsir888/Compiler-SysY](https://github.com/tinsir888/Compiler-SysY)
+  - [yan-lang/ycc](https://github.com/yan-lang/ycc)

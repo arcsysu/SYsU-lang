@@ -7,11 +7,11 @@ COPY <<build_install.sh <<run.sh . /workspace/SYsU-lang/
 #!/bin/sh
 rm -rf ~/sysu
 cmake -G Ninja \\
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \\
     -DCMAKE_C_COMPILER=clang \\
     -DCMAKE_CXX_COMPILER=clang++ \\
     -DCMAKE_INSTALL_PREFIX=~/sysu \\
-    -DCMAKE_MODULE_PATH="$(llvm-config --cmakedir)" \\
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \\
+    -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir)" \\
     -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \\
     -S /workspace/SYsU-lang \\
     -B ~/sysu/build

@@ -76,7 +76,11 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 你可以像这样，借助 `opt -dot-cfg` 选项，生成一个输入的 CFG 可视化。终端执行下述指令，将在目录下生成 `.main.dot` 文件，对应源代码中 `main` 函数的 CFG 图。
 
 ```bash
-( clang -E tester/functional/027_if2.sysu.c |
+( export PATH=~/sysu/bin:$PATH \
+  CPATH=~/sysu/include:$CPATH \
+  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+  clang -E tester/functional/027_if2.sysu.c |
   clang -cc1 -O0 -S -emit-llvm |
   opt -dot-cfg )
 ```
@@ -92,14 +96,7 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 你需要提交一份实验报告，简要记录你的实验过程、遇到的难点以及解决的方法，并在报告中附上排行榜的上榜截图；助教会定期检查排行榜上的代码。本次实验仅要求功能完全正确，因此只要成功进入排行榜，本次实验即视为通过，排行榜上的成绩与性能对本次实验没有影响。
 
-注意：评测机的系统为 `debian:11`，对应软件依赖的版本为：
-
-- clang@11.0.1
-- llvm@11.0.1
-- flex@2.6.4
-- bison@3.7.5
-
-你需要保证你的代码可以在上述环境中正确工作。
+注意：你需要保证你的代码可以在[评测机环境](../Dockerfile)中正确工作。
 
 ### 自动评测细则
 
