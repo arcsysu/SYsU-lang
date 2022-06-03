@@ -3,8 +3,9 @@
 SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U**niversity）[编译原理课程](https://xianweiz.github.io/teach/dcs290/s2022.html)的教学。本项目是该课程的实验模板，可以得到一个 SYsU language 的编译器组件。实验的设计目标包括：
 
 1. 在兼容 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言的基础上，增加最少的语法支持，使其可以编译 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv)。
-2. 按照自顶向下的顺序进行实验，各个实验模块之间可通过管道进行通信（微 内 核）。实验模块无缝对接 Clang/LLVM，避免前一个实验失败影响后续实验开展。
-3. 支持在线/本地/Github Action 自动批改。
+2. 按照自顶向下的顺序进行实验，各个实验模块之间可通过管道进行通信（微 内 核）。
+3. 实验模块无缝对接 Clang/LLVM，避免前一个实验失败影响后续实验开展。
+4. 支持在线/本地/Github Action 自动批改。
 
 推荐阅读相关[论文](https://github.com/arcsysu/SYsU-lang-paper)以了解我们的理念与实验设计，也欢迎其他高校相关课程使用并反馈！我们同样开源了基于 docker 的[在线评测框架](https://zhuanlan.zhihu.com/p/479027855)。
 
