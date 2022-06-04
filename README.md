@@ -355,7 +355,7 @@ git submodule update --init
 
 目前本项目存在两个分支：
 
-- [`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为课程教学中使用的代码，功能稳定，预期在 `debian:latest` 环境中工作。
+- [`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为课程教学中使用的代码，功能稳定，预期在 `debian:11` 环境中工作。
 - [`unstable-slim`](https://github.com/arcsysu/SYsU-lang/tree/unstable-slim) 分支下为助教探索后续实验改革方案（如 mlir）的代码，预期在`debian:unstable-slim` 环境中工作。该分支中的文档可能不会及时更新，以 [Dockerfile](./Dockerfile) 中的测试语句为准；该分支下的 `<major>` 值等于 `latest` 分支下的 `<major>`+2。
 
 由于本项目并没有提供一个完整的 `sysu-compiler`，而只提供了相关的开发环境，因此项目名为 SYsU-lang。[完整实现](https://github.com/SYSU-SCC/sysu-compiler)的开发已在进行，暂不对外开放。
