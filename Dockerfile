@@ -32,14 +32,15 @@ sysu-compiler \\
     "/workspace/SYsU-lang/**/*.sysu.c" >/autograder/results/results.json
 run.sh
 RUN <<EOF
-apt update -y
-apt upgrade -y
-apt install --no-install-recommends -y \
+apt-get update -y
+apt-get upgrade -y
+apt-get install --no-install-recommends -y \
     clang libclang-dev llvm-dev \
     zlib1g-dev lld flex bison \
     ninja-build cmake python3 git
-apt autoremove -y
-apt clean -y
+apt-get autoremove -y
+apt-get clean -y
+rm -rf /var/lib/apt/lists/*
 mv /workspace/SYsU-lang/run.sh /autograder/run
 chmod +x /autograder/run
 mv /workspace/SYsU-lang/build_install.sh ~/build_install
