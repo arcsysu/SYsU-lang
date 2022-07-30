@@ -1,4 +1,4 @@
-name: Docker
+name: docker-unstable-slim
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -7,10 +7,10 @@ name: Docker
 
 on:
   push:
-    branches: [latest]
+    branches: [unstable-slim]
     tags: ["*"]
   pull_request:
-    branches: [latest]
+    branches: [unstable-slim]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -32,7 +32,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          submodules: true
+          submodules: false
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
@@ -85,7 +85,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v3
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/riscv64
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
