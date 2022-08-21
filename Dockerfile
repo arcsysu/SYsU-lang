@@ -5,18 +5,18 @@ WORKDIR /workspace
 VOLUME /workspace
 COPY <<build_install.sh <<run.sh . /workspace/SYsU-lang/
 #!/bin/sh
-rm -rf $HOME/sysu
+rm -rf \$HOME/sysu
 cmake -G Ninja \\
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \\
     -DCMAKE_C_COMPILER=clang \\
     -DCMAKE_CXX_COMPILER=clang++ \\
-    -DCMAKE_INSTALL_PREFIX=$HOME/sysu \\
+    -DCMAKE_INSTALL_PREFIX=\$HOME/sysu \\
     -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir)" \\
     -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \\
     -S /workspace/SYsU-lang \\
-    -B $HOME/sysu/build
-cmake --build $HOME/sysu/build
-cmake --build $HOME/sysu/build -t install
+    -B \$HOME/sysu/build
+cmake --build \$HOME/sysu/build
+cmake --build \$HOME/sysu/build -t install
 build_install.sh
 #!/bin/sh
 python3 -m tarfile -e /autograder/submission/*.tar.gz /workspace/submission
@@ -25,7 +25,7 @@ cp -r /workspace/submission/*-Source/generator /workspace/SYsU-lang
 rm -rf /workspace/SYsU-lang/optimizer
 cp -r /workspace/submission/*-Source/optimizer /workspace/SYsU-lang
 rm -rf /workspace/submission
-$HOME/build_install
+\$HOME/build_install
 mkdir -p /autograder/results
 sysu-compiler \\
     --unittest=benchmark_generator_and_optimizer_1 \\
