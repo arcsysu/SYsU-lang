@@ -5,20 +5,20 @@
 在本次 IR（中间代码）优化实验中，你被希望完成一个 IR 优化器，接受来自 `sysu-generator` 或 `clang -cc1 -O0 -S -emit-llvm` 的 LLVM IR，输出优化后的 LLVM IR。本实验为开放性实验，没有预期完成时间与代码行数。
 
 ```bash
-( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
   sysu-generator |
   sysu-optimizer )
 # or
-( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/mizuno_ai/mizuno_ai.sysu.c |
   clang -cc1 -O0 -S -emit-llvm |
   opt -S --enable-new-pm -load-pass-plugin=libsysuOptimizer.so -passes="sysu-optimizer-pass" )
@@ -78,10 +78,10 @@ Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以
 本次实验的评测项目仍然为 `benchmark_generator_and_optimizer_[0-1]`。`benchmark_generator_and_optimizer_0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他评测项详见[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中的一个评测项。
 
 ```bash
-( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 

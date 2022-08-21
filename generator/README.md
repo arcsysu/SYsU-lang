@@ -5,10 +5,10 @@
 在本次 IR（中间代码）生成实验中，你被希望完成一个 IR 生成器，接受来自 `sysu-parser` 或 `clang -cc1 -ast-dump=json` 的语法树输入，产生 LLVM IR。预期的代码行数为 1500 行，预期的完成时间为 36 小时 ～ 108 小时。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/functional/000_main.sysu.c |
   clang -cc1 -O0 -S -emit-llvm )
 ; ModuleID = '-'
@@ -36,10 +36,10 @@ attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-ma
 注意，你的输出不必与 `clang -cc1 -O0 -S -emit-llvm` 完全相同，只要你的 LLVM IR 在经过编译后与其有相同的输出与返回值。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/functional/000_main.sysu.c |
   clang -cc1 -ast-dump=json |
   sysu-generator )
@@ -55,10 +55,10 @@ entry:
 至此一个初级的 SYsU 编译器就完成了！你可以使用 `lli` JIT 地执行编译出来的代码。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
   sysu-lexer |
   sysu-parser |
@@ -76,10 +76,10 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 你可以像这样，借助 `opt -dot-cfg` 选项，生成一个输入的 CFG 可视化。终端执行下述指令，将在目录下生成 `.main.dot` 文件，对应源代码中 `main` 函数的 CFG 图。
 
 ```bash
-( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/functional/027_if2.sysu.c |
   clang -cc1 -O0 -S -emit-llvm |
   opt -dot-cfg )
@@ -103,10 +103,10 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 本次实验的评测项目为 `benchmark_generator_and_optimizer_[0-1]`。`benchmark_generator_and_optimizer_0` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他评测项详见[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中的一个评测项。
 
 ```bash
-( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=benchmark_generator_and_optimizer_1 "**/*.sysu.c" )
 ```
 

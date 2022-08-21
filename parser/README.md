@@ -7,10 +7,10 @@
 注意，以下 log 省略了无关内容。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/functional/000_main.sysu.c |
   clang -cc1 -ast-dump=json )
 {
@@ -132,10 +132,10 @@ $ ( export PATH=~/sysu/bin:$PATH \
 考虑到 json 格式不方便肉眼调试，你可以像这样，输出更加符合人眼阅读方式的语法树，辅助调试。
 
 ```bash
-$ ( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/functional/027_if2.sysu.c |
   clang -cc1 -ast-dump )
 TranslationUnitDecl 0x23d4568 <<invalid sloc>> <invalid sloc>
@@ -278,10 +278,10 @@ flowchart TD;
 评测脚本忽略空白符，可以查看[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
 
 ```bash
-( export PATH=~/sysu/bin:$PATH \
-  CPATH=~/sysu/include:$CPATH \
-  LIBRARY_PATH=~/sysu/lib:$LIBRARY_PATH \
-  LD_LIBRARY_PATH=~/sysu/lib:$LD_LIBRARY_PATH &&
+( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-compiler --unittest=parser-1 "**/*.sysu.c" )
 ```
 
