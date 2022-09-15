@@ -17,7 +17,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 # 安装依赖
 sudo apt-get install --no-install-recommends \
   clang llvm-dev zlib1g-dev lld flex bison \
-  cmake python3-minimal ninja-build git
+  cmake python3 ninja-build git
 
 git clone https://github.com/arcsysu/SYsU-lang
 cd SYsU-lang

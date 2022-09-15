@@ -36,7 +36,7 @@ apt-get update -y
 apt-get upgrade -y
 apt-get install -y --no-install-recommends \
   clang llvm-dev zlib1g-dev lld flex bison \
-  cmake python3-minimal ninja-build git
+  cmake python3 ninja-build git
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
