@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1.4
-FROM debian:11
+ARG BASE_IMAGE=debian:latest
+FROM ${BASE_IMAGE}
 WORKDIR /autograder
 WORKDIR /workspace
 VOLUME /workspace
