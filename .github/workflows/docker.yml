@@ -62,7 +62,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           load: true
 
-      - name: Build Docker image
+      - name: Build Docker image for unstable-slim
         if: github.ref_name == 'unstable-slim'
         uses: docker/build-push-action@v3
         with:
@@ -73,12 +73,8 @@ jobs:
           build-args: BASE_IMAGE=debian:unstable-slim
 
       - name: Run Tests
-        uses: addnab/docker-run-action@v3
         continue-on-error: true
-        with:
-          image: ${{ steps.meta.outputs.tags }}
-          options: -e CTEST_OUTPUT_ON_FAILURE=1
-          run: cmake --build $HOME/sysu/build -t test
+        run: docker run -e CTEST_OUTPUT_ON_FAILURE=1 --rm ${{ steps.meta.outputs.tags }} sh -c "cmake --build \$HOME/sysu/build -t test"
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
@@ -102,7 +98,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image for unstable-slim
         if: github.ref_name == 'unstable-slim'
         uses: docker/build-push-action@v3
         with:
