@@ -1,4 +1,4 @@
-name: docker-unstable-slim
+name: docker
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -7,10 +7,10 @@ name: docker-unstable-slim
 
 on:
   push:
-    branches: [unstable-slim]
+    branches: [latest, unstable-slim]
     tags: ["*"]
   pull_request:
-    branches: [unstable-slim]
+    branches: [latest, unstable-slim]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -19,6 +19,9 @@ env:
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: wukan0621/sysu-lang
+  BASE_IMAGE:
+    - debian:unstable-slim
+    - debian:latest
 
 jobs:
   build:
@@ -33,6 +36,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          submodules: ${{ github.ref_name != 'unstable-slim' }}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
@@ -55,19 +60,19 @@ jobs:
         id: build
         uses: docker/build-push-action@v3
         with:
-          build-args: BASE_IMAGE=debian:unstable-slim
-          load: true
+          context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: BASE_IMAGE=${{ env.BASE_IMAGE[github.ref_name != 'unstable-slim'] }}
+          load: true
 
       - name: Run Tests
         uses: addnab/docker-run-action@v3
         continue-on-error: true
         with:
           image: ${{ steps.meta.outputs.tags }}
-          run: |
-            export CTEST_OUTPUT_ON_FAILURE=1
-            cmake --build $HOME/sysu/build -t test
+          options: -e CTEST_OUTPUT_ON_FAILURE=1
+          run: cmake --build $HOME/sysu/build -t test
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
@@ -85,11 +90,12 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v3
         with:
-          platforms: linux/amd64,linux/arm64,linux/riscv64
-          build-args: BASE_IMAGE=debian:unstable-slim
-          push: ${{ github.event_name != 'pull_request' }}
+          context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: BASE_IMAGE=${{ env.BASE_IMAGE[github.ref_name != 'unstable-slim'] }}
+          push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm64
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
