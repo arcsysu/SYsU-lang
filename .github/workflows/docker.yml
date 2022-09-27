@@ -19,9 +19,7 @@ env:
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: wukan0621/sysu-lang
-  BASE_IMAGE:
-    - debian:unstable-slim
-    - debian:latest
+  BASE_IMAGE: ["debian:unstable-slim", "debian:latest"]
 
 jobs:
   build:
