@@ -19,7 +19,7 @@ env:
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: wukan0621/sysu-lang
-  BASE_IMAGE: ["debian:unstable-slim", "debian:latest"]
+  BASE_IMAGE: [unstable-slim, latest]
 
 jobs:
   build:
@@ -61,7 +61,7 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: BASE_IMAGE=${{ env.BASE_IMAGE[github.ref_name != 'unstable-slim'] }}
+          build-args: BASE_IMAGE=debian:${{ env.BASE_IMAGE[github.ref_name != 'unstable-slim'] }}
           load: true
 
       - name: Run Tests
@@ -91,7 +91,7 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: BASE_IMAGE=${{ env.BASE_IMAGE[github.ref_name != 'unstable-slim'] }}
+          build-args: BASE_IMAGE=debian:${{ env.BASE_IMAGE[github.ref_name != 'unstable-slim'] }}
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64
 
