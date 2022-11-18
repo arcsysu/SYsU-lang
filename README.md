@@ -7,7 +7,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 3. 实验模块无缝对接 Clang/LLVM，避免前一个实验失败影响后续实验开展。
 4. 支持在线/本地/Github Action 自动批改。
 
-在 2022 春季学期的教学中，学生实现的编译器的性能可达 `clang -O3` 的 48%，相较于初始版本加速比超过 400%，推荐阅读相关[论文](https://github.com/arcsysu/SYsU-lang-paper)以了解我们的理念与实验设计，也欢迎其他高校相关课程使用并反馈！我们同样开源了基于 docker 的[在线评测框架](https://zhuanlan.zhihu.com/p/479027855)。
+在 2022 春季学期的教学中，学生实现的编译器的性能可达 `clang -O3` 的 48%，相较于初始版本加速比超过 400%，推荐阅读相关[论文](https://github.com/arcsysu/SYsU-lang-paper)以了解我们的理念与实验设计，也欢迎其他高校相关课程使用并反馈！我们同样开放了[实验文档](https://github.com/arcsysu/SYsU-lang/wiki)与基于 docker 的[在线评测框架](https://zhuanlan.zhihu.com/p/479027855)。
 
 ## 编译运行
 
