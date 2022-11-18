@@ -7,7 +7,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 3. 实验模块无缝对接 Clang/LLVM，避免前一个实验失败影响后续实验开展。
 4. 支持在线/本地/Github Action 自动批改。
 
-推荐阅读相关[论文](https://github.com/arcsysu/SYsU-lang-paper)以了解我们的理念与实验设计，也欢迎其他高校相关课程使用并反馈！我们同样开源了基于 docker 的[在线评测框架](https://zhuanlan.zhihu.com/p/479027855)。
+在 2022 春季学期的教学中，学生实现的编译器的性能可达 `clang -O3` 的 48%，相较于初始版本加速比超过 400%，推荐阅读相关[论文](https://github.com/arcsysu/SYsU-lang-paper)以了解我们的理念与实验设计，也欢迎其他高校相关课程使用并反馈！我们同样开源了基于 docker 的[在线评测框架](https://zhuanlan.zhihu.com/p/479027855)。
 
 ## 编译运行
 
@@ -15,7 +15,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 
 ```bash
 # 安装依赖
-sudo apt-get install --no-install-recommends \
+sudo apt-get install -y --no-install-recommends \
   clang llvm-dev zlib1g-dev lld flex bison \
   cmake python3 ninja-build git
 
@@ -326,7 +326,7 @@ git submodule update --init
 
 1. 一个观点是，在编译原理课程上，不应该过多涉及硬件架构的细节。
 2. LLVM IR 已经相对底层，非常好翻译成各种汇编，实际上也可以用与本项目相同的方式写一个编译器。
-3. 我们也预留了 LLVM IR 到汇编的接口 `sysu-translator` 以及链接器的接口 `sysu-linker`，学有余力的同学可以自行实现。
+3. 我们也预留了 LLVM IR 到汇编的接口 `sysu-translator` 以及链接器的接口 `sysu-linker`，相关部分的可选实验设计正在进行中，学有余力的同学也可以自行实现。
 
 ### Q & A：为什么将词法分析器等模块实现为单独的可执行文件，可能导致运行低效率？
 
@@ -345,17 +345,19 @@ git submodule update --init
 
 ### Q & A: 本项目的版本管理的规则是？为什么项目名为 SYsU-lang，而非 SYsU-compiler ？
 
-版本号的命名格式为 `<major>.<minor>.<patch>.<tweak>`，如 `11.0.1.20220505`。一般来说，`<major>`、`<minor>`、`<patch>` 发生变化时，学生应当尽快更新至最新版本。
+目前本项目存在两个分支：
+
+- [`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为中大课程教学中使用的代码，功能稳定，预期在 `debian:11` 环境中工作。
+- [`unstable-slim`](https://github.com/arcsysu/SYsU-lang/tree/unstable-slim) 分支下为助教探索后续实验改革方案（如 mlir）的代码，预期在`debian:unstable-slim` 环境中工作。该分支中的文档可能不会及时更新，以对应 [Dockerfile](https://github.com/arcsysu/SYsU-lang/blob/unstable-slim/Dockerfile) 中的测试语句为准。
+
+对于中大以外的高校教学者与个人自学者，我们建议使用 [releases](https://github.com/arcsysu/SYsU-lang/releases) 中最新发布的实验框架源码以及对应版本号的 [docker image](https://hub.docker.com/r/wukan0621/sysu-lang)。它们可能在时间上略有落后，但经过了中大一学期的教学检验，不存在潜在的可能导致教学事故的错误。我们也十分欢迎来自你们的课堂反馈[![Discussions](https://img.shields.io/github/discussions/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/discussions) 与改进建议[![Issues](https://img.shields.io/github/issues/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/issues)（[![Issues-pr](https://img.shields.io/github/issues-pr/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/pulls) 请提交至 `unstable-slim` 分支）。
+
+版本号的命名格式为 `<major>.<minor>.<patch>.<tweak>`，如 `11.0.7.20221118`。一般来说，对于使用 `latest` 分支代码的用户，`<major>`、`<minor>`、`<patch>` 发生变化时，我们建议尽快更新至最新版本。
 
 - `<major>` 指示了该版本的软件依赖为对应的 debian 版本
 - `<minor>` 指示了该版本的功能版本，不同 `<minor>` 间可能不直接兼容
 - `<patch>` 指示了该版本的补丁版本，不同 `<patch>` 间预期可以直接更新，修正前一个版本中存在的问题
 - `<tweak>` 指示了当前版本代码（不含文档）的日期，可能存在微调，但不同 `<tweak>` 的代码应当具有完全相同的表现
-
-目前本项目存在两个分支：
-
-- [`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为课程教学中使用的代码，功能稳定，预期在 `debian:11` 环境中工作。
-- [`unstable-slim`](https://github.com/arcsysu/SYsU-lang/tree/unstable-slim) 分支下为助教探索后续实验改革方案（如 mlir）的代码，预期在`debian:unstable-slim` 环境中工作。该分支中的文档可能不会及时更新，以对应 [Dockerfile](https://github.com/arcsysu/SYsU-lang/blob/unstable-slim/Dockerfile) 中的测试语句为准；该分支下的 `<major>` 值等于 `latest` 分支下的 `<major>`+2。
 
 由于本项目并没有提供一个完整的 `sysu-compiler`，而只提供了相关的开发环境，因此项目名为 SYsU-lang。[完整实现](https://github.com/SYSU-SCC/sysu-compiler)的开发已在进行，暂不对外开放。
 
