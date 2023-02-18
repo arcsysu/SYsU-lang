@@ -364,7 +364,7 @@ git submodule update --init
 ## 你可能会感兴趣的
 
 - [SYsU-lang 实验一、二总结+常见问题指导（不定期更新）](https://wu-kan.cn/2022/05/12/SYsU-lang-%E5%AE%9E%E9%AA%8C%E4%B8%80-%E4%BA%8C%E6%80%BB%E7%BB%93+%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%8C%87%E5%AF%BC-%E4%B8%8D%E5%AE%9A%E6%9C%9F%E6%9B%B4%E6%96%B0/)
-- [2021 编译系统设计赛（华为毕昇杯）](https://compiler.educg.net/2021CSCC)
+- [全国大学生计算机系统能力大赛——编译系统设计赛](https://compiler.educg.net)
   - 可找到各参赛学校的开源代码
 - 其它基于 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 或类似语法设计的编译器实验
   - [buaa-se-compiling/miniSysY-tutorial](https://github.com/buaa-se-compiling/miniSysY-tutorial)
