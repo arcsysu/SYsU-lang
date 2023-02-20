@@ -106,5 +106,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
-          platforms: linux/amd64,linux/arm64/v8,linux/386,linux/arm/v5,linux/arm/v7,linux/mips64le,linux/ppc64le,linux/s390x  #,linux/riscv64 # <https://github.com/docker-library/official-images/pull/14015>
+          platforms: linux/amd64,linux/arm64/v8,linux/386,linux/arm/v5,linux/arm/v7,linux/mips64le,linux/ppc64le #,linux/s390x #,linux/riscv64 # <https://github.com/docker-library/official-images/pull/14015>
           build-args: debian:unstable-slim
