@@ -107,4 +107,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/riscv64
-          build-args: BASE_IMAGE=riscv64/debian
+          build-args: BASE_IMAGE=riscv64/debian:unstable-slim
