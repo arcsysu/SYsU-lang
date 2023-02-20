@@ -49,7 +49,7 @@ void _sysy_putf(char a[], ...);
 #ifndef __SYSY_NO_DEFINE
 
 #define getfloat() _sysy_getfloat()
-#define putfloat() _sysy_putfloat()
+#define putfloat(a) _sysy_putfloat(a)
 
 #define getfarray(a) _sysy_getfarray(a)
 #define putfarray(n, a) _sysy_putfarray(n, a)
