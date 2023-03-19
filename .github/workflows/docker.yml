@@ -23,12 +23,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
 
     steps:
       - name: Checkout repository
@@ -54,7 +48,7 @@ jobs:
       # Build Docker image with Buildx
       # https://github.com/docker/build-push-action
       - name: Build Docker image
-        if: contains(github.ref, 'unstable-slim') != true
+        if: endsWith(github.ref, 'unstable-slim') != true
         uses: docker/build-push-action@v3
         with:
           load: true
@@ -64,7 +58,7 @@ jobs:
           build-args: BASE_IMAGE=debian:11
 
       - name: Build Docker image for unstable-slim
-        if: contains(github.ref, 'unstable-slim')
+        if: endsWith(github.ref, 'unstable-slim') == true
         uses: docker/build-push-action@v3
         with:
           load: true
@@ -90,7 +84,7 @@ jobs:
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
-        if: contains(github.ref, 'unstable-slim') != true
+        if: endsWith(github.ref, 'unstable-slim') != true
         uses: docker/build-push-action@v3
         with:
           push: ${{ github.event_name != 'pull_request' }}
@@ -101,7 +95,7 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
 
       - name: Build and push Docker image for unstable-slim
-        if: contains(github.ref, 'unstable-slim')
+        if: endsWith(github.ref, 'unstable-slim') == true
         uses: docker/build-push-action@v3
         with:
           push: ${{ github.event_name != 'pull_request' }}
