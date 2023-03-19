@@ -61,6 +61,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           load: true
+          build-args: BASE_IMAGE=debian:11
 
       - name: Build Docker image for unstable-slim
         if: github.ref_name == 'unstable-slim'
@@ -97,7 +98,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64/v8
-          build-args: debian:11
+          build-args: BASE_IMAGE=debian:11
 
       - name: Build and push Docker image for unstable-slim
         if: github.ref_name == 'unstable-slim'
@@ -108,4 +109,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64/v8,linux/386,linux/arm/v7,linux/mips64le,linux/ppc64le,linux/arm/v5,linux/s390x,linux/riscv64
-          build-args: debian:unstable-slim
+          build-args: BASE_IMAGE=debian:unstable-slim
