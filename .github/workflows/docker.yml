@@ -99,7 +99,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: BASE_IMAGE=debian:11
           platforms: linux/amd64,linux/arm64/v8
-  
 
       - name: Build and push Docker image for unstable-slim
         if: contains(github.ref, 'unstable-slim')
