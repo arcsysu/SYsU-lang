@@ -4,7 +4,7 @@ FROM ${BASE_IMAGE}
 WORKDIR /autograder
 WORKDIR /workspace
 VOLUME /workspace
-COPY <<build_install.sh <<run.sh . /workspace/SYsU-lang/
+COPY <<build_install.sh <<run.sh .git /workspace/SYsU-lang/
 #!/bin/sh
 rm -rf \$HOME/sysu
 cmake -G Ninja \\
@@ -20,6 +20,7 @@ cmake --build \$HOME/sysu/build
 cmake --build \$HOME/sysu/build -t install
 build_install.sh
 #!/bin/sh
+(cd /workspace/SYsU-lang && git checkout .)
 python3 -m tarfile -e /autograder/submission/*.tar.gz /workspace/submission
 rm -rf /workspace/SYsU-lang/generator
 cp -r /workspace/submission/*-Source/generator /workspace/SYsU-lang
@@ -45,7 +46,9 @@ mv /workspace/SYsU-lang/run.sh /autograder/run
 chmod +x /autograder/run
 mv /workspace/SYsU-lang/build_install.sh $HOME/build_install
 chmod +x $HOME/build_install
+(cd /workspace/SYsU-lang && git checkout .)
 $HOME/build_install
+(cd /workspace/SYsU-lang && rm -rf *)
 EOF
 ENV PATH=/root/sysu/bin:$PATH \
     CPATH=/root/sysu/include:$CPATH \
