@@ -4,7 +4,7 @@ FROM ${BASE_IMAGE}
 WORKDIR /autograder
 WORKDIR /workspace
 VOLUME /workspace
-COPY <<build_install.sh <<run.sh .git /workspace/SYsU-lang/
+COPY <<build_install.sh <<run.sh .git /workspace/SYsU-lang/.git/
 #!/bin/sh
 rm -rf \$HOME/sysu
 cmake -G Ninja \\
@@ -42,9 +42,9 @@ apt-get install -y --no-install-recommends \
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
-mv /workspace/SYsU-lang/run.sh /autograder/run
+mv /workspace/SYsU-lang/.git/run.sh /autograder/run
 chmod +x /autograder/run
-mv /workspace/SYsU-lang/build_install.sh $HOME/build_install
+mv /workspace/SYsU-lang/.git/build_install.sh $HOME/build_install
 chmod +x $HOME/build_install
 (cd /workspace/SYsU-lang && git checkout .)
 $HOME/build_install
