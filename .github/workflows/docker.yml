@@ -69,7 +69,7 @@ jobs:
 
       - name: Run Tests
         continue-on-error: true
-        run: docker run -e CTEST_OUTPUT_ON_FAILURE=1 --rm ${{ steps.meta.outputs.tags }} sh -c "cd /workspace/SYsU-lang && git checkout . && cmake --build \$HOME/sysu/build -t test"
+        run: docker run -e CTEST_OUTPUT_ON_FAILURE=1 --rm ${{ steps.meta.outputs.tags }} sh -c "cmake --build \$HOME/sysu/build -t test"
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
