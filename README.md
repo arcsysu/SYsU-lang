@@ -19,11 +19,7 @@ sudo apt-get install -y --no-install-recommends \
   clang llvm-dev zlib1g-dev lld flex bison \
   cmake python3 ninja-build git
 
-git clone \
-  -c feature.manyFiles=true \
-  --depth=1 \
-  https://github.com/arcsysu/SYsU-lang
-
+git clone https://github.com/arcsysu/SYsU-lang
 cd SYsU-lang
 
 # 编译安装
