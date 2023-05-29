@@ -139,4 +139,4 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 - [SYsU-lang 实验三快速上手](https://www.yuque.com/shuitang/rra4fg/bnqy1c)
 - [Viz.js — Graphviz in your browser.](http://viz-js.com/)
 - [llvm::IRBuilder](https://github.com/llvm/llvm-project/blob/llvmorg-14.0.6/llvm/include/llvm/IR/IRBuilder.h)
-  - 该文件同样位于 debian:12 中 [llvm-dev](https://packages.debian.org/bookworm/devel/llvm-dev) 包的 </usr/include/llvm/IR/IRBuilder.h>。
+  - 该文件同样位于 debian:bookworm 中 [llvm-dev](https://packages.debian.org/bookworm/devel/llvm-dev) 包的 </usr/include/llvm/IR/IRBuilder.h>。

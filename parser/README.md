@@ -325,4 +325,4 @@ flowchart TD;
 - [GNU Bison - The Yacc-compatible Parser Generator](https://www.gnu.org/software/bison/manual/)
 - [FindBISON — CMake 3.18.6 Documentation](https://cmake.org/cmake/help/v3.18/module/FindBISON.html)
 - [llvm::json](https://github.com/llvm/llvm-project/blob/llvmorg-14.0.6/llvm/include/llvm/Support/JSON.h)
-  - 该文件同样位于 debian:12 中 [llvm-dev](https://packages.debian.org/bookworm/devel/llvm-dev) 包的 </usr/include/llvm/Support/JSON.h>。
+  - 该文件同样位于 debian:bookworm 中 [llvm-dev](https://packages.debian.org/bookworm/devel/llvm-dev) 包的 </usr/include/llvm/Support/JSON.h>。
