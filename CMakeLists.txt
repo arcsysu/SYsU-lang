@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18.4)
-project(SYsU-lang VERSION 11.1.0.20230227)
+project(SYsU-lang VERSION 12.0.0.20230529)
 include(CPack)
 include(CTest)
 add_subdirectory(compiler)
