@@ -20,7 +20,7 @@
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   clang -E tester/mizuno_ai/mizuno_ai.sysu.c |
-  clang -cc1 -O0 -S -emit-llvm |
+  clang -cc1 -O0 -S -emit-llvm -disable-O0-optnone |
   opt -S --enable-new-pm -load-pass-plugin=libsysuOptimizer.so -passes="sysu-optimizer-pass" )
 ```
 
