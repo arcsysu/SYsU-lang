@@ -135,7 +135,7 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 ## 你可能会感兴趣的
 
-- [Kaleidoscope: Code generation to LLVM IR](https://releases.llvm.org/14.0.6/docs/tutorial/MyFirstLanguageFrontend/LangImpl03.html)
+- [Kaleidoscope: Code generation to LLVM IR](https://releases.llvm.org/14.0.0/docs/tutorial/MyFirstLanguageFrontend/LangImpl03.html)
 - [SYsU-lang 实验三快速上手](https://www.yuque.com/shuitang/rra4fg/bnqy1c)
 - [Viz.js — Graphviz in your browser.](http://viz-js.com/)
 - [llvm::IRBuilder](https://github.com/llvm/llvm-project/blob/llvmorg-14.0.6/llvm/include/llvm/IR/IRBuilder.h)
