@@ -1,7 +1,1 @@
-set(libs sysy;sysu)
-foreach(lib IN LISTS libs)
-  file(GLOB mains lib/${lib}/*.cc)
-  add_library(${lib} SHARED ${mains})
-  install(TARGETS ${lib})
-endforeach()
-install(FILES include DESTINATION include)
+add_subdirectory(lib)
