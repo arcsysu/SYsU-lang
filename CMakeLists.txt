@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.18)
+# <https://github.com/llvm/llvm-project/blob/llvmorg-14.0.6/llvm/CMakeLists.txt>
+cmake_minimum_required(VERSION 3.13.4)
 project(SYsU-lang VERSION 12.0.0.20230529)
 include(CPack)
 include(CTest)
