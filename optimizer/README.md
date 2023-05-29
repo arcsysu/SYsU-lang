@@ -50,7 +50,7 @@
 
 ### Q & A：有关 new pass manager 与 legacy pass manager
 
-Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以来已经有数十年历史。由于原有的 PM 编译效率低且错失很多优化机会，2014 年开始 LLVM 团队对其开始重构。在 SYsU-lang 第一年使用的 LLVM-11.0.1 默认使用的仍然是旧 PM，但已经包含新 PM；在 LLVM-12 中已经默认使用 new pass manager 代替 legacy pass manager；在助教写下这段话的 2022 年 03 月 25 日，LLVM-14 正式发布，其 [ReleaseNotes](https://releases.llvm.org/14.0.0/docs/ReleaseNotes.html) 中提到：
+Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以来已经有数十年历史。由于原有的 PM 编译效率低且错失很多优化机会，2014 年开始 LLVM 团队对其开始重构。在 SYsU-lang 第一年使用的 LLVM-11 默认使用的仍然是旧 PM，但已经包含新 PM；在 LLVM-12 中已经默认使用 new pass manager 代替 legacy pass manager；在助教写下这段话的 2022 年 03 月 25 日，LLVM-14 正式发布，其 [ReleaseNotes](https://releases.llvm.org/14.0.0/docs/ReleaseNotes.html) 中提到：
 
 > Using the legacy pass manager for the optimization pipeline is deprecated and will be removed after LLVM 14.
 
