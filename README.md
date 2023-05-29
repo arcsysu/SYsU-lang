@@ -311,7 +311,7 @@ entry:
 大算例以 `git submodule` 的形式存放在 `tester/third_party`。加载方式：
 
 ```bash
-git submodule update --init --recursive
+git submodule update --init --recursive --depth 1
 ```
 
 ## 实验反馈
