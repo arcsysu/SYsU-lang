@@ -28,7 +28,7 @@ foreach(_test lexer-0)
     ${_test}
     PROPERTIES
       ENVIRONMENT
-      "CPATH=${CMAKE_SOURCE_DIR}/librarian:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LD_LIBRARY_PATH}"
+      "CPATH=${CMAKE_SOURCE_DIR}/librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LD_LIBRARY_PATH}"
   )
 endforeach()
 
@@ -44,7 +44,7 @@ foreach(_test lexer-1 lexer-2 lexer-3)
     ${_test}
     PROPERTIES
       ENVIRONMENT
-      "CPATH=${CMAKE_SOURCE_DIR}/librarian:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LD_LIBRARY_PATH}"
+      "CPATH=${CMAKE_SOURCE_DIR}/librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LD_LIBRARY_PATH}"
   )
 endforeach()
 
@@ -61,7 +61,7 @@ foreach(_test parser-0)
     ${_test}
     PROPERTIES
       ENVIRONMENT
-      "CPATH=${CMAKE_SOURCE_DIR}/librarian:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LD_LIBRARY_PATH}"
+      "CPATH=${CMAKE_SOURCE_DIR}/librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LD_LIBRARY_PATH}"
   )
 endforeach()
 
@@ -77,7 +77,7 @@ foreach(_test parser-1 parser-2 parser-3)
     ${_test}
     PROPERTIES
       ENVIRONMENT
-      "CPATH=${CMAKE_SOURCE_DIR}/librarian:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LD_LIBRARY_PATH}"
+      "CPATH=${CMAKE_SOURCE_DIR}/librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LD_LIBRARY_PATH}"
   )
 endforeach()
 
@@ -93,7 +93,7 @@ foreach(_test benchmark_generator_and_optimizer_0)
     ${_test}
     PROPERTIES
       ENVIRONMENT
-      "CPATH=${CMAKE_SOURCE_DIR}/librarian:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LD_LIBRARY_PATH}"
+      "CPATH=${CMAKE_SOURCE_DIR}/librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LD_LIBRARY_PATH}"
   )
 endforeach()
 
@@ -109,6 +109,6 @@ foreach(_test benchmark_generator_and_optimizer_1)
     ${_test}
     PROPERTIES
       ENVIRONMENT
-      "CPATH=${CMAKE_SOURCE_DIR}/librarian:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian:$ENV{LD_LIBRARY_PATH}"
+      "CPATH=${CMAKE_SOURCE_DIR}/librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/librarian/lib:$ENV{LD_LIBRARY_PATH}"
   )
 endforeach()

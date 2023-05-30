@@ -55,7 +55,7 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: BASE_IMAGE=debian:11
+          build-args: BASE_IMAGE=debian:bookworm
 
       - name: Build Docker image for unstable-slim
         if: github.ref_name == 'unstable-slim' || github.base_ref == 'unstable-slim'
@@ -91,7 +91,7 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: BASE_IMAGE=debian:11
+          build-args: BASE_IMAGE=debian:bookworm
           platforms: linux/amd64,linux/arm64/v8
 
       - name: Build and push Docker image for unstable-slim
