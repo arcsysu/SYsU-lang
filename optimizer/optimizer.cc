@@ -27,7 +27,7 @@ sysu::StaticCallCounterPrinter::run(llvm::Module &M,
 
 sysu::StaticCallCounter::Result
 sysu::StaticCallCounter::run(llvm::Module &M, llvm::ModuleAnalysisManager &) {
-  llvm::MapVector<const llvm::Function *, unsigned> Res;
+  Result Res;
 
   for (auto &Func : M) {
     for (auto &BB : Func) {

@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
                                     "calls in the input IR file\n");
 
   // Makes sure llvm_shutdown() is called (which cleans up LLVM objects)
-  // https://releases.llvm.org/11.0.1/docs/ProgrammersManual.html#ending-execution-with-llvm-shutdown
+  // https://releases.llvm.org/14.0.0/docs/ProgrammersManual.html#ending-execution-with-llvm-shutdown
   llvm::llvm_shutdown_obj SDO;
 
   // Parse the IR file passed on the command line.

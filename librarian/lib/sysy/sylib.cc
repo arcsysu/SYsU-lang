@@ -1,6 +1,6 @@
 #define __SYSY 202203L
 #define __SYSY_NO_DEFINE
-#include "sylib.h"
+#include "sysy/sylib.h"
 #include <chrono>
 #include <cstdarg>
 #include <cstdio>
