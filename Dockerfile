@@ -36,7 +36,7 @@ RUN <<EOF
 apt-get update -y
 apt-get upgrade -y
 apt-get install -y --no-install-recommends \
-  clang llvm-dev zlib1g-dev libzstd1 \
+  clang llvm-dev zlib1g-dev libzstd-dev \
   lld flex bison cmake python3 ninja-build git
 apt-get autoremove -y
 apt-get clean -y
