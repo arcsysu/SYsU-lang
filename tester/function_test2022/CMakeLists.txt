@@ -4,7 +4,8 @@ foreach(mainfile ${mains})
   get_filename_component(mainname ${mainfile} NAME_WE)
   add_executable(sysu-tester-function_test2022_${mainname} ${mainfile})
   target_link_libraries(sysu-tester-function_test2022_${mainname} sysy)
-  target_include_directories(sysu-tester-function_test2022_${mainname}
-                             PRIVATE ${CMAKE_SOURCE_DIR}/librarian/include)
+  target_include_directories(
+    sysu-tester-function_test2022_${mainname}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../librarian/include)
   install(TARGETS sysu-tester-function_test2022_${mainname})
 endforeach()
