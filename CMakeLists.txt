@@ -1,10 +1,11 @@
 # <https://github.com/llvm/llvm-project/blob/llvmorg-14.0.6/llvm/CMakeLists.txt>
 cmake_minimum_required(VERSION 3.13.4)
-project(SYsU-lang VERSION 12.0.0.20230529)
+project(SYsU-lang VERSION 12.1.0.20240229)
 include(CPack)
 include(CTest)
 add_subdirectory(compiler)
 add_subdirectory(preprocessor)
+add_subdirectory(grammar)
 add_subdirectory(lexer)
 add_subdirectory(parser)
 add_subdirectory(generator)
