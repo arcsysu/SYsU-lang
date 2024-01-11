@@ -16,7 +16,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 ```bash
 # 安装依赖
 apt-get install -y --no-install-recommends \
-  libantlr4-runtime-dev default-jre-headless pkg-config uuid-dev \
+  libantlr4-runtime-dev default-jre-headless pkg-config uuid-dev flex bison \
   clang llvm-dev zlib1g-dev libzstd-dev lld python3 cmake ninja-build git
 
 git clone \
@@ -163,6 +163,10 @@ int main(){
     return 3;
 }
 ```
+
+### `grammar`
+
+TBD
 
 ### `lexer`
 
