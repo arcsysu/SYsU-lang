@@ -2,7 +2,7 @@
 ARG BASE_IMAGE=ubuntu
 FROM ${BASE_IMAGE}
 WORKDIR /autograder
-WORKDIR ${/opt/SYsU-lang}
+WORKDIR /opt/SYsU-lang
 COPY <<build_install.sh <<run.sh . /opt/SYsU-lang
 #!/bin/sh
 rm -rf \$2
