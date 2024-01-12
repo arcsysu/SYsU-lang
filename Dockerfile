@@ -10,6 +10,7 @@ cmake -G Ninja \\
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \\
     -DCMAKE_C_COMPILER=clang \\
     -DCMAKE_CXX_COMPILER=clang++ \\
+    -DCMAKE_CXX_STANDARD=17 \\
     -DCMAKE_INSTALL_PREFIX=\$2 \\
     -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir)" \\
     -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \\
