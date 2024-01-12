@@ -2,10 +2,10 @@
 ARG BASE_IMAGE=ubuntu
 FROM ${BASE_IMAGE}
 WORKDIR /autograder
-ENV SYSU_SOURCE_DIR=/opt/SYsU-lang
-ENV SYSU_INSTALL_PREFIX=/opt/sysu
-WORKDIR \$SYSU_SOURCE_DIR
-COPY <<build_install.sh <<run.sh . \$SYSU_SOURCE_DIR
+ARG SYSU_SOURCE_DIR=/opt/SYsU-lang
+ARG SYSU_INSTALL_PREFIX=/opt/sysu
+WORKDIR ${SYSU_SOURCE_DIR}
+COPY <<build_install.sh <<run.sh . ${SYSU_SOURCE_DIR}
 #!/bin/sh
 rm -rf \$2
 cmake -G Ninja \\
@@ -17,7 +17,7 @@ cmake -G Ninja \\
     -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \\
     -S \$1 \\
     -B \$2/build
-cmake --build \$2/build
+cmake --build \$2/build -j
 cmake --build \$2/build -t install
 build_install.sh
 #!/bin/sh
