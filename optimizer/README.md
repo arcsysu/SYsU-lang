@@ -10,8 +10,7 @@
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
+  sysu-grammar |
   sysu-generator |
   sysu-optimizer )
 # or

@@ -60,8 +60,7 @@ $ ( export PATH=$HOME/sysu/bin:$PATH \
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
+  sysu-grammar |
   sysu-generator |
   lli --load=libsysy.so --load=libsysu.so ) # 该输出来自运行时库的计时统计
 TOTAL: 0H-0M-0S-0us

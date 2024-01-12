@@ -2,7 +2,6 @@
 find_package(antlr4-runtime REQUIRED)
 
 if(NOT EXISTS "${ANTLR4_JAR_LOCATION}")
-  include(FetchContent)
   file(DOWNLOAD
        https://www.antlr.org/download/antlr-${ANTLR_VERSION}-complete.jar
        ${CMAKE_CURRENT_BINARY_DIR}/antlr-${ANTLR_VERSION}-complete.jar)

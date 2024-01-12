@@ -167,11 +167,44 @@ int main(){
 
 ### `grammar`
 
-TBD
+SYsU 的新语义分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1`、`clang -cc1 -ast-dump=json` 的输出。作为语义分析实验模块，本仓库中的 `sysu-grammar` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语义分析规则补充完整（[详细实验要求](grammar/README.md)）。
+
+```bash
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-preprocessor tester/functional/000_main.sysu.c |
+  sysu-grammar -dump-tokens )
+int 'int'               Loc=<tester/functional/000_main.sysu.c:1:1>
+identifier 'main'               Loc=<tester/functional/000_main.sysu.c:1:5>
+l_paren '('             Loc=<tester/functional/000_main.sysu.c:1:9>
+r_paren ')'             Loc=<tester/functional/000_main.sysu.c:1:10>
+l_brace '{'             Loc=<tester/functional/000_main.sysu.c:1:11>
+return 'return'         Loc=<tester/functional/000_main.sysu.c:2:5>
+numeric_constant '3'            Loc=<tester/functional/000_main.sysu.c:2:12>
+semi ';'                Loc=<tester/functional/000_main.sysu.c:2:13>
+r_brace '}'             Loc=<tester/functional/000_main.sysu.c:3:1>
+eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
+```
+
+<!-- {% raw %} -->
+
+```bash
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-preprocessor tester/functional/000_main.sysu.c |
+  sysu-grammar )
+{"inner":[{"inner":[{"inner":[{"inner":[{"kind":"IntegerLiteral","value":"3"}],"kind":"ReturnStmt"}],"kind":"CompoundStmt"}],"kind":"FunctionDecl","name":"main"}],"kind":"TranslationUnitDecl"}
+```
+
+<!-- {% endraw %} -->
 
 ### `lexer`
 
-SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输出。作为词法分析实验模块，本仓库中的 `sysu-lexer` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](lexer/README.md)）。
+SYsU 的旧词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输出。作为词法分析实验模块，本仓库中的 `sysu-lexer` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](lexer/README.md)）。
 
 ```bash
 $ ( export PATH=$HOME/sysu/bin:$PATH \
@@ -194,7 +227,7 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 
 ### `parser`
 
-SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
+SYsU 的旧文法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
 
 <!-- {% raw %} -->
 
@@ -233,8 +266,7 @@ $ ( export PATH=$HOME/sysu/bin:$PATH \
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
+  sysu-grammar |
   sysu-generator )
 ; ModuleID = '-'
 source_filename = "-"
@@ -257,8 +289,7 @@ $ ( export PATH=$HOME/sysu/bin:$PATH \
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
+  sysu-grammar |
   sysu-generator |
   sysu-optimizer )
 =================================================
