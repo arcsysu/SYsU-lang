@@ -11,7 +11,7 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 
 ## 编译运行
 
-需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容推荐使用 `clang` 编译。经过测试的实验环境为 `debian:bookworm`。
+需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容推荐使用 `clang` 编译。经过测试的实验环境为 `ubuntu:noble`。
 
 ```bash
 # 安装依赖
@@ -353,16 +353,13 @@ git submodule update --init --recursive --depth 1
 
 ### Q & A: 本项目的版本管理的规则是？为什么项目名为 SYsU-lang，而非 SYsU-compiler ？
 
-目前本项目存在两个分支：
+[`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为中大课程教学中使用的代码，功能较为稳定，预期在 `ubuntu:noble` 环境中工作。文档可能不会及时更新，以对应 [Dockerfile](https://github.com/arcsysu/SYsU-lang/blob/latest/Dockerfile) 中的测试语句为准。
 
-- [`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为中大课程教学中使用的代码，功能稳定，预期在 `debian:bookworm` 环境中工作。
-- [`unstable-slim`](https://github.com/arcsysu/SYsU-lang/tree/unstable-slim) 分支下为助教探索后续实验改革方案（如 mlir）的代码，预期在`debian:unstable-slim` 环境中工作。该分支中的文档可能不会及时更新，以对应 [Dockerfile](https://github.com/arcsysu/SYsU-lang/blob/unstable-slim/Dockerfile) 中的测试语句为准。
+对于中大以外的高校教学者与个人自学者，我们建议使用 [releases](https://github.com/arcsysu/SYsU-lang/releases) 中最新发布的实验框架源码以及对应版本号的 [docker image](https://hub.docker.com/r/wukan0621/sysu-lang)。它们可能在时间上略有落后，但经过了中大一学期的教学检验，不存在潜在的可能导致教学事故的错误。我们也十分欢迎来自你们的课堂反馈[![Discussions](https://img.shields.io/github/discussions/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/discussions) 与改进建议[![Issues](https://img.shields.io/github/issues/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/issues)[![Issues-pr](https://img.shields.io/github/issues-pr/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/pulls) 。
 
-对于中大以外的高校教学者与个人自学者，我们建议使用 [releases](https://github.com/arcsysu/SYsU-lang/releases) 中最新发布的实验框架源码以及对应版本号的 [docker image](https://hub.docker.com/r/wukan0621/sysu-lang)。它们可能在时间上略有落后，但经过了中大一学期的教学检验，不存在潜在的可能导致教学事故的错误。我们也十分欢迎来自你们的课堂反馈[![Discussions](https://img.shields.io/github/discussions/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/discussions) 与改进建议[![Issues](https://img.shields.io/github/issues/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/issues)（[![Issues-pr](https://img.shields.io/github/issues-pr/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/pulls) 请提交至 `unstable-slim` 分支）。
+版本号的命名格式为 `<major>.<minor>.<patch>.<tweak>`，如 `2404.0.0.20240229`。一般来说，对于使用 `latest` 分支代码的用户，`<major>`、`<minor>`、`<patch>` 发生变化时，我们建议尽快更新至最新版本。
 
-版本号的命名格式为 `<major>.<minor>.<patch>.<tweak>`，如 `11.0.7.20221118`。一般来说，对于使用 `latest` 分支代码的用户，`<major>`、`<minor>`、`<patch>` 发生变化时，我们建议尽快更新至最新版本。
-
-- `<major>` 指示了该版本的软件依赖为对应的 debian 版本
+- `<major>` 指示了该版本的软件依赖为对应的 ubuntu/debian 版本
 - `<minor>` 指示了该版本的功能版本，不同 `<minor>` 间可能不直接兼容
 - `<patch>` 指示了该版本的补丁版本，不同 `<patch>` 间预期可以直接更新，修正前一个版本中存在的问题
 - `<tweak>` 指示了当前版本代码（不含文档）的日期，可能存在微调，但不同 `<tweak>` 的代码应当具有完全相同的表现

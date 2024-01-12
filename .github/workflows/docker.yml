@@ -7,10 +7,10 @@ name: docker
 
 on:
   push:
-    branches: [latest, unstable-slim]
+    branches: [latest]
     tags: ["*"]
   pull_request:
-    branches: [latest, unstable-slim]
+    branches: [latest]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          submodules: ${{ github.ref_name != 'unstable-slim' }}
+          submodules: True
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
@@ -48,7 +48,6 @@ jobs:
       # Build Docker image with Buildx
       # https://github.com/docker/build-push-action
       - name: Build Docker image
-        if: github.ref_name != 'unstable-slim' && github.base_ref != 'unstable-slim'
         uses: docker/build-push-action@v3
         with:
           load: true
@@ -56,16 +55,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: BASE_IMAGE=ubuntu:noble
-
-      - name: Build Docker image for unstable-slim
-        if: github.ref_name == 'unstable-slim' || github.base_ref == 'unstable-slim'
-        uses: docker/build-push-action@v3
-        with:
-          load: true
-          context: .
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: BASE_IMAGE=debian:unstable-slim
 
       - name: Run Tests
         continue-on-error: true
@@ -84,7 +73,6 @@ jobs:
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
-        if: github.ref_name != 'unstable-slim' && github.base_ref != 'unstable-slim'
         uses: docker/build-push-action@v3
         with:
           push: ${{ github.event_name != 'pull_request' }}
@@ -92,15 +80,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: BASE_IMAGE=ubuntu:noble
-          platforms: linux/amd64,linux/arm64/v8
-
-      - name: Build and push Docker image for unstable-slim
-        if: github.ref_name == 'unstable-slim' || github.base_ref == 'unstable-slim'
-        uses: docker/build-push-action@v3
-        with:
-          push: ${{ github.event_name != 'pull_request' }}
-          context: .
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: BASE_IMAGE=debian:unstable-slim
-          platforms: linux/amd64,linux/arm64/v8,linux/riscv64,linux/386,linux/arm/v7,linux/mips64le,linux/ppc64le,linux/s390x # ,linux/arm/v5
+          platforms: linux/amd64,linux/arm64/v8,linux/arm/v7,linux/ppc64le,linux/s390x
