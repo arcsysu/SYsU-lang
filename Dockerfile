@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 ARG BASE_IMAGE=ubuntu
-ENV SYSU_SOURCE_DIR=/opt/SYsU-lang
-ENV SYSU_INSTALL_PREFIX=/opt/sysu
+ARG SYSU_SOURCE_DIR=/opt/SYsU-lang
+ARG SYSU_INSTALL_PREFIX=/opt/sysu
 FROM ${BASE_IMAGE}
 WORKDIR /autograder
 WORKDIR ${SYSU_SOURCE_DIR}
@@ -27,7 +27,7 @@ cp -r /opt/submission/*-Source/generator ${SYSU_SOURCE_DIR}
 rm -rf ${SYSU_SOURCE_DIR}/optimizer
 cp -r /opt/submission/*-Source/optimizer ${SYSU_SOURCE_DIR}
 rm -rf /opt/submission
-\$HOME/build_install
+\${SYSU_SOURCE_DIR}/build_install.sh
 mkdir -p /autograder/results
 sysu-compiler \\
     --unittest=benchmark_generator_and_optimizer_1 \\
