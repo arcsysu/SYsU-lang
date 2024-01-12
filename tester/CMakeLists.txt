@@ -87,6 +87,78 @@ foreach(_test parser-1 parser-2 parser-3)
   )
 endforeach()
 
+foreach(_test grammar-0)
+  add_test(
+    NAME ${_test}
+    COMMAND
+      ${Python3_EXECUTABLE}
+      ${CMAKE_CURRENT_SOURCE_DIR}/../compiler/sysu-compiler --unittest ${_test}
+      --sysu-preprocessor
+      ${CMAKE_CURRENT_SOURCE_DIR}/../preprocessor/sysu-preprocessor
+      --sysu-grammar $<TARGET_FILE:sysu-grammar>
+      "${CMAKE_CURRENT_SOURCE_DIR}/functional/000_main.sysu.c")
+  set_tests_properties(
+    ${_test}
+    PROPERTIES
+      ENVIRONMENT
+      "CPATH=${CMAKE_CURRENT_SOURCE_DIR}/../librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}/../librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}/../librarian/lib:$ENV{LD_LIBRARY_PATH}"
+  )
+endforeach()
+
+foreach(_test grammar-1 grammar-2 grammar-3)
+  add_test(
+    NAME ${_test}
+    COMMAND
+      ${Python3_EXECUTABLE}
+      ${CMAKE_CURRENT_SOURCE_DIR}/../compiler/sysu-compiler --unittest ${_test}
+      --sysu-preprocessor
+      ${CMAKE_CURRENT_SOURCE_DIR}/../preprocessor/sysu-preprocessor
+      --sysu-grammar $<TARGET_FILE:sysu-grammar>
+      "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
+  set_tests_properties(
+    ${_test}
+    PROPERTIES
+      ENVIRONMENT
+      "CPATH=${CMAKE_CURRENT_SOURCE_DIR}/../librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}/../librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}/../librarian/lib:$ENV{LD_LIBRARY_PATH}"
+  )
+endforeach()
+
+foreach(_test grammar-4)
+  add_test(
+    NAME ${_test}
+    COMMAND
+      ${Python3_EXECUTABLE}
+      ${CMAKE_CURRENT_SOURCE_DIR}/../compiler/sysu-compiler --unittest ${_test}
+      --sysu-preprocessor
+      ${CMAKE_CURRENT_SOURCE_DIR}/../preprocessor/sysu-preprocessor
+      --sysu-grammar $<TARGET_FILE:sysu-grammar>
+      "${CMAKE_CURRENT_SOURCE_DIR}/functional/000_main.sysu.c")
+  set_tests_properties(
+    ${_test}
+    PROPERTIES
+      ENVIRONMENT
+      "CPATH=${CMAKE_CURRENT_SOURCE_DIR}/../librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}/../librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}/../librarian/lib:$ENV{LD_LIBRARY_PATH}"
+  )
+endforeach()
+
+foreach(_test grammar-5 grammar-6 grammar-7)
+  add_test(
+    NAME ${_test}
+    COMMAND
+      ${Python3_EXECUTABLE}
+      ${CMAKE_CURRENT_SOURCE_DIR}/../compiler/sysu-compiler --unittest ${_test}
+      --sysu-preprocessor
+      ${CMAKE_CURRENT_SOURCE_DIR}/../preprocessor/sysu-preprocessor
+      --sysu-grammar $<TARGET_FILE:sysu-grammar>
+      "${CMAKE_CURRENT_SOURCE_DIR}/**/*.sysu.c")
+  set_tests_properties(
+    ${_test}
+    PROPERTIES
+      ENVIRONMENT
+      "CPATH=${CMAKE_CURRENT_SOURCE_DIR}/../librarian/include:$ENV{CPATH};LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}/../librarian/lib:$ENV{LIBRARY_PATH};LD_LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}/../librarian/lib:$ENV{LD_LIBRARY_PATH}"
+  )
+endforeach()
+
 foreach(_test benchmark_generator_and_optimizer_0)
   add_test(
     NAME ${_test}

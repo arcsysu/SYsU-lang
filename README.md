@@ -11,13 +11,13 @@ SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U
 
 ## 编译运行
 
-需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容推荐使用 `clang` 编译。经过测试的实验环境为 `debian:bookworm`。
+需要注意的是，[SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言允许编译时能够求值的 `const int` 作为数组大小，导致部分算例不能通过 `gcc` 的编译，因此为保持兼容推荐使用 `clang` 编译。经过测试的实验环境为 `ubuntu:noble`。
 
 ```bash
 # 安装依赖
 apt-get install -y --no-install-recommends \
-  clang llvm-dev zlib1g-dev libzstd-dev \
-  lld flex bison cmake python3 ninja-build git
+  libantlr4-runtime-dev default-jre-headless pkg-config uuid-dev flex bison \
+  clang llvm-dev zlib1g-dev libzstd-dev lld python3 cmake ninja-build git
 
 git clone \
   -c feature.manyFiles=true \
@@ -34,6 +34,7 @@ cmake -G Ninja \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_CXX_STANDARD=17 \
   -DCMAKE_INSTALL_PREFIX=$HOME/sysu \
   -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir)" \
   -DCPACK_SOURCE_IGNORE_FILES=".git/;tester/third_party/" \
@@ -164,9 +165,46 @@ int main(){
 }
 ```
 
+### `grammar`
+
+SYsU 的新语义分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1`、`clang -cc1 -ast-dump=json` 的输出。作为语义分析实验模块，本仓库中的 `sysu-grammar` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语义分析规则补充完整（[详细实验要求](grammar/README.md)）。
+
+```bash
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-preprocessor tester/functional/000_main.sysu.c |
+  sysu-grammar -dump-tokens )
+int 'int'               Loc=<tester/functional/000_main.sysu.c:1:1>
+identifier 'main'               Loc=<tester/functional/000_main.sysu.c:1:5>
+l_paren '('             Loc=<tester/functional/000_main.sysu.c:1:9>
+r_paren ')'             Loc=<tester/functional/000_main.sysu.c:1:10>
+l_brace '{'             Loc=<tester/functional/000_main.sysu.c:1:11>
+return 'return'         Loc=<tester/functional/000_main.sysu.c:2:5>
+numeric_constant '3'            Loc=<tester/functional/000_main.sysu.c:2:12>
+semi ';'                Loc=<tester/functional/000_main.sysu.c:2:13>
+r_brace '}'             Loc=<tester/functional/000_main.sysu.c:3:1>
+eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
+```
+
+<!-- {% raw %} -->
+
+```bash
+$ ( export PATH=$HOME/sysu/bin:$PATH \
+  CPATH=$HOME/sysu/include:$CPATH \
+  LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
+  LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
+  sysu-preprocessor tester/functional/000_main.sysu.c |
+  sysu-grammar )
+{"inner":[{"inner":[{"inner":[{"inner":[{"kind":"IntegerLiteral","value":"3"}],"kind":"ReturnStmt"}],"kind":"CompoundStmt"}],"kind":"FunctionDecl","name":"main"}],"kind":"TranslationUnitDecl"}
+```
+
+<!-- {% endraw %} -->
+
 ### `lexer`
 
-SYsU 的词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输出。作为词法分析实验模块，本仓库中的 `sysu-lexer` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](lexer/README.md)）。
+SYsU 的旧词法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1` 的输出。作为词法分析实验模块，本仓库中的 `sysu-lexer` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其词法规则补充完整（[详细实验要求](lexer/README.md)）。
 
 ```bash
 $ ( export PATH=$HOME/sysu/bin:$PATH \
@@ -189,7 +227,7 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 
 ### `parser`
 
-SYsU 的语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
+SYsU 的旧文法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
 
 <!-- {% raw %} -->
 
@@ -228,8 +266,7 @@ $ ( export PATH=$HOME/sysu/bin:$PATH \
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
+  sysu-grammar |
   sysu-generator )
 ; ModuleID = '-'
 source_filename = "-"
@@ -252,8 +289,7 @@ $ ( export PATH=$HOME/sysu/bin:$PATH \
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
+  sysu-grammar |
   sysu-generator |
   sysu-optimizer )
 =================================================
@@ -349,16 +385,13 @@ git submodule update --init --recursive --depth 1
 
 ### Q & A: 本项目的版本管理的规则是？为什么项目名为 SYsU-lang，而非 SYsU-compiler ？
 
-目前本项目存在两个分支：
+[`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为中大课程教学中使用的代码，功能较为稳定，预期在 `ubuntu:noble` 环境中工作。文档可能不会及时更新，以对应 [Dockerfile](https://github.com/arcsysu/SYsU-lang/blob/latest/Dockerfile) 中的测试语句为准。
 
-- [`latest`](https://github.com/arcsysu/SYsU-lang/tree/latest) 分支下为中大课程教学中使用的代码，功能稳定，预期在 `debian:bookworm` 环境中工作。
-- [`unstable-slim`](https://github.com/arcsysu/SYsU-lang/tree/unstable-slim) 分支下为助教探索后续实验改革方案（如 mlir）的代码，预期在`debian:unstable-slim` 环境中工作。该分支中的文档可能不会及时更新，以对应 [Dockerfile](https://github.com/arcsysu/SYsU-lang/blob/unstable-slim/Dockerfile) 中的测试语句为准。
+对于中大以外的高校教学者与个人自学者，我们建议使用 [releases](https://github.com/arcsysu/SYsU-lang/releases) 中最新发布的实验框架源码以及对应版本号的 [docker image](https://hub.docker.com/r/wukan0621/sysu-lang)。它们可能在时间上略有落后，但经过了中大一学期的教学检验，不存在潜在的可能导致教学事故的错误。我们也十分欢迎来自你们的课堂反馈[![Discussions](https://img.shields.io/github/discussions/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/discussions) 与改进建议[![Issues](https://img.shields.io/github/issues/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/issues)[![Issues-pr](https://img.shields.io/github/issues-pr/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/pulls) 。
 
-对于中大以外的高校教学者与个人自学者，我们建议使用 [releases](https://github.com/arcsysu/SYsU-lang/releases) 中最新发布的实验框架源码以及对应版本号的 [docker image](https://hub.docker.com/r/wukan0621/sysu-lang)。它们可能在时间上略有落后，但经过了中大一学期的教学检验，不存在潜在的可能导致教学事故的错误。我们也十分欢迎来自你们的课堂反馈[![Discussions](https://img.shields.io/github/discussions/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/discussions) 与改进建议[![Issues](https://img.shields.io/github/issues/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/issues)（[![Issues-pr](https://img.shields.io/github/issues-pr/arcsysu/SYsU-lang)](https://github.com/arcsysu/SYsU-lang/pulls) 请提交至 `unstable-slim` 分支）。
+版本号的命名格式为 `<major>.<minor>.<patch>.<tweak>`，如 `2404.0.0.20240229`。一般来说，对于使用 `latest` 分支代码的用户，`<major>`、`<minor>`、`<patch>` 发生变化时，我们建议尽快更新至最新版本。
 
-版本号的命名格式为 `<major>.<minor>.<patch>.<tweak>`，如 `11.0.7.20221118`。一般来说，对于使用 `latest` 分支代码的用户，`<major>`、`<minor>`、`<patch>` 发生变化时，我们建议尽快更新至最新版本。
-
-- `<major>` 指示了该版本的软件依赖为对应的 debian 版本
+- `<major>` 指示了该版本的软件依赖为对应的 ubuntu/debian 版本
 - `<minor>` 指示了该版本的功能版本，不同 `<minor>` 间可能不直接兼容
 - `<patch>` 指示了该版本的补丁版本，不同 `<patch>` 间预期可以直接更新，修正前一个版本中存在的问题
 - `<tweak>` 指示了当前版本代码（不含文档）的日期，可能存在微调，但不同 `<tweak>` 的代码应当具有完全相同的表现

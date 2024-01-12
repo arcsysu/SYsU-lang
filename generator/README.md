@@ -60,8 +60,7 @@ $ ( export PATH=$HOME/sysu/bin:$PATH \
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
+  sysu-grammar |
   sysu-generator |
   lli --load=libsysy.so --load=libsysu.so ) # 该输出来自运行时库的计时统计
 TOTAL: 0H-0M-0S-0us
@@ -135,8 +134,8 @@ $ echo $? # 在 Unix & Linux 中，可以通过 echo $? 来查看最后运行的
 
 ## 你可能会感兴趣的
 
-- [Kaleidoscope: Code generation to LLVM IR](https://releases.llvm.org/14.0.0/docs/tutorial/MyFirstLanguageFrontend/LangImpl03.html)
+- [Kaleidoscope: Code generation to LLVM IR](https://releases.llvm.org/17.0.0/docs/tutorial/MyFirstLanguageFrontend/LangImpl03.html)
 - [SYsU-lang 实验三快速上手](https://www.yuque.com/shuitang/rra4fg/bnqy1c)
 - [Viz.js — Graphviz in your browser.](http://viz-js.com/)
-- [llvm::IRBuilder](https://github.com/llvm/llvm-project/blob/llvmorg-14.0.6/llvm/include/llvm/IR/IRBuilder.h)
-  - 该文件同样位于 debian:bookworm 中 [llvm-dev](https://packages.debian.org/bookworm/devel/llvm-dev) 包的 </usr/include/llvm/IR/IRBuilder.h>。
+- [llvm::IRBuilder](https://github.com/llvm/llvm-project/blob/llvmorg-17.0.6/llvm/include/llvm/IR/IRBuilder.h)
+  - 该文件同样位于 ubuntu:noble 中 [llvm-dev](https://packages.ubuntu.com/noble/llvm-dev) 包的 </usr/include/llvm/IR/IRBuilder.h>。

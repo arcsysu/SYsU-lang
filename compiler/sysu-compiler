@@ -32,7 +32,7 @@ import tempfile
 
 def main(*argv):
 
-    def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out):
+    def unittest_parser(testcase, clang, preprocessor, parser, filenames, time_out, grammar=None):
         def check_ast(ast0, ast1, testcase, command0, command1):
             def wk_exit(n):
                 logging.getLogger(__name__).error("---")
@@ -51,10 +51,10 @@ def main(*argv):
 
             key_inner = ["inner"]
 
-            if testcase in ["parser-0", "parser-1"]:
+            if testcase in ["parser-0", "parser-1", "grammar-4", "grammar-5"]:
                 key_kind = ["kind", "name", "value"]
                 skip_inner = ["InitListExpr"]  # 跳过列表初始化
-            elif testcase in ["parser-2"]:
+            elif testcase in ["parser-2", "grammar-6"]:
                 key_kind = ["kind", "name", "value", "type"]
                 skip_inner = []
             else:
@@ -112,7 +112,10 @@ def main(*argv):
                 src = subprocess.run(
                     command, timeout=time_out, stdout=subprocess.PIPE, shell=True).stdout
                 command0 = command+" | "+clang + " -cc1 -ast-dump=json"
-                command1 = command+" | "+clang + " -cc1 -dump-tokens 2>&1 | "+parser
+                if grammar:
+                    command1 = command+" | "+grammar
+                else:
+                    command1 = command+" | "+clang + " -cc1 -dump-tokens 2>&1 | "+parser
                 ast0 = None
                 if filename.endswith(".sysu.c"):
                     gz = filename[0:filename.rfind(".sysu.c")]+".json.gz"
@@ -126,9 +129,14 @@ def main(*argv):
                         stdout=subprocess.PIPE, shell=True).stdout
                 ast0 = json.loads(ast0)
                 gc.collect()
-                ast1 = json.loads(subprocess.run(
-                    clang + " -cc1 -dump-tokens 2>&1 |"+parser,
-                    input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
+                if grammar:
+                    ast1 = json.loads(subprocess.run(
+                        grammar,
+                        input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
+                else:
+                    ast1 = json.loads(subprocess.run(
+                        clang + " -cc1 -dump-tokens 2>&1 |"+parser,
+                        input=src, timeout=time_out,  stdout=subprocess.PIPE, shell=True).stdout)
                 gc.collect()
                 r = check_ast(ast0, ast1, testcase, command0, command1)
                 if r != 0:
@@ -184,7 +192,7 @@ def main(*argv):
                 tok0, str0, mid0, loc0 = split_tokens(tokens0[i])
                 tok1, str1, mid1, loc1 = split_tokens(tokens1[i])
 
-                if testcase in ["lexer-3"]:
+                if testcase in ["lexer-3", "grammar-3"]:
                     if mid0 != mid1:
                         logging.getLogger(__name__).error(
                             "\nfail: mid " + str(i+1) + "c" + str(i+1))
@@ -192,7 +200,7 @@ def main(*argv):
                         logging.getLogger(__name__).error("---")
                         logging.getLogger(__name__).error("> " + mid1)
                         return wk_exit(-1)
-                if testcase in ["lexer-2", "lexer-3"]:
+                if testcase in ["lexer-2", "lexer-3", "grammar-2", "grammar-3"]:
                     if loc0 != loc1:
                         logging.getLogger(__name__).error(
                             "\nfail: loc " + str(i+1) + "c" + str(i+1))
@@ -200,7 +208,7 @@ def main(*argv):
                         logging.getLogger(__name__).error("---")
                         logging.getLogger(__name__).error("> " + loc1)
                         return wk_exit(-1)
-                if testcase in ["lexer-0", "lexer-1", "lexer-2", "lexer-3"]:
+                if testcase in ["lexer-0", "lexer-1", "lexer-2", "lexer-3", "grammar-0", "grammar-1", "grammar-2", "grammar-3"]:
                     if tok0 != tok1:
                         logging.getLogger(__name__).error(
                             "\nfail: tok " + str(i+1) + "c" + str(i+1))
@@ -446,7 +454,7 @@ def main(*argv):
     parser = argparse.ArgumentParser(
         prog=os.path.basename(argv[0]))
     specs = ["clang", "sysu-preprocessor", "sysu-lexer", "sysu-parser",
-             "sysu-generator", "sysu-optimizer", "sysu-translator", "sysu-linker"]
+             "sysu-generator", "sysu-optimizer", "sysu-translator", "sysu-linker", "sysu-grammar"]
     for spec in specs:
         parser.add_argument(
             "--"+spec,
@@ -503,14 +511,26 @@ def main(*argv):
         time_out = None
         if args.unittest_timeout >= 0:
             time_out = args.unittest_timeout
-        if "lexer" in args.unittest:
-            return unittest_lexer(args.unittest, args.clang,
+        for _test in ["lexer-0", "lexer-1", "lexer-2","lexer-3"]:
+            if _test in args.unittest:
+                return unittest_lexer(args.unittest, args.clang,
                                   args.sysu_preprocessor, args.sysu_lexer,
                                   filenames, time_out)
-        if "parser" in args.unittest:
-            return unittest_parser(args.unittest, args.clang,
+        for _test in ["parser-0", "parser-1", "parser-2","parser-3"]:
+            if _test in args.unittest:
+                return unittest_parser(args.unittest, args.clang,
                                    args.sysu_preprocessor, args.sysu_parser,
                                    filenames, time_out)
+        for _test in ["grammar-0", "grammar-1", "grammar-2","grammar-3"]:
+            if _test in args.unittest:
+                return unittest_lexer(args.unittest, args.clang,
+                                  args.sysu_preprocessor, args.sysu_grammar + " -dump-tokens ",
+                                  filenames, time_out)
+        for _test in ["grammar-4", "grammar-5", "grammar-6","grammar-7"]:
+            if _test in args.unittest:
+                return unittest_parser(args.unittest, args.clang,
+                                   args.sysu_preprocessor, None,
+                                   filenames, time_out, args.sysu_grammar)
         if "benchmark_generator_and_optimizer" in args.unittest:
             return benchmark_generator_and_optimizer(
                 args.unittest,

@@ -10,8 +10,7 @@
   LIBRARY_PATH=$HOME/sysu/lib:$LIBRARY_PATH \
   LD_LIBRARY_PATH=$HOME/sysu/lib:$LD_LIBRARY_PATH &&
   sysu-preprocessor tester/functional/000_main.sysu.c |
-  sysu-lexer |
-  sysu-parser |
+  sysu-grammar |
   sysu-generator |
   sysu-optimizer )
 # or
@@ -46,7 +45,7 @@
 
 并思考，这些优化是否可以在语法树（即 `sysu-generator`）上完成？在这两个阶段各自的优点与缺点是什么？
 
-如果你使用了来自 LLVM 的其他组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `llvm_map_components_to_libnames`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，禁止使用任何 LLVM 自带的 [transform-passes](https://releases.llvm.org/14.0.0/docs/Passes.html#transform-passes)（当然，你被鼓励去学习这些 pass 的实现原理），助教会结合 `llvm-objdump` 等工具检查。
+如果你使用了来自 LLVM 的其他组件，你需要将其加入本目录下 `CMakeLists.txt` 中的 `llvm_map_components_to_libnames`，否则可能无法通过编译。你可以终端执行 `llvm-config --components`，查看所有的 LLVM 组件名称。然而，禁止使用任何 LLVM 自带的 [transform-passes](https://releases.llvm.org/17.0.0/docs/Passes.html#transform-passes)（当然，你被鼓励去学习这些 pass 的实现原理），助教会结合 `llvm-objdump` 等工具检查。
 
 ### Q & A：有关 new pass manager 与 legacy pass manager
 
@@ -93,8 +92,8 @@ Pass/PassManager 是 LLVM 里最重要的核心组件之一，自 LLVM 诞生以
 
 ## 你可能会感兴趣的
 
-- [Writing an LLVM Pass](https://releases.llvm.org/14.0.0/docs/WritingAnLLVMNewPMPass.html)
-- [Using the New Pass Manager](https://releases.llvm.org/14.0.0/docs/NewPassManager.html)
+- [Writing an LLVM Pass](https://releases.llvm.org/17.0.0/docs/WritingAnLLVMNewPMPass.html)
+- [Using the New Pass Manager](https://releases.llvm.org/17.0.0/docs/NewPassManager.html)
 - [Writing an LLVM Pass: 101 - LLVM 2019 tutorial](https://llvm.org/devmtg/2019-10/slides/Warzynski-WritingAnLLVMPass.pdf)
 - [Writing LLVM Pass in 2018-part I](https://medium.com/@mshockwave/writing-llvm-pass-in-2018-part-i-531c700e85eb)
 - [banach-space/llvm-tutor](https://github.com/banach-space/llvm-tutor)
