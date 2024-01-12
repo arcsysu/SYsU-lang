@@ -5,7 +5,7 @@ ARG WUK_INSTALL_PREFIX=/opt/sysu
 FROM ${BASE_IMAGE}
 WORKDIR /autograder
 WORKDIR ${WUK_SOURCE_DIR}
-ADD <<build_install.sh <<run.sh . ${WUK_SOURCE_DIR}
+COPY <<build_install.sh <<run.sh . ${WUK_SOURCE_DIR}
 #!/bin/sh
 rm -rf $2
 cmake -G Ninja \\
