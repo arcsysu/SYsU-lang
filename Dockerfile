@@ -2,10 +2,8 @@
 ARG BASE_IMAGE=ubuntu
 FROM ${BASE_IMAGE}
 WORKDIR /autograder
-ARG SYSU_SOURCE_DIR=/opt/SYsU-lang
-ARG SYSU_INSTALL_PREFIX=/opt/sysu
-WORKDIR ${SYSU_SOURCE_DIR}
-COPY <<build_install.sh <<run.sh . ${SYSU_SOURCE_DIR}
+WORKDIR ${/opt/SYsU-lang}
+COPY <<build_install.sh <<run.sh . /opt/SYsU-lang
 #!/bin/sh
 rm -rf \$2
 cmake -G Ninja \\
@@ -21,17 +19,17 @@ cmake --build \$2/build -j
 cmake --build \$2/build -t install
 build_install.sh
 #!/bin/sh
-python3 -m tarfile -e /autograder/submission/*.tar.gz \$SYSU_SOURCE_DIR/submission
-rm -rf \$SYSU_SOURCE_DIR/generator
-cp -r \$SYSU_SOURCE_DIR/submission/*-Source/generator \$SYSU_SOURCE_DIR
-rm -rf \$SYSU_SOURCE_DIR/optimizer
-cp -r \$SYSU_SOURCE_DIR/submission/*-Source/optimizer \$SYSU_SOURCE_DIR
-rm -rf \$SYSU_SOURCE_DIR/submission
-\$SYSU_SOURCE_DIR/build_install.sh \$SYSU_SOURCE_DIR \$SYSU_INSTALL_PREFIX
+python3 -m tarfile -e /autograder/submission/*.tar.gz /opt/SYsU-lang/submission
+rm -rf /opt/SYsU-lang/generator
+cp -r /opt/SYsU-lang/submission/*-Source/generator /opt/SYsU-lang
+rm -rf /opt/SYsU-lang/optimizer
+cp -r /opt/SYsU-lang/submission/*-Source/optimizer /opt/SYsU-lang
+rm -rf /opt/SYsU-lang/submission
+/opt/SYsU-lang/build_install.sh /opt/SYsU-lang /opt/sysu
 mkdir -p /autograder/results
 sysu-compiler \\
     --unittest=benchmark_generator_and_optimizer_1 \\
-    "\$SYSU_SOURCE_DIR/**/*.sysu.c" >/autograder/results/results.json
+    "/opt/SYsU-lang/**/*.sysu.c" >/autograder/results/results.json
 run.sh
 RUN <<EOF
 apt-get update -y
@@ -42,12 +40,12 @@ apt-get install -y --no-install-recommends \
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
-mv \$SYSU_SOURCE_DIR/run.sh /autograder/run
+mv /opt/SYsU-lang/run.sh /autograder/run
 chmod +x /autograder/run
-chmod +x \$SYSU_SOURCE_DIR/build_install.sh
-\$SYSU_SOURCE_DIR/build_install.sh \$SYSU_SOURCE_DIR \$SYSU_INSTALL_PREFIX
+chmod +x /opt/SYsU-lang/build_install.sh
+/opt/SYsU-lang/build_install.sh /opt/SYsU-lang /opt/sysu
 EOF
-ENV PATH=${SYSU_INSTALL_PREFIX}/bin:$PATH \
-    CPATH=${SYSU_INSTALL_PREFIX}/include:$CPATH \
-    LIBRARY_PATH=${SYSU_INSTALL_PREFIX}/lib:$LIBRARY_PATH \
-    LD_LIBRARY_PATH=${SYSU_INSTALL_PREFIX}/lib:$LD_LIBRARY_PATH
+ENV PATH=/opt/sysu/bin:$PATH \
+    CPATH=/opt/sysu/include:$CPATH \
+    LIBRARY_PATH=/opt/sysu/lib:$LIBRARY_PATH \
+    LD_LIBRARY_PATH=/opt/sysu/lib:$LD_LIBRARY_PATH
