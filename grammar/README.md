@@ -287,13 +287,13 @@ flowchart TD;
 
 本次实验的评测项目为 `grammar-[0-7]`。`grammar-0`，`grammar-4` 仅用于证明模板（代码与评测脚本）可以正确工作，不计入成绩；其他三个评测项依次检查：
 
-1. `sysu-grammar` 是否提取出正确的 token（30 分）。
-2. `sysu-grammar` 是否提取出正确的 token location（15 分）。
-3. `sysu-grammar` 是否识别其他无关字符（5 分）。
+1. `sysu-grammar` 是否提取出正确的 token。
+2. `sysu-grammar` 是否提取出正确的 token location。
+3. `sysu-grammar` 是否识别其他无关字符。
 4. 不计入
-5. `sysu-grammar` 是否提取出正确的 `"kind"`、`"name"`、`"value"` 键值，不含 `"InitListExpr"`（30 分）。
-6. `sysu-grammar` 是否提取出正确的 `"type"` 键值及是否构造正确的 `"InitListExpr"` 生成树（15 分）。
-7. `sysu-grammar` 是否提取出其它非 `"id"` 以外的键值（5 分）。
+5. `sysu-grammar` 是否提取出正确的 `"kind"`、`"name"`、`"value"` 键值，不含 `"InitListExpr"`。
+6. `sysu-grammar` 是否提取出正确的 `"type"` 键值及是否构造正确的 `"InitListExpr"` 生成树。
+7. `sysu-grammar` 是否提取出其它非 `"id"` 以外的键值。
 
 评测脚本忽略空白符，可以查看[评测脚本](../compiler/sysu-compiler)以了解检查算法，但不得修改评测逻辑而投机取巧。你也可以像这样调用评测脚本，单独执行其中某一个评测项。
 
@@ -307,7 +307,7 @@ flowchart TD;
 
 此外，[107_long_code2.sysu.c](../tester/h_functional/107_long_code2.sysu.c) 这个算例在测试时直接使用 `clang` 导出的语法树大小为 8.9G，助教这里直接给出了[压缩后的语法树](../tester/h_functional/107_long_code2.json.gz)。由于该算例语法树层级过多，评测时允许超时跳过。但你被鼓励去解决这一问题。
 
-**根据同学们的反馈下调了实验难度，只需通过 `grammar-1` 即可通过本次实验，`grammar-2`、`grammar-3` 列为本次实验的挑战选项。**
+**根据同学们的反馈下调了实验难度，只需通过 `grammar-[0-5]` 即可通过本次实验，`grammar-6`、`grammar-7` 列为本次实验的挑战选项。**
 
 ## 挑战方向
 
