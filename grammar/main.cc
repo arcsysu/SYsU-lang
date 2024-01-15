@@ -48,6 +48,7 @@ int main(int argc, char **argv) {
     return 0;
   }
   sysu_grammar::CParser parser(&tokens);
+#ifndef SYSU_GRAMMAR_USE_LISTENER
   struct Visitor : sysu_grammar::CBaseVisitor {
     antlrcpp::Any visitCompilationUnit(
         sysu_grammar::CParser::CompilationUnitContext *ctx) override {
@@ -64,7 +65,7 @@ int main(int argc, char **argv) {
       return ret;
     }
     // 请续写 visitExternalDeclaration 及之后的遍历逻辑，将 ParseTree 转换为
-    // json 格式的AbstractSyntaxTree，简而言之就是把树拍扁
+    // json 格式的 AbstractSyntaxTree，简而言之就是把树拍扁
     antlrcpp::Any visitExternalDeclaration(
         sysu_grammar::CParser::ExternalDeclarationContext *ctx) override {
       return llvm::json::Value(llvm::json::Object{
@@ -85,4 +86,44 @@ int main(int argc, char **argv) {
   llvm::outs()
       << Visitor().visit(parser.compilationUnit()).as<llvm::json::Value>()
       << "\n";
+#else
+  struct Listener : sysu_grammar::CBaseListener {
+    llvm::json::Array stak;
+    void exitTranslationUnit(
+        sysu_grammar::CParser::TranslationUnitContext *ctx) override {
+      llvm::json::Value ret = llvm::json::Object{
+          {"kind", "TranslationUnitDecl"}, {"inner", llvm::json::Array{}}};
+      ret.getAsObject()->get("inner")->getAsArray()->reserve(
+          ctx->externalDeclaration().size());
+      for (const auto &child : ctx->externalDeclaration()) {
+        ret.getAsObject()->get("inner")->getAsArray()->push_back(stak.back());
+        stak.pop_back();
+      }
+      std::reverse(ret.getAsObject()->get("inner")->getAsArray()->begin(),
+                   ret.getAsObject()->get("inner")->getAsArray()->end());
+      stak.push_back(ret);
+    }
+    // 请续写 exitExternalDeclaration 及之后的遍历逻辑，将 ParseTree 转换为
+    // json 格式的 AbstractSyntaxTree，简而言之就是把树拍扁
+    void exitExternalDeclaration(
+        sysu_grammar::CParser::ExternalDeclarationContext *ctx) override {
+      stak.push_back(llvm::json::Object{
+          {"kind", "FunctionDecl"},
+          {"name", "main"},
+          {"inner",
+           llvm::json::Array{llvm::json::Object{
+               {"kind", "CompoundStmt"},
+               {"inner",
+                llvm::json::Array{llvm::json::Object{
+                    {"kind", "ReturnStmt"},
+                    {"inner", llvm::json::Array{llvm::json::Object{
+                                  {"kind", "IntegerLiteral"}, {"value", "3"}}}},
+                }}},
+           }}}});
+    }
+  } listener;
+  antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener,
+                                              parser.compilationUnit());
+  llvm::outs() << listener.stak.back() << "\n";
+#endif
 }
