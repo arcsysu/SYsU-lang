@@ -1,4 +1,3 @@
-// 任 君 选 择
 #include "CBaseListener.h"
 #include "CBaseVisitor.h"
 #include "CLexer.h"
@@ -48,7 +47,7 @@ int main(int argc, char **argv) {
     return 0;
   }
   sysu_grammar::CParser parser(&tokens);
-#ifndef SYSU_GRAMMAR_USE_LISTENER
+#ifndef SYSU_GRAMMAR_USE_LISTENER // 任 君 选 择
   struct Visitor : sysu_grammar::CBaseVisitor {
     antlrcpp::Any visitCompilationUnit(
         sysu_grammar::CParser::CompilationUnitContext *ctx) override {

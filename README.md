@@ -167,7 +167,7 @@ int main(){
 
 ### `grammar`
 
-SYsU 的新语义分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1`、`clang -cc1 -ast-dump=json` 的输出。作为语义分析实验模块，本仓库中的 `sysu-grammar` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语义分析规则补充完整（[详细实验要求](grammar/README.md)）。
+SYsU 的新文法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1`、`clang -cc1 -ast-dump=json` 的输出。作为文法分析实验模块，本仓库中的 `sysu-grammar` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其文法分析规则补充完整（[详细实验要求](grammar/README.md)）。
 
 ```bash
 $ ( export PATH=$HOME/sysu/bin:$PATH \
@@ -227,7 +227,7 @@ eof ''          Loc=<tester/functional/000_main.sysu.c:3:2>
 
 ### `parser`
 
-SYsU 的旧文法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
+SYsU 的旧语法分析器，接受来自 `sysu-lexer` 的输入，输出一个 json 格式的语法分析树（类似于 `clang -cc1 -ast-dump=json`）。作为语法分析实验模块，本仓库中的 `sysu-parser` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其语法规则补充完整（[详细实验要求](parser/README.md)）。
 
 <!-- {% raw %} -->
 
