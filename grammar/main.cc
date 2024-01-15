@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
   antlr4::CommonTokenStream tokens(&lexer);
   tokens.fill();
   if (argc >= 2 && argv[1] == std::string("-dump-tokens")) {
-    // 请完成此处的词法分析器
+    // 请续写此处的词法分析器
     for (auto token : tokens.getTokens()) {
       if (token->getChannel() != antlr4::Token::HIDDEN_CHANNEL) {
         std::string t = lexer.getVocabulary().getSymbolicName(token->getType());
@@ -48,14 +48,41 @@ int main(int argc, char **argv) {
     return 0;
   }
   sysu_grammar::CParser parser(&tokens);
-// 请将此处的 ParseTree 转换为 AbstractSyntaxTree，简而言之就是把这颗树拍扁
-#if 0
-  llvm::outs() << parser.compilationUnit()->toStringTree(&parser, true) << "\n";
-#else
+  struct Visitor : sysu_grammar::CBaseVisitor {
+    antlrcpp::Any visitCompilationUnit(
+        sysu_grammar::CParser::CompilationUnitContext *ctx) override {
+      return visit(ctx->translationUnit());
+    }
+    antlrcpp::Any visitTranslationUnit(
+        sysu_grammar::CParser::TranslationUnitContext *ctx) override {
+      llvm::json::Value ret = llvm::json::Object{
+          {"kind", "TranslationUnitDecl"}, {"inner", llvm::json::Array{}}};
+      for (auto child : ctx->externalDeclaration()) {
+        ret.getAsObject()->get("inner")->getAsArray()->push_back(
+            visit(child).as<llvm::json::Value>());
+      }
+      return ret;
+    }
+    // 请续写 visitExternalDeclaration 及之后的遍历逻辑，将 ParseTree 转换为
+    // json 格式的AbstractSyntaxTree，简而言之就是把树拍扁
+    antlrcpp::Any visitExternalDeclaration(
+        sysu_grammar::CParser::ExternalDeclarationContext *ctx) override {
+      return llvm::json::Value(llvm::json::Object{
+          {"kind", "FunctionDecl"},
+          {"name", "main"},
+          {"inner",
+           llvm::json::Array{llvm::json::Object{
+               {"kind", "CompoundStmt"},
+               {"inner",
+                llvm::json::Array{llvm::json::Object{
+                    {"kind", "ReturnStmt"},
+                    {"inner", llvm::json::Array{llvm::json::Object{
+                                  {"kind", "IntegerLiteral"}, {"value", "3"}}}},
+                }}},
+           }}}});
+    }
+  };
   llvm::outs()
-      << "{\"inner\":[{\"inner\":[{\"inner\":[{\"inner\":[{\"kind\":"
-         "\"IntegerLiteral\",\"value\":\"3\"}],\"kind\":\"ReturnStmt\"}],"
-         "\"kind\":\"CompoundStmt\"}],\"kind\":\"FunctionDecl\",\"name\":"
-         "\"main\"}],\"kind\":\"TranslationUnitDecl\"}";
-#endif
+      << Visitor().visit(parser.compilationUnit()).as<llvm::json::Value>()
+      << "\n";
 }
