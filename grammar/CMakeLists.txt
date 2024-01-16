@@ -26,18 +26,17 @@ target_include_directories(
   sysu-grammar
   PRIVATE ${ANTLR4_INCLUDE_DIR} ${ANTLR4_INCLUDE_DIR_sysu_grammar})
 
-target_link_directories(sysu-grammar PRIVATE ${ANTLR4_LIB_DIR})
-target_link_libraries(sysu-grammar PRIVATE antlr4_shared)
+target_link_directories(sysu-grammar PUBLIC ${ANTLR4_LIB_DIR})
+target_link_libraries(sysu-grammar antlr4_static)
 
 if(${ANTLR_VERSION} VERSION_LESS_EQUAL 4.10.1)
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(UUID REQUIRED uuid)
   target_link_directories(sysu-grammar PUBLIC ${UUID_LIBRARY_DIRS})
-  target_link_libraries(sysu-grammar PUBLIC ${UUID_LIBRARIES})
+  target_link_libraries(sysu-grammar ${UUID_LIBRARIES})
 endif()
-
 
 find_package(LLVM REQUIRED)
 llvm_map_components_to_libnames(LLVM_LIBS support)
-target_link_libraries(sysu-grammar PRIVATE ${LLVM_LIBS})
+target_link_libraries(sysu-grammar ${LLVM_LIBS})
 target_include_directories(sysu-grammar PRIVATE ${LLVM_INCLUDE_DIRS})
