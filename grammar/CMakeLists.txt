@@ -27,7 +27,7 @@ target_include_directories(
   PRIVATE ${ANTLR4_INCLUDE_DIR} ${ANTLR4_INCLUDE_DIR_sysu_grammar})
 
 target_link_directories(sysu-grammar PUBLIC ${ANTLR4_LIB_DIR})
-target_link_libraries(sysu-grammar antlr4_static)
+target_link_libraries(sysu-grammar antlr4_shared)
 
 if(${ANTLR_VERSION} VERSION_LESS_EQUAL 4.10.1)
   find_package(PkgConfig REQUIRED)
