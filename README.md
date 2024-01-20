@@ -109,6 +109,8 @@ subgraph sysu-compiler
 direction TB
 subgraph frontend
 direction LR
+preprocessor--Code-->grammar
+grammar--JsonAST-->generator
 preprocessor--Code-->lexer
 lexer--TokenFlow-->parser
 parser--JsonAST-->generator
