@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1.4
 ARG BASE_IMAGE=ubuntu:noble
 FROM ${BASE_IMAGE}
-WORKDIR /autograder
 WORKDIR /opt/SYsU-lang
 COPY <<build_install.sh <<run.sh . /opt/SYsU-lang
 #!/bin/sh
@@ -27,7 +26,6 @@ rm -rf /opt/SYsU-lang/optimizer
 cp -r /opt/SYsU-lang/submission/*-Source/optimizer /opt/SYsU-lang
 rm -rf /opt/SYsU-lang/submission
 /opt/SYsU-lang/build_install.sh /opt/SYsU-lang /opt/sysu
-mkdir -p /autograder/results
 sysu-compiler \\
     --unittest=benchmark_generator_and_optimizer_1 \\
     "/opt/SYsU-lang/**/*.sysu.c" >/autograder/results/results.json
@@ -41,6 +39,7 @@ apt-get install -y --no-install-recommends \
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
+mkdir -p /autograder/results
 mv /opt/SYsU-lang/run.sh /autograder/run
 chmod +x /autograder/run
 chmod +x /opt/SYsU-lang/build_install.sh

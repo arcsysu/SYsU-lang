@@ -6,6 +6,7 @@
 #include "CVisitor.h"
 #include <algorithm>
 #include <antlr4-runtime.h>
+#include <any>
 #include <llvm/Support/JSON.h>
 #include <llvm/Support/MemoryBuffer.h>
 #include <llvm/Support/raw_ostream.h>
@@ -48,45 +49,7 @@ int main(int argc, char **argv) {
     return 0;
   }
   sysu_grammar::CParser parser(&tokens);
-#ifndef SYSU_GRAMMAR_USE_LISTENER // 任 君 选 择
-  struct Visitor : sysu_grammar::CBaseVisitor {
-    antlrcpp::Any visitCompilationUnit(
-        sysu_grammar::CParser::CompilationUnitContext *ctx) override {
-      return visit(ctx->translationUnit());
-    }
-    antlrcpp::Any visitTranslationUnit(
-        sysu_grammar::CParser::TranslationUnitContext *ctx) override {
-      llvm::json::Value ret = llvm::json::Object{
-          {"kind", "TranslationUnitDecl"}, {"inner", llvm::json::Array{}}};
-      for (auto child : ctx->externalDeclaration()) {
-        ret.getAsObject()->get("inner")->getAsArray()->push_back(
-            visit(child).as<llvm::json::Value>());
-      }
-      return ret;
-    }
-    // 请续写 visitExternalDeclaration 及之后的遍历逻辑，将 ParseTree 转换为
-    // json 格式的 AbstractSyntaxTree，简而言之就是把树拍扁
-    antlrcpp::Any visitExternalDeclaration(
-        sysu_grammar::CParser::ExternalDeclarationContext *ctx) override {
-      return llvm::json::Value(llvm::json::Object{
-          {"kind", "FunctionDecl"},
-          {"name", "main"},
-          {"inner",
-           llvm::json::Array{llvm::json::Object{
-               {"kind", "CompoundStmt"},
-               {"inner",
-                llvm::json::Array{llvm::json::Object{
-                    {"kind", "ReturnStmt"},
-                    {"inner", llvm::json::Array{llvm::json::Object{
-                                  {"kind", "IntegerLiteral"}, {"value", "3"}}}},
-                }}},
-           }}}});
-    }
-  };
-  llvm::outs()
-      << Visitor().visit(parser.compilationUnit()).as<llvm::json::Value>()
-      << "\n";
-#else
+#ifndef SYSU_GRAMMAR_NO_USE_LISTENER // 任 君 选 择
   struct Listener : sysu_grammar::CBaseListener {
     llvm::json::Array stak;
     void exitTranslationUnit(
@@ -125,5 +88,43 @@ int main(int argc, char **argv) {
   antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener,
                                               parser.compilationUnit());
   llvm::outs() << listener.stak.back() << "\n";
+#else
+  struct Visitor : sysu_grammar::CBaseVisitor {
+    antlrcpp::Any visitCompilationUnit(
+        sysu_grammar::CParser::CompilationUnitContext *ctx) override {
+      return visit(ctx->translationUnit());
+    }
+    antlrcpp::Any visitTranslationUnit(
+        sysu_grammar::CParser::TranslationUnitContext *ctx) override {
+      llvm::json::Value ret = llvm::json::Object{
+          {"kind", "TranslationUnitDecl"}, {"inner", llvm::json::Array{}}};
+      for (auto child : ctx->externalDeclaration()) {
+        ret.getAsObject()->get("inner")->getAsArray()->push_back(
+            std::any_cast<llvm::json::Value>(visit(child)));
+      }
+      return ret;
+    }
+    // 请续写 visitExternalDeclaration 及之后的遍历逻辑，将 ParseTree 转换为
+    // json 格式的 AbstractSyntaxTree，简而言之就是把树拍扁
+    antlrcpp::Any visitExternalDeclaration(
+        sysu_grammar::CParser::ExternalDeclarationContext *ctx) override {
+      return llvm::json::Value(llvm::json::Object{
+          {"kind", "FunctionDecl"},
+          {"name", "main"},
+          {"inner",
+           llvm::json::Array{llvm::json::Object{
+               {"kind", "CompoundStmt"},
+               {"inner",
+                llvm::json::Array{llvm::json::Object{
+                    {"kind", "ReturnStmt"},
+                    {"inner", llvm::json::Array{llvm::json::Object{
+                                  {"kind", "IntegerLiteral"}, {"value", "3"}}}},
+                }}},
+           }}}});
+    }
+  };
+  llvm::outs() << std::any_cast<llvm::json::Value>(
+                      Visitor().visit(parser.compilationUnit()))
+               << "\n";
 #endif
 }

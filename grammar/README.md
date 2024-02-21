@@ -274,6 +274,12 @@ flowchart TD;
 2. 输出到 json，因为 json 格式非常容易理解，不需要像 [LLVM 官方教程](https://releases.llvm.org/17.0.0/docs/tutorial/MyFirstLanguageFrontend/LangImpl02.html) 一样定义很多节点。
 3. 输出到 `llvm::json`，可以让同学们提前上手 LLVM 库的使用，平滑下一个实验的难度。
 
+### Q & A：该选择 Visitor 还是 Listener？
+
+TL;DR: Vistor 更符合任务需求，但是 Listener 仍然更加趁手。
+
+Visitor 有更强的可定制性，但是需要自行实现每个节点到子节点的访问规则；Listener 则适合更轻量的任务，例如只提取某些语法规则的上下文。在本实验中，按道理每个节点都需要被访问，因此 Vistor 更符合任务需求，Listener 的优势没有那么大。然而，根据助教的使用经验，Listener 仍然是一个更常用且好用的选择。
+
 ## 评分规则
 
 本实验的评分分为两部分：基础部分和挑战部分。
