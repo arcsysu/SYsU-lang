@@ -169,7 +169,7 @@ int main(){
 
 ### `grammar`
 
-SYsU 的新文法分析器，产生类似于 `clang -cc1 -dump-tokens 2>&1`、`clang -cc1 -ast-dump=json` 的输出。作为文法分析实验模块，本仓库中的 `sysu-grammar` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其文法分析规则补充完整（[详细实验要求](grammar/README.md)）。
+SYsU 的新基于 antlr4 的文法分析器，用于代替被诟病已久的 flex+bison 旧实验，产生类似于 `clang -cc1 -dump-tokens 2>&1`、`clang -cc1 -ast-dump=json` 的输出。作为文法分析实验模块，本仓库中的 `sysu-grammar` 并不能处理完整的 SYsU，但提供了一个模板，需要学生将其文法分析规则补充完整（[详细实验要求](grammar/README.md)）。
 
 ```bash
 $ ( export PATH=$HOME/sysu/bin:$PATH \

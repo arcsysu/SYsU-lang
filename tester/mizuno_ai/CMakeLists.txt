@@ -1,6 +1,6 @@
-add_executable(sysu-tester-mizuno_ai mizuno_ai.sysu.c)
-target_link_libraries(sysu-tester-mizuno_ai sysu)
+project(sysu-tester-mizuno_ai)
+add_executable(${PROJECT_NAME} mizuno_ai.sysu.c)
+target_link_libraries(${PROJECT_NAME} sysu)
 target_include_directories(
-  sysu-tester-mizuno_ai
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../librarian/include)
-install(TARGETS sysu-tester-mizuno_ai)
+  ${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../librarian/include)
+install(TARGETS ${PROJECT_NAME})

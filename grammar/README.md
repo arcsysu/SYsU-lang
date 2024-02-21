@@ -141,7 +141,7 @@ $ ( export PATH=$HOME/sysu/bin:$PATH \
 
 可以发现，`clang -cc1 -ast-dump=json` 输出一个 json 格式的语法分析树。我们要求你的输出不包含图上忽略的内置类型，也不需要为每个节点生成单独的 `id`。
 
-本目录下提供了一个基于 antlr4 + `llvm::json` 实现的模板，接受词法分析器的输出，你可以基于此继续实现完整的逻辑，也可以使用其他的工具实现，如 bison，但不得使用任何封装好的库直接获得 ast，如 libclang。
+本目录下提供了一个基于 antlr4 + `llvm::json` 实现的模板，接受词法分析器的输出，你可以基于此继续实现完整的逻辑，也可以使用其他的工具实现，如 bison，但不得使用任何封装好的库直接获得 ast，如 libclang。[`C.g4`](./C.g4) 语法文件来自于 [antlr/grammars-v4](https://github.com/antlr/grammars-v4/blob/753536777d827ccc0c9b108531ea67375c2039ac/c/C.g4) 社区（感谢！），如有需要可自行修改。
 
 ### Q & A：实验要求太抽象了，需要一个更直观的例子
 
