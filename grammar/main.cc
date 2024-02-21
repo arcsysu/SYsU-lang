@@ -23,7 +23,8 @@ int main(int argc, char **argv) {
     // 请续写此处的词法分析器
     for (auto token : tokens.getTokens()) {
       if (token->getChannel() != antlr4::Token::HIDDEN_CHANNEL) {
-        std::string t = lexer.getVocabulary().getSymbolicName(token->getType());
+        auto t1 = lexer.getVocabulary().getSymbolicName(token->getType());
+        std::string t(t1.begin(), t1.end());
         std::unordered_map<std::string, std::string> transform_table{
             {"Int", "int"},
             {"Identifier", "identifier"},
