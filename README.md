@@ -1,5 +1,7 @@
 # SYsU-lang
 
+**[2024 中山大学春季学期实验入口](https://github.com/arcsysu/SYsU-lang2)，我们将在经过一个学期的测试之后将其合并进入主线代码**。
+
 SYsU 是一个教学语言，应用于中山大学（**S**un **Y**at-**s**en **U**niversity）[编译原理课程](https://xianweiz.github.io/teach/dcs290/s2022.html)的教学。本项目是该课程的实验模板，可以得到一个 SYsU language 的编译器组件。实验的设计目标包括：
 
 1. 在兼容 [SysY](https://gitlab.eduxiji.net/nscscc/compiler2021/-/blob/master/SysY%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89.pdf) 语言的基础上，增加最少的语法支持，使其可以编译 [Yat-sen OS](https://github.com/NelsonCheung-cn/yatsenos-riscv)。
