@@ -54,11 +54,14 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: BASE_IMAGE=ubuntu:noble
 
       - name: Run Tests
         continue-on-error: true
-        run: docker run -e CTEST_OUTPUT_ON_FAILURE=1 --rm ${{ steps.meta.outputs.tags }} sh -c "cmake --build \$HOME/sysu/build -t test"
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ steps.meta.outputs.tags }}
+          run: |
+            CTEST_OUTPUT_ON_FAILURE=1 cmake --build $HOME/sysu/build -t test
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
@@ -79,5 +82,4 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: BASE_IMAGE=ubuntu:noble
           platforms: linux/amd64,linux/arm64/v8,linux/arm/v7,linux/ppc64le,linux/s390x
